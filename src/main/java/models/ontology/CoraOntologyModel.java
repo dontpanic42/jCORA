@@ -16,34 +16,67 @@ public class CoraOntologyModel<T extends OntResource> {
     private OntModel model;
     private CoraOntologyModelFactory factory;
 
+    /**
+     * Getter für das Jena Basis-Objekt
+     * @return Das Jena-Objekt, auf dem dieses Objekt basiert
+     */
     public T getBaseObject() {
         return baseObject;
     }
 
+    /**
+     * Setter für das Jena Basis-Objekt
+     * @param baseObject Das Jena-Objekt, auf dem dieses Objekt basiert
+     */
     public void setBaseObject(T baseObject) {
         this.baseObject = baseObject;
     }
 
+    /**
+     * Getter für das Jena Ontologie-Modell, in dem dieses Objekt zu finden ist
+     * @return Das Jena Ontologie-Modell
+     */
     public OntModel getModel() {
         return model;
     }
 
+    /**
+     * Setter für das Jena Ontologie-Modell, in dem dieses Objekt zu finden ist.
+     * @param model Das Jena Ontologie-Modell
+     */
     public void setModel(OntModel model) {
         this.model = model;
     }
 
+    /**
+     * Gibt dieses Objekt als <code>String</code> zurück
+     * @return String-Repräsentation dieses Objekts
+     */
+    @Override
     public String toString() {
         return this.baseObject.getLocalName();
     }
 
+    /**
+     * Gibt den Namespace dieses Objekts zurück
+     * @return Der Namespace
+     */
     public String getNs() {
         return this.model.getNsPrefixURI("");
     }
 
+    /**
+     * Getter für die Model-Factory, die dieses Objekt erzeugt hat
+     * @return Die Factory
+     */
     public CoraOntologyModelFactory getFactory() {
         return factory;
     }
 
+    /**
+     * Setter für die Model-Factory.
+     * @param factory Die Factory
+     */
     public void setFactory(CoraOntologyModelFactory factory) {
         this.factory = factory;
     }
