@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#"
+     xml:base="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleProperty -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleProperty">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleTestClass"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SubClass1Property -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SubClass1Property">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SubClass1"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestFloatProperty -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestFloatProperty">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass1"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndChildClass -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndChildClass">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndTestClass"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass1 -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass1">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndSuperClass"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass2 -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass2">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndSuperClass"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndSuperClass -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndSuperClass"/>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndTestClass -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndTestClass">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass1"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass2"/>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#ComplexClass -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#ComplexClass">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleTestClass"/>
+                    <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass1"/>
+                            <rdf:Description rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass2"/>
+                        </owl:intersectionOf>
+                    </owl:Class>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#OrClass -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#OrClass">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass1"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass2"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleTestClass -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleTestClass">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SuperClass2"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SubClass1 -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SubClass1">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleTestClass"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SubClass2 -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SubClass2">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SubClass1"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SuperClass1 -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SuperClass1"/>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SuperClass2 -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SuperClass2">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SuperClass1"/>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndTestIndividual -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndTestIndividual">
+        <rdf:type rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndTestClass"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#MultiAndTestIndividual -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#MultiAndTestIndividual">
+        <rdf:type>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass1"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndClass2"/>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdf:type>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+
