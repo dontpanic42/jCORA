@@ -46,6 +46,33 @@
     
 
 
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#hatFallBeschreibung -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#hatFallBeschreibung">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#Fall"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallBeschreibung"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#hatFallBewertung -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#hatFallBewertung">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#Fall"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallBewertung"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#hatFallLösung -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#hatFallLösung">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#Fall"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallLoesung"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -139,6 +166,30 @@
             </owl:Class>
         </rdfs:subClassOf>
     </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#Fall -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#Fall"/>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallBeschreibung -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallBeschreibung"/>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallBewertung -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallBewertung"/>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallLoesung -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallLoesung"/>
     
 
 

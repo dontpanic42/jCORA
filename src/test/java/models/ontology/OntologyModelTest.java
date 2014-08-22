@@ -9,6 +9,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+        OntologyModelFactoryTest.class,
         ClassModelTest.class,
         InstanceModelTest.class,
         PropertyModelTest.class
