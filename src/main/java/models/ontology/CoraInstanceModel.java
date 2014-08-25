@@ -1,10 +1,16 @@
 package models.ontology;
 
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.ontology.OntClass;
+import com.hp.hpl.jena.query.ReadWrite;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import models.util.Pair;
 
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -25,5 +31,70 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
         }
 
         return list;
+    }
+
+    public void createObjectRelation(CoraObjectPropertyModel property,
+                                       CoraInstanceModel toObject) {
+        getFactory().tryLock(ReadWrite.WRITE);
+
+        property.getBaseObject().addProperty(property.getBaseObject(), toObject.getBaseObject());
+
+        getFactory().tryCommit();
+        getFactory().tryEndLock();
+    }
+
+    /**
+     * Git eine <code>Map</code> mit <code>CoraObjectProperty</code> (slot) und
+     * <cdoe>CoraInstanceModel</cdoe> (Instanzen) zurück, die die ObjectProperties
+     * dieser Instanz bezeichnen.
+     * @return <code>Map</code> mit ObjectPropertys und zugehörigen Werten
+     */
+    public Map<CoraObjectPropertyModel, CoraInstanceModel> getObjectProperties() {
+        Individual i = getBaseObject();
+
+        Map<CoraObjectPropertyModel, CoraInstanceModel> list =
+                new HashMap<CoraObjectPropertyModel, CoraInstanceModel>();
+
+        StmtIterator iter = i.listProperties();
+        while(iter.hasNext()) {
+
+            Statement s = iter.next();
+            Property p = s.getPredicate();
+            if(!p.canAs(ObjectProperty.class)) {
+                continue;
+            }
+
+            RDFNode r = s.getObject();
+            if(!r.canAs(Individual.class)) {
+                continue;
+            }
+
+            CoraObjectPropertyModel property = getFactory().wrapObjectProperty(p.as(ObjectProperty.class));
+            CoraInstanceModel instance = getFactory().wrapInstance(r.as(Individual.class));
+
+            list.put(property, instance);
+        }
+
+        return list;
+    }
+
+    /**
+     * Gibt eine Liste mit hinzufügbaren OjectProperties zurück (abhängig vom Typ der Instanz)
+     * @return Liste mit "erlaubten" ObjectProperties.
+     */
+    public Set<CoraObjectPropertyModel> getAvailableObjectProperties() {
+        Set<CoraClassModel> types = getFlattenedTypes();
+        Set<CoraObjectPropertyModel> results = new HashSet<>();
+
+        for(CoraClassModel clazz : types) {
+            Set<CoraPropertyModel<?>> typeProperties = clazz.getProperties();
+            for(CoraPropertyModel p : typeProperties) {
+                if(p.isObjectProperty()) {
+                    results.add(p.asObjectProperty());
+                }
+            }
+        }
+
+        return results;
     }
 }

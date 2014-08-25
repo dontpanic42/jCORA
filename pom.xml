@@ -28,6 +28,13 @@
             <artifactId>pellet-pellint</artifactId>
             <version>2.3.6-ansell</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.codeartisans.thirdparties.swing</groupId>
+            <artifactId>org-netbeans-api-visual</artifactId>
+            <version>2.23.1</version>
+        </dependency>
+
     </dependencies>
 
 

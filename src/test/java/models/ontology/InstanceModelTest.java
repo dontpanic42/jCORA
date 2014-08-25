@@ -1,9 +1,6 @@
 package models.ontology;
 
-import com.hp.hpl.jena.ontology.Individual;
-import com.hp.hpl.jena.ontology.OntClass;
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
 import factories.ontology.CoraOntologyModelFactory;
@@ -13,6 +10,7 @@ import org.junit.Test;
 import org.mindswap.pellet.jena.PelletReasonerFactory;
 import static org.junit.Assert.*;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,7 +31,7 @@ public class InstanceModelTest {
         domainModel = ModelFactory.createOntologyModel(spec);
         domainModel.read(FileManager.get().open("src/test/resources/classTestOntology.owl"), "RDF/XML");
 
-        factory = new CoraOntologyModelFactory(domainModel);
+        factory = new CoraOntologyModelFactory(domainModel, null);
     }
 
     @Test
@@ -59,6 +57,29 @@ public class InstanceModelTest {
         OntClass cAndClass2 = domainModel.getOntClass(namespace + "AndClass2");
         assertTrue(parents.contains(factory.wrapClass(cAndClass1)));
         assertTrue(parents.contains(factory.wrapClass(cAndClass2)));
+    }
+
+    @Test
+    public void testGetObjectProperties() {
+
+        String namespace = domainModel.getNsPrefixURI("");
+        CoraInstanceModel inst;
+        Individual i;
+
+        i = domainModel.getIndividual(namespace + "SimpleTestIndividual");
+        inst = factory.wrapInstance(i);
+        Map<CoraObjectPropertyModel, CoraInstanceModel> list = inst.getObjectProperties();
+        assertTrue(list.size() == 1);
+
+        i = domainModel.getIndividual(namespace + "AndTestIndividual");
+        assertNotNull(i);
+        inst = factory.wrapInstance(i);
+        ObjectProperty op = domainModel.getObjectProperty(namespace + "SimpleProperty");
+        assertNotNull(op);
+        CoraObjectPropertyModel p = factory.wrapObjectProperty(op);
+
+        assertTrue(list.containsValue(inst));
+        assertTrue(list.containsKey(p));
     }
 
     @After

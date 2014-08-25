@@ -33,6 +33,7 @@
     <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleProperty -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleProperty">
+        <rdfs:range rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndTestClass"/>
         <rdfs:domain rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleTestClass"/>
     </owl:ObjectProperty>
     
@@ -276,6 +277,50 @@
                 </owl:intersectionOf>
             </owl:Class>
         </rdf:type>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleTestIndividual -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleTestIndividual">
+        <rdf:type rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#SimpleTestClass"/>
+        <SimpleProperty rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#AndTestIndividual"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestCaseBeschreibung -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestCaseBeschreibung">
+        <rdf:type rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallBeschreibung"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestCaseBewertung -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestCaseBewertung">
+        <rdf:type rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallBewertung"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestCaseFall -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestCaseFall">
+        <rdf:type rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#Fall"/>
+        <hatFallBeschreibung rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestCaseBeschreibung"/>
+        <hatFallBewertung rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestCaseBewertung"/>
+        <hatFallLösung rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestCaseLoesung"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestCaseLoesung -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#TestCaseLoesung">
+        <rdf:type rdf:resource="http://www.semanticweb.org/daniel/ontologies/2014/7/untitled-ontology-270#FallLoesung"/>
     </owl:NamedIndividual>
 </rdf:RDF>
 

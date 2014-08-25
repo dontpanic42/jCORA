@@ -3,6 +3,10 @@ package models.cbr;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntResource;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.ReadWrite;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import exceptions.MalformedOntologyException;
 import factories.ontology.CoraOntologyModelFactory;
 import models.ontology.CoraInstanceModel;
@@ -10,7 +14,9 @@ import models.ontology.CoraInstanceModel;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * Created by daniel on 20.08.14.
@@ -23,9 +29,12 @@ public class CoraCaseModelImpl implements CoraCaseModel {
     private CoraInstanceModel caseJustification = null;
 
     private OntModel caseModel;
+    private Dataset dataset;
+
+    private Set<CaseChangeHandler> onChangeHandlers = new HashSet<>();
 
     private static Properties caseStructureMapping = null;
-    private static final String CASE_STRUCTURE_MAPPING_FILE = "src/main/config/casestructure.properties";
+    private static final String CASE_STRUCTURE_MAPPING_FILE = "config/casestructure.properties";
 
     /**
      * Erzeugt einen Fall mit der standard-Fallstruktur
@@ -34,17 +43,18 @@ public class CoraCaseModelImpl implements CoraCaseModel {
      * @throws MalformedOntologyException Wenn die Ontologie nicht mit der vorgegebenen Fallstruktur übereinstimmt
      * @throws IOException Wenn die Fallstruktur-Konfiguration nicht gelesen werden kann
      */
-    public CoraCaseModelImpl(OntModel caseModel, CoraCaseBaseImpl caseBase)
+    public CoraCaseModelImpl(OntModel caseModel, CoraCaseBaseImpl caseBase, Dataset dataset)
             throws MalformedOntologyException, IOException {
 
         if(caseStructureMapping == null) {
             caseStructureMapping = new Properties();
-            InputStream is = new FileInputStream(CASE_STRUCTURE_MAPPING_FILE);
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream(CASE_STRUCTURE_MAPPING_FILE);
             caseStructureMapping.load(is);
             is.close();
         }
 
-        setupCaseModel(caseModel, caseBase, caseStructureMapping);
+        this.dataset = dataset;
+        setupCaseModel(caseModel, caseBase, caseStructureMapping, dataset);
     }
 
     /**
@@ -54,10 +64,11 @@ public class CoraCaseModelImpl implements CoraCaseModel {
      * @param structure Die Fallstruktur
      * @throws MalformedOntologyException Wenn die Ontologie nicht mit der vorgegebenen Fallstruktur übereinstimmt
      */
-    public CoraCaseModelImpl(OntModel caseModel, CoraCaseBaseImpl caseBase, Properties structure)
+    public CoraCaseModelImpl(OntModel caseModel, CoraCaseBaseImpl caseBase, Properties structure, Dataset dataset)
             throws MalformedOntologyException  {
 
-        setupCaseModel(caseModel, caseBase, structure);
+        this.dataset = dataset;
+        setupCaseModel(caseModel, caseBase, structure, dataset);
     }
 
     /**
@@ -67,13 +78,31 @@ public class CoraCaseModelImpl implements CoraCaseModel {
      * @param structure Die Fallstruktur-Konfiguration
      * @throws MalformedOntologyException Wenn die Ontologie nicht mit der vorgegebenen Fallstruktur übereinstimmt
      */
-    private void setupCaseModel(OntModel caseModel, CoraCaseBase caseBase, Properties structure)
+    private void setupCaseModel(OntModel caseModel, CoraCaseBase caseBase, Properties structure, Dataset dataset)
             throws MalformedOntologyException {
 
         this.caseModel = caseModel;
 
-        CoraOntologyModelFactory factory = new CoraOntologyModelFactory(caseModel);
+        CoraOntologyModelFactory factory = new CoraOntologyModelFactory(caseModel, this);
         createCaseStructure(factory, ((CoraCaseBaseImpl) caseBase).getDomainModel(), caseModel, structure);
+    }
+
+    public void tryLock(ReadWrite lockType) {
+        if(dataset != null) {
+            dataset.begin(lockType);
+        }
+    }
+
+    public void tryEndLock() {
+        if(dataset != null) {
+            dataset.end();
+        }
+    }
+
+    public void tryCommit() {
+        if(dataset != null) {
+            dataset.commit();
+        }
     }
 
     /**
@@ -129,15 +158,49 @@ public class CoraCaseModelImpl implements CoraCaseModel {
     private CoraInstanceModel getOrCreateIndividual(CoraOntologyModelFactory factory, String fullIndvName, String fullClazzName, OntModel caseModel)
             throws MalformedOntologyException {
 
-        Individual i = caseModel.getIndividual(fullIndvName);
-        if(i == null) {
-            OntClass clazz = caseModel.getOntClass(fullClazzName);
-            if(clazz == null) {
-                System.err.println("Kann Klasse nicht finden: " + fullClazzName);
-                throw new MalformedOntologyException();
-            }
+        //Vorher
+//        Individual i = caseModel.getIndividual(fullIndvName);
+//        if(i == null) {
+//            OntClass clazz = caseModel.getOntClass(fullClazzName);
+//            if(clazz == null) {
+//                System.err.println("Kann Klasse nicht finden: " + fullClazzName);
+//                throw new MalformedOntologyException();
+//            }
+//
+//            i = caseModel.createIndividual(fullIndvName, clazz);
+//        }
 
-            i = caseModel.createIndividual(fullIndvName, clazz);
+
+        if(dataset != null) {
+            dataset.begin(ReadWrite.READ);
+        }
+
+        OntClass clazz = caseModel.getOntClass(fullClazzName);
+        ExtendedIterator<? extends OntResource> iter = clazz.listInstances();
+        while(iter.hasNext()) {
+            OntResource resource = iter.next();
+            if(resource.canAs(Individual.class)) {
+                iter.close();
+
+                if(dataset != null) {
+                    dataset.end();
+                }
+
+                CoraInstanceModel imod = factory.wrapInstance(resource.asIndividual());
+                return imod;
+            }
+        }
+
+        if(dataset != null) {
+            dataset.end();
+            dataset.begin(ReadWrite.WRITE);
+        }
+
+        Individual i = caseModel.createIndividual(fullIndvName, clazz);
+
+        if(dataset != null) {
+            dataset.commit();
+            dataset.end();
         }
 
         return factory.wrapInstance(i);
@@ -187,5 +250,20 @@ public class CoraCaseModelImpl implements CoraCaseModel {
     @Override
     public void close() {
         this.caseModel.close();
+    }
+
+    @Override
+    public Set<CaseChangeHandler> getOnChangeHandlers() {
+        return onChangeHandlers;
+    }
+
+    @Override
+    public void addOnChangeHandler(CaseChangeHandler handler) {
+        onChangeHandlers.add(handler);
+    }
+
+    @Override
+    public void removeOnChangeHandler(CaseChangeHandler handler) {
+        onChangeHandlers.remove(handler);
     }
 }

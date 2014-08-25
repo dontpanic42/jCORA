@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CaseBaseViewController">
+   <children>
+      <HBox layoutX="223.0" layoutY="172.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TableView fx:id="tblCaseBase" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="tcCaseId" prefWidth="362.0" text="Fall ID" />
+                  <TableColumn fx:id="tcViewCase" minWidth="100.0" prefWidth="100.0" text="Fall ansehen" />
+                  <TableColumn fx:id="tcDeleteCase" minWidth="100.0" prefWidth="100.0" text="Fall löschen" />
+              </columns>
+            </TableView>
+            <ToolBar orientation="VERTICAL" prefHeight="40.0" HBox.hgrow="NEVER">
+              <items>
+                <Button mnemonicParsing="false" fx:id="btnImportCase">
+                     <graphic>
+                        <ImageView fx:id="btnImportCase" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/import-case.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
+                     </padding>
+                  </Button>
+              </items>
+            </ToolBar>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

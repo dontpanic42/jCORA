@@ -36,7 +36,7 @@ public class ClassModelTest {
         domainModel = ModelFactory.createOntologyModel(spec);
         domainModel.read(FileManager.get().open("src/test/resources/classTestOntology.owl"), "RDF/XML");
 
-        factory = new CoraOntologyModelFactory(domainModel);
+        factory = new CoraOntologyModelFactory(domainModel, null);
     }
 
     @Test

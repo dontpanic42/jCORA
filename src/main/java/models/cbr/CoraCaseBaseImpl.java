@@ -4,6 +4,7 @@ import com.hp.hpl.jena.ontology.OntDocumentManager;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.ReadWrite;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ModelGetter;
@@ -15,10 +16,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.naming.ConfigurationException;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Created by daniel on 22.08.14.
@@ -28,7 +27,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     /**
      * Pfad zur Standard-Konfiguration
      */
-    private static final String CASE_BASE_PROPERTIES_FILE = "src/main/config/casebase.properties";
+    private static final String CASE_BASE_PROPERTIES_FILE = "config/casebase.properties";
 
     private LocalModelGetter localModelGetter;
     private OntModel domainModel;
@@ -36,6 +35,8 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     private OntDocumentManager documentManager;
 
     private Properties caseBaseProperties;
+
+    private List<CaseBaseChangeHandler> caseBaseChangeHandlers = new ArrayList<CaseBaseChangeHandler>();
 
     /**
      * Erzeugt ein neues <code>CoraCaseBaseImpl</code>-Objekt mit der Standard-Konfiguration
@@ -46,7 +47,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         Properties defaultProperties = new Properties();
 
         try {
-            InputStream is = new FileInputStream(CASE_BASE_PROPERTIES_FILE);
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream(CASE_BASE_PROPERTIES_FILE);
             defaultProperties.load(is);
             is.close();
         } catch (IOException e) {
@@ -93,17 +94,53 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      */
     @Override
     public CoraCaseModel loadCase(String name) throws Throwable {
+        dataset.begin(ReadWrite.READ);
+
         Model m = dataset.getNamedModel(name);
+
+
+
+        dataset.end();
 
         OntModelSpec modelSpec = new OntModelSpec(PelletReasonerFactory.THE_SPEC);
         modelSpec.setImportModelGetter(localModelGetter);
         modelSpec.setDocumentManager(documentManager);
+        documentManager.setProcessImports(false);
+
 
         OntModel model = ModelFactory.createOntologyModel(modelSpec, m);
+
+        documentManager.setProcessImports(true);
         documentManager.loadImport(model, domainModel.getNsPrefixURI(""));
 
-        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(model, this);
+        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(model, this, dataset);
         return caseModel;
+    }
+
+    @Override
+    public void importCase(String asId, String fileFormat, File file) throws IOException {
+        dataset.begin(ReadWrite.WRITE);
+
+        //TODO: Strip existing domain-ontology imports from model!
+        Model m = dataset.getNamedModel(asId);
+
+        try {
+            InputStream is = new FileInputStream(file);
+            m.read(is, fileFormat);
+            dataset.commit();
+
+            m.close();
+            dataset.end();
+
+            System.out.println("Imported " + asId + " file: " + file.getAbsolutePath() + " format: " + fileFormat);
+            for(CaseBaseChangeHandler h : caseBaseChangeHandlers) {
+                h.onAddCase(asId);
+            }
+        } catch (FileNotFoundException e) {
+            dataset.end();
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     /**
@@ -122,7 +159,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         OntModel model = ModelFactory.createOntologyModel(modelSpec);
         documentManager.loadImport(model, domainModel.getNsPrefixURI(""));
 
-        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(model, this);
+        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(model, this, null);
         return caseModel;
     }
 
@@ -159,6 +196,15 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     @Override
     public Iterator<CoraCaseModel> getCases() {
         return new CaseBaseIterator(dataset.listNames(), this);
+    }
+
+    /**
+     * Gibt einen Iterator zurück, der über die IDs aller Fälle iteriert.
+     * @return Iterator über alle Fall-IDs
+     */
+    @Override
+    public Iterator<String> listCaseIDs() {
+        return dataset.listNames();
     }
 
     /**
@@ -222,6 +268,16 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
         Dataset dataset = TDBFactory.createDataset(tdbPath);
         return dataset;
+    }
+
+    @Override
+    public void addCaseBaseChangeHandler(CaseBaseChangeHandler handler) {
+        caseBaseChangeHandlers.add(handler);
+    }
+
+    @Override
+    public void removeCaseBaseChangeHandler(CaseBaseChangeHandler handler) {
+        caseBaseChangeHandlers.remove(handler);
     }
 
     /**
@@ -320,9 +376,11 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         @Override
         public Model getModel(String s, ModelReader modelReader) {
             if(mapping.containsKey(s)) {
+                System.out.println("importing domain ontology -> " + s);
                 return mapping.get(s);
             }
 
+            System.out.println("unknown ontology import -> " + s);
             Model m = ModelFactory.createDefaultModel();
             modelReader.readModel(m, s);
             return m;

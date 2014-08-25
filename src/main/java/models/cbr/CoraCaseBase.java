@@ -1,11 +1,19 @@
 package models.cbr;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 
 /**
  * Created by daniel on 22.08.14.
  */
 public interface CoraCaseBase {
+
+    public interface CaseBaseChangeHandler {
+        public void onAddCase(String caseId);
+
+        public void onRemoveCase(String caseId);
+    }
 
     /**
      * Gibt einen Fall mit dem Namen <code>name</code> zurück. Existiert kein Fall mit diesem Namen, wird ein leerer
@@ -29,6 +37,14 @@ public interface CoraCaseBase {
      */
     public Iterator<CoraCaseModel> getCases();
 
+    public void importCase(String asId, String fileFormat, File file) throws IOException;
+
+    /**
+     * Gibt einen Iterator zurück, der über die IDs aller Fälle iteriert.
+     * @return Iterator über alle Fall-IDs
+     */
+    public Iterator<String> listCaseIDs();
+
     /**
      * Gibt die Anzahl der in dieser Fallbasis gespeicherten Fälle zurück.
      * @return Anzahl der in dieser Fallbasis gespeicherten Fälle
@@ -49,4 +65,8 @@ public interface CoraCaseBase {
      * @throws Throwable
      */
     public CoraCaseModel createTemporaryCase() throws Throwable;
+
+    public void addCaseBaseChangeHandler(CaseBaseChangeHandler handler);
+
+    public void removeCaseBaseChangeHandler(CaseBaseChangeHandler handler);
 }

@@ -1,11 +1,24 @@
 package models.cbr;
 
 import models.ontology.CoraInstanceModel;
+import models.ontology.CoraObjectPropertyModel;
+
+import java.util.Set;
 
 /**
  * Created by daniel on 22.08.14.
  */
 public interface CoraCaseModel {
+
+    public interface CaseChangeHandler {
+
+        public void onAddInstance(CoraInstanceModel instance);
+
+        public void onAddObjectProperty(CoraObjectPropertyModel objectProperty,
+                                        CoraInstanceModel subject,
+                                        CoraInstanceModel object);
+    }
+
     /**
      * Gibt die Instanz zurück, die die Wurzel dieses Falles
      * bildet.
@@ -36,4 +49,10 @@ public interface CoraCaseModel {
      * Schließt die Verwendung dieses Modells ab.
      */
     public void close();
+
+    public Set<CaseChangeHandler> getOnChangeHandlers();
+
+    public void addOnChangeHandler(CaseChangeHandler handler);
+
+    public void removeOnChangeHandler(CaseChangeHandler handler);
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddInstanceViewController">
+   <children>
+      <GridPane hgap="5.0" layoutX="327.0" layoutY="93.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="488.0" minWidth="10.0" prefWidth="449.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Klasse" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+            <TreeView fx:id="classTree" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <Label text="Name" />
+            <TextField fx:id="txtInstanceName" GridPane.columnIndex="1" />
+            <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onCancel" text="Abbrechen" />
+                  <Button mnemonicParsing="false" onAction="#onCreateInstance" text="Sichern" />
+               </children>
+            </HBox>
+            <TextField fx:id="txtClassName" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </GridPane>
+   </children>
+</AnchorPane>

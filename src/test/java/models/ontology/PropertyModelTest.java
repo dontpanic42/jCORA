@@ -4,6 +4,7 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
 import factories.ontology.CoraOntologyModelFactory;
+import models.datatypes.FloatValue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class PropertyModelTest {
         domainModel = ModelFactory.createOntologyModel(spec);
         domainModel.read(FileManager.get().open("src/test/resources/classTestOntology.owl"), "RDF/XML");
 
-        factory = new CoraOntologyModelFactory(domainModel);
+        factory = new CoraOntologyModelFactory(domainModel, null);
     }
 
     @Test
@@ -44,7 +45,7 @@ public class PropertyModelTest {
 
         OntProperty prop = domainModel.getOntProperty(namespace + "TestFloatProperty");
         CoraPropertyModel model = factory.wrapProperty(prop);
-        assertTrue(model.getRangeDataType() == Float.class);
+        assertTrue(model.getRangeDataType() == FloatValue.class);
 
         prop = domainModel.getOntProperty(namespace + "SimpleProperty");
         model = factory.wrapProperty(prop);

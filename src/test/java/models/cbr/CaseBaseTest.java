@@ -91,7 +91,7 @@ public class CaseBaseTest {
         String namespace = caseBase.getDomainModel().getNsPrefixURI("");
 
         CoraClassModel clazz;
-        CoraOntologyModelFactory factory = new CoraOntologyModelFactory(domainModel);
+        CoraOntologyModelFactory factory = new CoraOntologyModelFactory(domainModel, null);
         Set<CoraClassModel> parents;
 
         //Simple Class Test

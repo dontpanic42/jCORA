@@ -14,7 +14,7 @@ public class DatatypeMapper {
     /**
      * 'properties' Datei, die die Typemappings enthält.
      */
-    public static final String MAPPING_PROPERTIES_FILE = "src/main/config/typemapping.properties";
+    public static final String MAPPING_PROPERTIES_FILE = "config/typemapping.properties";
 
     /**
      * Gecachte version der mappings
@@ -30,8 +30,7 @@ public class DatatypeMapper {
         if(mapping == null) {
             mapping = new Properties();
             try {
-                File propertyFile = new File(MAPPING_PROPERTIES_FILE);
-                InputStream is = new FileInputStream(propertyFile);
+                InputStream is = DatatypeMapper.class.getResourceAsStream(MAPPING_PROPERTIES_FILE);
                 mapping.load(is);
                 is.close();
             } catch (IOException e) {
