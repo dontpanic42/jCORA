@@ -16,6 +16,12 @@ public interface CoraCaseBase {
     }
 
     /**
+     * Gibt den Namespace der Domain-Ontologie zurück.
+     * @return
+     */
+    public String getDomainNs();
+
+    /**
      * Gibt einen Fall mit dem Namen <code>name</code> zurück. Existiert kein Fall mit diesem Namen, wird ein leerer
      * Fall mit diesem Namen erzeugt.
      * @param name Der Name (id) der Ontologie

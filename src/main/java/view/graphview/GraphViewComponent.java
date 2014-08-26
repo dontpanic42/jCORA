@@ -4,12 +4,15 @@ import javafx.application.Platform;
 import javafx.scene.layout.Border;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
+import org.netbeans.api.visual.export.SceneExporter;
 import view.graphview.menus.NodeMenu;
 import view.graphview.models.EdgeModel;
 import view.graphview.models.NodeModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -139,6 +142,13 @@ public class GraphViewComponent extends JPanel {
         }
 
         return instanceModel;
+    }
+
+    public void exportAsImage(boolean viewportOnly, File target) throws IOException {
+        int width = scene.getBounds().width;
+        int height = scene.getBounds().height;
+        SceneExporter.createImage(scene, target, SceneExporter.ImageType.PNG, SceneExporter.ZoomType.CURRENT_ZOOM_LEVEL,
+                viewportOnly, false, 0, width, height);
     }
 
     public void addInstance(CoraInstanceModel parent, CoraInstanceModel child, String relation) {

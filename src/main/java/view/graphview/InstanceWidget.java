@@ -1,5 +1,6 @@
 package view.graphview;
 
+import mainapp.MainApplication;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.SelectProvider;
 import org.netbeans.api.visual.border.Border;
@@ -26,10 +27,23 @@ public class InstanceWidget extends Widget {
 
     private NodeModel nodeModel;
     private final static Color FOREGROUND_COLOR = Color.BLACK;
+
+    /**
+     * Farbschema für eine Instanz, die zur Task-Ontologie gehört
+     */
     private final static Color[] BACKGROUND_COLORS = {
             new Color(224, 237, 245),
             new Color(244, 249, 254)
     };
+
+    /**
+     * Farbschema für eine Instanz, die zur Domain-Ontologie gehört
+     */
+    private final static Color[] BACKGROUND_COLORS_DOMAIN = {
+            new Color(255, 235, 214),
+            new Color(255, 217, 183)
+    };
+
     private final static Color BORDER_COLOR = new Color(188, 207, 238);
     private final static Color BORDER_COLOR_SELECTED = new Color(255, 143, 13);
 
@@ -81,37 +95,10 @@ public class InstanceWidget extends Widget {
 
         setOpaque(true);
 
-        final float[] gradientFractions = {0.0f, 1.0f};
 
-        LinearGradientPaint lgp = new LinearGradientPaint(
-                new Point2D.Double(0, 0),
-                new Point2D.Double(0, 40),
-                gradientFractions,
-                BACKGROUND_COLORS
-        );
-
-        setBackground(lgp);
 
         InstanceGraph graph = (InstanceGraph) scene;
         getActions().addAction(ActionFactory.createSelectAction(graph));
-
-//        getActions().addAction(ActionFactory.createSelectAction(new SelectProvider() {
-//            @Override
-//            public boolean isAimingAllowed(Widget widget, Point point, boolean b) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean isSelectionAllowed(Widget widget, Point point, boolean b) {
-//                return true;
-//            }
-//
-//            @Override
-//            public void select(Widget widget, Point point, boolean b) {
-//                System.out.println("Selected!");
-//            }
-//        }));
-
     }
 
     public void setSelected(boolean value) {
@@ -144,5 +131,39 @@ public class InstanceWidget extends Widget {
 
     public void setNodeModel(NodeModel nodeModel) {
         this.nodeModel = nodeModel;
+
+        String instanceNs = nodeModel.getModel().getNs();
+        String domainNs = MainApplication.getInstance().getCaseBase().getDomainNs();
+        if(instanceNs.equals(domainNs)) {
+            setIsPartOfDomainOntology();
+        } else {
+            setIsPartOfTaskOntology();
+        }
+    }
+
+    private void setIsPartOfDomainOntology() {
+        final float[] gradientFractions = {0.0f, 1.0f};
+
+        LinearGradientPaint lgp = new LinearGradientPaint(
+                new Point2D.Double(0, 0),
+                new Point2D.Double(0, 40),
+                gradientFractions,
+                BACKGROUND_COLORS_DOMAIN
+        );
+
+        setBackground(lgp);
+    }
+
+    private void setIsPartOfTaskOntology() {
+        final float[] gradientFractions = {0.0f, 1.0f};
+
+        LinearGradientPaint lgp = new LinearGradientPaint(
+                new Point2D.Double(0, 0),
+                new Point2D.Double(0, 40),
+                gradientFractions,
+                BACKGROUND_COLORS
+        );
+
+        setBackground(lgp);
     }
 }

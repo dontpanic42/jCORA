@@ -52,6 +52,7 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
         sceneGraphLayout = LayoutFactory.createSceneGraphLayout(this, graphLayout);
 
         getActions().addAction(ActionFactory.createPanAction());
+        getActions().addAction(ActionFactory.createZoomAction());
     }
 
     public void forceLayout() {
@@ -77,23 +78,6 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
         widget.getActions().addAction(ActionFactory.createMoveAction());
         widget.getActions().addAction(ActionFactory.createPopupMenuAction(nodeMenu));
         widget.setNodeModel(nodeModel);
-//        widget.getActions().addAction(ActionFactory.createSelectAction(new SelectProvider() {
-//            @Override
-//            public boolean isAimingAllowed(Widget widget, Point point, boolean b) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean isSelectionAllowed(Widget widget, Point point, boolean b) {
-//                System.out.println("Gets called");
-//                return true;
-//            }
-//
-//            @Override
-//            public void select(Widget widget, Point point, boolean b) {
-//                System.out.println("Hallo Welt!");
-//            }
-//        }));
 
         mainLayer.addChild(widget);
         return widget;

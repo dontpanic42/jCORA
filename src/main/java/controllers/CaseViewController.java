@@ -2,6 +2,7 @@ package controllers;
 
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
+import javafx.stage.FileChooser;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseModel;
@@ -10,6 +11,8 @@ import models.ontology.CoraObjectPropertyModel;
 import view.graphview.GraphViewComponent;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by daniel on 24.08.14.
@@ -61,6 +64,15 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
 
         System.out.println("Saving!");
         caseBase.save(caseModel);
+    }
+
+    @FXML
+    private void onExportAsImage() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        File outputFile = fileChooser.showSaveDialog(null);
+        if(outputFile != null) {
+            graph.exportAsImage(false, outputFile);
+        }
     }
 
     @Override

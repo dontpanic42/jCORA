@@ -81,7 +81,10 @@ public class CoraClassModel extends CoraOntologyModel<OntClass> {
         ExtendedIterator<OntProperty> iter = getBaseObject().listDeclaredProperties(false);
         while(iter.hasNext()) {
             OntProperty p = iter.next();
-            list.add(getFactory().wrapProperty(p));
+            CoraPropertyModel coraProp = getFactory().wrapProperty(p);
+            if(coraProp != null) {
+                list.add(coraProp);
+            }
         }
 
         return list;

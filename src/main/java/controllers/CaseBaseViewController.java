@@ -1,5 +1,6 @@
 package controllers;
 
+import controllers.commons.WaitViewController;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -15,7 +16,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
+import view.Commons;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
@@ -95,11 +98,13 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
             btnView = new SimpleObjectProperty<Button>(new Button("Anzeigen"));
             btnDelete = new SimpleObjectProperty<Button>(new Button("Löschen"));
 
-            btnView.getValue().setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    MainAppViewController mainAppView = MainApplication.getInstance().getMainAppView();
+            btnView.getValue().setOnAction( (ActionEvent e) -> {
+                MainAppViewController mainAppView = MainApplication.getInstance().getMainAppView();
+
+                try {
                     mainAppView.showCase(caseId);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
             });
         }

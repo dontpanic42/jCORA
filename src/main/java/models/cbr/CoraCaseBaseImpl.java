@@ -115,7 +115,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         documentManager.setProcessImports(true);
         documentManager.loadImport(model, domainModel.getNsPrefixURI(""));
 
-        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(name, model, this, dataset);
+        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(name, model, this);
         return caseModel;
     }
 
@@ -161,7 +161,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         OntModel model = ModelFactory.createOntologyModel(modelSpec);
         documentManager.loadImport(model, domainModel.getNsPrefixURI(""));
 
-        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(null, model, this, null);
+        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(null, model, this);
         return caseModel;
     }
 
@@ -232,7 +232,20 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         OntModel domainModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
         domainModel.read(FileManager.get().open(domainModelFile), "RDF/XML");
 
+        if(caseBaseProperties.getProperty("domainNsOverride", null) != null) {
+            domainModel.setNsPrefix("", caseBaseProperties.getProperty("domainNsOverride"));
+        }
+
+        String ns = domainModel.getNsPrefixURI("");
+
+        System.out.println(ns);
+
         return domainModel;
+    }
+
+    @Override
+    public String getDomainNs() {
+        return domainModel.getNsPrefixURI("");
     }
 
     /**

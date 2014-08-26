@@ -1,5 +1,7 @@
 package controllers;
 
+import controllers.commons.WaitViewController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -11,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseModel;
+import view.Commons;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -49,23 +52,43 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         caseBaseViewController.setCaseBase(caseBase);
     }
 
-    public void showCase(String caseID) {
+    public void showCase(final String caseID) throws IOException {
         if(openCases.containsKey(caseID)) {
             tabPane.getSelectionModel().select(openCases.get(caseID));
         } else {
-            CoraCaseBase caseBase = MainApplication.getInstance().getCaseBase();
-            try {
+            final CoraCaseBase caseBase = MainApplication.getInstance().getCaseBase();
 
-                CoraCaseModel c = caseBase.loadCase(caseID);
+            /*
+            Das folgende Konstrukt ist eine Threaded-Version von
 
-                CaseViewController controller = createCaseView(caseID);
+            // In einem neuen Thread
+            CoraCaseModel c = caseBase.loadCase(caseID);
+            // Im javafx-Thread
+            CaseViewController controller = createCaseView(caseID);
+            controller.showInstance(c.getCaseRoot());
+             */
 
-                controller.showInstance(c.getCaseRoot());
+            final WaitViewController waitView = Commons.createWaitScreen(MainApplication.getInstance().getMainStage());
 
-            } catch (Throwable e) {
-                e.printStackTrace();
-                return;
-            }
+            (new Thread(() -> {
+                    try {
+                        final CoraCaseModel c = caseBase.loadCase(caseID);
+                        //switch to javafx-thread to show the created case...
+                        Platform.runLater(() -> {
+                            try {
+                                CaseViewController controller = createCaseView(caseID);
+                                controller.showInstance(c.getCaseRoot());
+                                waitView.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                        return;
+                    }
+                })
+            ).start();
         }
     }
 

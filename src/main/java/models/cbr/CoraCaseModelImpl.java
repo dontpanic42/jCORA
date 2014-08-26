@@ -29,7 +29,6 @@ public class CoraCaseModelImpl implements CoraCaseModel {
     private CoraInstanceModel caseJustification = null;
 
     private OntModel caseModel;
-    private Dataset dataset;
     private String caseId;
 
     private Set<CaseChangeHandler> onChangeHandlers = new HashSet<>();
@@ -44,7 +43,7 @@ public class CoraCaseModelImpl implements CoraCaseModel {
      * @throws MalformedOntologyException Wenn die Ontologie nicht mit der vorgegebenen Fallstruktur übereinstimmt
      * @throws IOException Wenn die Fallstruktur-Konfiguration nicht gelesen werden kann
      */
-    public CoraCaseModelImpl(String caseId, OntModel caseModel, CoraCaseBaseImpl caseBase, Dataset dataset)
+    public CoraCaseModelImpl(String caseId, OntModel caseModel, CoraCaseBaseImpl caseBase)
             throws MalformedOntologyException, IOException {
 
         this.caseId = caseId;
@@ -56,8 +55,7 @@ public class CoraCaseModelImpl implements CoraCaseModel {
             is.close();
         }
 
-        this.dataset = dataset;
-        setupCaseModel(caseModel, caseBase, caseStructureMapping, dataset);
+        setupCaseModel(caseModel, caseBase, caseStructureMapping);
     }
 
     /**
@@ -67,13 +65,12 @@ public class CoraCaseModelImpl implements CoraCaseModel {
      * @param structure Die Fallstruktur
      * @throws MalformedOntologyException Wenn die Ontologie nicht mit der vorgegebenen Fallstruktur übereinstimmt
      */
-    public CoraCaseModelImpl(OntModel caseModel, CoraCaseBaseImpl caseBase, Properties structure, Dataset dataset)
+    public CoraCaseModelImpl(OntModel caseModel, CoraCaseBaseImpl caseBase, Properties structure)
             throws MalformedOntologyException  {
 
         this.caseId = caseId;
 
-        this.dataset = dataset;
-        setupCaseModel(caseModel, caseBase, structure, dataset);
+        setupCaseModel(caseModel, caseBase, structure);
     }
 
     public OntModel getModel() {
@@ -87,7 +84,7 @@ public class CoraCaseModelImpl implements CoraCaseModel {
      * @param structure Die Fallstruktur-Konfiguration
      * @throws MalformedOntologyException Wenn die Ontologie nicht mit der vorgegebenen Fallstruktur übereinstimmt
      */
-    private void setupCaseModel(OntModel caseModel, CoraCaseBase caseBase, Properties structure, Dataset dataset)
+    private void setupCaseModel(OntModel caseModel, CoraCaseBase caseBase, Properties structure)
             throws MalformedOntologyException {
 
         this.caseModel = caseModel;
@@ -162,37 +159,22 @@ public class CoraCaseModelImpl implements CoraCaseModel {
 //        }
 
 
-        if(dataset != null) {
-            dataset.begin(ReadWrite.READ);
-        }
 
         OntClass clazz = caseModel.getOntClass(fullClazzName);
+        if(clazz == null) {
+            throw new MalformedOntologyException();
+        }
+
         ExtendedIterator<? extends OntResource> iter = clazz.listInstances();
         while(iter.hasNext()) {
             OntResource resource = iter.next();
             if(resource.canAs(Individual.class)) {
                 iter.close();
-
-                if(dataset != null) {
-                    dataset.end();
-                }
-
-                CoraInstanceModel imod = factory.wrapInstance(resource.asIndividual());
-                return imod;
+                return factory.wrapInstance(resource.asIndividual());
             }
         }
 
-        if(dataset != null) {
-            dataset.end();
-            dataset.begin(ReadWrite.WRITE);
-        }
-
         Individual i = caseModel.createIndividual(fullIndvName, clazz);
-
-        if(dataset != null) {
-            dataset.commit();
-            dataset.end();
-        }
 
         return factory.wrapInstance(i);
     }

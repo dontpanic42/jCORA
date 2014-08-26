@@ -123,6 +123,6 @@ public class CoraOntologyModelFactory {
             return wrapObjectProperty(prop.as(ObjectProperty.class));
         }
 
-        throw new NotImplementedException();
+        return null;
     }
 }
