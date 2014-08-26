@@ -56,6 +56,8 @@ public class AddInstanceViewController {
 
         stage.showAndWait();
 
+        CoraInstanceModel instance = c.getReturnValue();
+
         return c.getReturnValue();
     }
 
@@ -125,7 +127,7 @@ public class AddInstanceViewController {
             return;
         }
 
-        String instanceName = txtInstanceName.toString();
+        String instanceName = txtInstanceName.getText();
 
         if(instanceName.equals("")) {
             System.err.println("Kein Instanzname angegeben");

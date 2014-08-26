@@ -93,7 +93,17 @@ public class AddObjectPropertyViewController {
 
     @FXML
     private void onCreateProperty() {
+        CoraObjectPropertyModel property = listProperties.getSelectionModel().getSelectedItem();
+        CoraInstanceModel object = listInstances.getSelectionModel().getSelectedItem();
+        CoraInstanceModel subject = model;
 
+        if(property == null || object == null || subject == null) {
+            System.err.println("Es müssen eine Relation und eine Instanz ausgewählt sein");
+            return;
+        }
+
+        subject.createObjectRelation(property, object);
+        stage.close();
     }
 
     @FXML
@@ -109,6 +119,7 @@ public class AddObjectPropertyViewController {
 
         if(instance != null) {
             listInstances.getItems().add(instance);
+            listInstances.getSelectionModel().select(instance);
         }
     }
 

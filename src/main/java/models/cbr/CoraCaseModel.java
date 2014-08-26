@@ -14,10 +14,12 @@ public interface CoraCaseModel {
 
         public void onAddInstance(CoraInstanceModel instance);
 
-        public void onAddObjectProperty(CoraObjectPropertyModel objectProperty,
-                                        CoraInstanceModel subject,
-                                        CoraInstanceModel object);
+        public void onCreateObjectRelation( CoraObjectPropertyModel objectProperty,
+                                            CoraInstanceModel subject,
+                                            CoraInstanceModel object);
     }
+
+    public String getCaseId();
 
     /**
      * Gibt die Instanz zurück, die die Wurzel dieses Falles

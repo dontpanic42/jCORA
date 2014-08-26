@@ -66,6 +66,8 @@ public interface CoraCaseBase {
      */
     public CoraCaseModel createTemporaryCase() throws Throwable;
 
+    public void save(CoraCaseModel model);
+
     public void addCaseBaseChangeHandler(CaseBaseChangeHandler handler);
 
     public void removeCaseBaseChangeHandler(CaseBaseChangeHandler handler);

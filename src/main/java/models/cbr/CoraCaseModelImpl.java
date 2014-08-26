@@ -30,6 +30,7 @@ public class CoraCaseModelImpl implements CoraCaseModel {
 
     private OntModel caseModel;
     private Dataset dataset;
+    private String caseId;
 
     private Set<CaseChangeHandler> onChangeHandlers = new HashSet<>();
 
@@ -43,8 +44,10 @@ public class CoraCaseModelImpl implements CoraCaseModel {
      * @throws MalformedOntologyException Wenn die Ontologie nicht mit der vorgegebenen Fallstruktur übereinstimmt
      * @throws IOException Wenn die Fallstruktur-Konfiguration nicht gelesen werden kann
      */
-    public CoraCaseModelImpl(OntModel caseModel, CoraCaseBaseImpl caseBase, Dataset dataset)
+    public CoraCaseModelImpl(String caseId, OntModel caseModel, CoraCaseBaseImpl caseBase, Dataset dataset)
             throws MalformedOntologyException, IOException {
+
+        this.caseId = caseId;
 
         if(caseStructureMapping == null) {
             caseStructureMapping = new Properties();
@@ -67,8 +70,14 @@ public class CoraCaseModelImpl implements CoraCaseModel {
     public CoraCaseModelImpl(OntModel caseModel, CoraCaseBaseImpl caseBase, Properties structure, Dataset dataset)
             throws MalformedOntologyException  {
 
+        this.caseId = caseId;
+
         this.dataset = dataset;
         setupCaseModel(caseModel, caseBase, structure, dataset);
+    }
+
+    public OntModel getModel() {
+        return caseModel;
     }
 
     /**
@@ -85,24 +94,6 @@ public class CoraCaseModelImpl implements CoraCaseModel {
 
         CoraOntologyModelFactory factory = new CoraOntologyModelFactory(caseModel, this);
         createCaseStructure(factory, ((CoraCaseBaseImpl) caseBase).getDomainModel(), caseModel, structure);
-    }
-
-    public void tryLock(ReadWrite lockType) {
-        if(dataset != null) {
-            dataset.begin(lockType);
-        }
-    }
-
-    public void tryEndLock() {
-        if(dataset != null) {
-            dataset.end();
-        }
-    }
-
-    public void tryCommit() {
-        if(dataset != null) {
-            dataset.commit();
-        }
     }
 
     /**
@@ -265,5 +256,10 @@ public class CoraCaseModelImpl implements CoraCaseModel {
     @Override
     public void removeOnChangeHandler(CaseChangeHandler handler) {
         onChangeHandlers.remove(handler);
+    }
+
+    @Override
+    public String getCaseId() {
+        return caseId;
     }
 }

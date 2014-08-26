@@ -123,16 +123,19 @@ public class GraphViewComponent extends JPanel {
         visited.put(instance, instanceModel);
         scene.addNode(instanceModel);
 
-        Map<CoraObjectPropertyModel, CoraInstanceModel> objectProperties = instance.getObjectProperties();
-        for(Map.Entry<CoraObjectPropertyModel, CoraInstanceModel> e : objectProperties.entrySet()) {
-            NodeModel source = instanceModel;
-            NodeModel target = createGraphFromInstanceRec(e.getValue(), visited);
+        Map<CoraObjectPropertyModel, Set<CoraInstanceModel>> objectProperties = instance.getObjectProperties();
+        for(Map.Entry<CoraObjectPropertyModel, Set<CoraInstanceModel>> e : objectProperties.entrySet()) {
+            Set<CoraInstanceModel> set = e.getValue();
+            for(CoraInstanceModel i : set) {
+                NodeModel source = instanceModel;
+                NodeModel target = createGraphFromInstanceRec(i, visited);
 
-            EdgeModel edge = new EdgeModel(e.getKey().toString());
-            edge.setSource(source);
-            edge.setTarget(target);
+                EdgeModel edge = new EdgeModel(e.getKey().toString());
+                edge.setSource(source);
+                edge.setTarget(target);
 
-            scene.addConnection(edge);
+                scene.addConnection(edge);
+            }
         }
 
         return instanceModel;

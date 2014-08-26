@@ -30,7 +30,7 @@ public class DatatypeMapper {
         if(mapping == null) {
             mapping = new Properties();
             try {
-                InputStream is = DatatypeMapper.class.getResourceAsStream(MAPPING_PROPERTIES_FILE);
+                InputStream is = DatatypeMapper.class.getClassLoader().getResourceAsStream(MAPPING_PROPERTIES_FILE);
                 mapping.load(is);
                 is.close();
             } catch (IOException e) {

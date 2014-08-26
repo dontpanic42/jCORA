@@ -3,7 +3,10 @@ package controllers;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import mainapp.MainApplication;
+import models.cbr.CoraCaseBase;
+import models.cbr.CoraCaseModel;
 import models.ontology.CoraInstanceModel;
+import models.ontology.CoraObjectPropertyModel;
 import view.graphview.GraphViewComponent;
 
 import javax.swing.*;
@@ -11,11 +14,14 @@ import javax.swing.*;
 /**
  * Created by daniel on 24.08.14.
  */
-public class CaseViewController implements GraphViewComponent.GraphViewActionHandler {
+public class CaseViewController implements GraphViewComponent.GraphViewActionHandler,
+        CoraCaseModel.CaseChangeHandler {
     @FXML
     private SwingNode swingNode;
 
     private final GraphViewComponent graph = new GraphViewComponent();
+
+    private CoraInstanceModel model;
 
     @FXML
     public void initialize() {
@@ -25,7 +31,11 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
 
     public void showInstance(CoraInstanceModel model) {
         graph.createGraphFromInstance(model);
+        if(model.getFactory().getCase() != null) {
+            model.getFactory().getCase().addOnChangeHandler(this);
+        }
 
+        this.model = model;
     }
 
     private void createAndSetSwingContent(final SwingNode swingNode) {
@@ -39,6 +49,20 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
         });
     }
 
+    @FXML
+    private void onSaveCase() {
+        CoraCaseBase caseBase = MainApplication.getInstance().getCaseBase();
+        CoraCaseModel caseModel = model.getFactory().getCase();
+
+        if(caseModel == null) {
+            System.err.println("Kein FalL!");
+            return;
+        }
+
+        System.out.println("Saving!");
+        caseBase.save(caseModel);
+    }
+
     @Override
     public void onAddRelation(GraphViewComponent graph, CoraInstanceModel parent) {
         AddObjectPropertyViewController.showAddRelation(MainApplication.getInstance().getMainStage(), parent);
@@ -47,5 +71,21 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
     @Override
     public void onDeleteInstance(GraphViewComponent graph, CoraInstanceModel model) {
 
+    }
+
+    @Override
+    public void onAddInstance(CoraInstanceModel instance) {
+
+    }
+
+    @Override
+    public void onCreateObjectRelation(CoraObjectPropertyModel objectProperty, CoraInstanceModel subject, CoraInstanceModel object) {
+        System.out.println("Erzeuge graph relation");
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                graph.addInstance(subject, object, objectProperty.toString());
+            }
+        });
     }
 }

@@ -6,8 +6,13 @@ import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.query.ReadWrite;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import models.cbr.CoraCaseModel;
 import models.util.Pair;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,12 +40,19 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
 
     public void createObjectRelation(CoraObjectPropertyModel property,
                                        CoraInstanceModel toObject) {
-        getFactory().tryLock(ReadWrite.WRITE);
 
-        property.getBaseObject().addProperty(property.getBaseObject(), toObject.getBaseObject());
+        //this.getBaseObject().addProperty(property.getBaseObject(), toObject.getBaseObject());
+        getModel().add( this.getBaseObject(),
+                        property.getBaseObject(),
+                        toObject.getBaseObject());
 
-        getFactory().tryCommit();
-        getFactory().tryEndLock();
+
+        CoraCaseModel caseModel = getFactory().getCase();
+        if(caseModel != null) {
+            for(CoraCaseModel.CaseChangeHandler handler : caseModel.getOnChangeHandlers()) {
+                handler.onCreateObjectRelation(property, this, toObject);
+            }
+        }
     }
 
     /**
@@ -49,17 +61,19 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
      * dieser Instanz bezeichnen.
      * @return <code>Map</code> mit ObjectPropertys und zugehörigen Werten
      */
-    public Map<CoraObjectPropertyModel, CoraInstanceModel> getObjectProperties() {
+    public Map<CoraObjectPropertyModel, Set<CoraInstanceModel>> getObjectProperties() {
         Individual i = getBaseObject();
 
-        Map<CoraObjectPropertyModel, CoraInstanceModel> list =
-                new HashMap<CoraObjectPropertyModel, CoraInstanceModel>();
+        Map<CoraObjectPropertyModel, Set<CoraInstanceModel>> list =
+                new HashMap<>();
 
         StmtIterator iter = i.listProperties();
         while(iter.hasNext()) {
 
             Statement s = iter.next();
             Property p = s.getPredicate();
+            System.out.println("Habe property: " + p + ": " + s.getObject());
+
             if(!p.canAs(ObjectProperty.class)) {
                 continue;
             }
@@ -72,7 +86,12 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
             CoraObjectPropertyModel property = getFactory().wrapObjectProperty(p.as(ObjectProperty.class));
             CoraInstanceModel instance = getFactory().wrapInstance(r.as(Individual.class));
 
-            list.put(property, instance);
+            if(!list.containsKey(property)) {
+                Set<CoraInstanceModel> set = new HashSet<>();
+                list.put(property, set);
+            }
+
+            list.get(property).add(instance);
         }
 
         return list;

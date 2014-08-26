@@ -36,53 +36,48 @@ public class CoraOntologyModelFactory {
     public CoraInstanceModel createInstance(CoraClassModel fromClass, String name)
             throws ResourceAlreadyExistsException {
 
-//        tryLock(ReadWrite.WRITE);
-//
-//        //Versuchen das individual mit dem Namen zu laden...
-//        Individual i = model.getIndividual(model.getNsPrefixURI("") + name);
-//        if(i != null) {
-//            tryEndLock();
-//
-//            throw new ResourceAlreadyExistsException();
+
+        //Versuchen das individual mit dem Namen zu laden...
+        Individual i = model.getIndividual(model.getNsPrefixURI("") + name);
+        if(i != null) {
+            throw new ResourceAlreadyExistsException();
+        }
+
+        System.out.println("Erzeuge instanz mit namen: " + model.getNsPrefixURI("") + name);
+
+        //Erzeuge die Instanz
+        i = model.createIndividual(model.getNsPrefixURI("") + name,
+                fromClass.getBaseObject());
+
+        CoraInstanceModel instance = wrapInstance(i);
+
+        //Triggere das Case-Change event
+        if(caseModel != null) {
+            for(CoraCaseModel.CaseChangeHandler handler : caseModel.getOnChangeHandlers()) {
+                handler.onAddInstance(instance);
+            }
+        }
+
+        return instance;
+    }
+
+//    public void tryLock(ReadWrite type) {
+//        if(caseModel instanceof CoraCaseModelImpl) {
+//            ((CoraCaseModelImpl) caseModel).tryLock(type);
 //        }
+//    }
 //
-//        //Erzeuge die Instanz
-//        i = model.createIndividual(model.getNsPrefixURI("") + name,
-//                fromClass.getBaseObject());
-//
-//        CoraInstanceModel instance = wrapInstance(i);
-//
-//        //Löse das Datenbank-Lock
-//        tryCommit();
-//        tryEndLock();
-//
-//        //Triggere das Case-Change event
-//        if(caseModel != null) {
-//            for(CoraCaseModel.CaseChangeHandler handler : caseModel.getOnChangeHandlers()) {
-//                handler.onAddInstance(instance);
-//            }
+//    public void tryCommit() {
+//        if(caseModel instanceof CoraCaseModelImpl) {
+//            ((CoraCaseModelImpl) caseModel).tryCommit();
 //        }
+//    }
 //
-//        return instance;
-    }
-
-    public void tryLock(ReadWrite type) {
-        if(caseModel instanceof CoraCaseModelImpl) {
-            ((CoraCaseModelImpl) caseModel).tryLock(type);
-        }
-    }
-
-    public void tryCommit() {
-        if(caseModel instanceof CoraCaseModelImpl) {
-            ((CoraCaseModelImpl) caseModel).tryCommit();
-        }
-    }
-
-    public void tryEndLock() {
-        if(caseModel instanceof CoraCaseModelImpl) {
-            ((CoraCaseModelImpl) caseModel).tryEndLock();
-        }
-    }
+//    public void tryEndLock() {
+//        if(caseModel instanceof CoraCaseModelImpl) {
+//            ((CoraCaseModelImpl) caseModel).tryEndLock();
+//        }
+//    }
 
 
     public CoraClassModel wrapClass(OntClass clazz) {

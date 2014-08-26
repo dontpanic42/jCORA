@@ -96,9 +96,11 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     public CoraCaseModel loadCase(String name) throws Throwable {
         dataset.begin(ReadWrite.READ);
 
-        Model m = dataset.getNamedModel(name);
-
-
+        Model tdbModel = dataset.getNamedModel(name);
+        Model m = ModelFactory.createDefaultModel();
+        m.add(tdbModel);
+        //TODO: Prefixes?
+        m.setNsPrefix("", tdbModel.getNsPrefixURI(""));
 
         dataset.end();
 
@@ -113,7 +115,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         documentManager.setProcessImports(true);
         documentManager.loadImport(model, domainModel.getNsPrefixURI(""));
 
-        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(model, this, dataset);
+        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(name, model, this, dataset);
         return caseModel;
     }
 
@@ -159,7 +161,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         OntModel model = ModelFactory.createOntologyModel(modelSpec);
         documentManager.loadImport(model, domainModel.getNsPrefixURI(""));
 
-        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(model, this, null);
+        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(null, model, this, null);
         return caseModel;
     }
 
@@ -226,7 +228,8 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
             throw new FileNotFoundException();
         }
 
-        OntModel domainModel = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
+        //OntModel domainModel = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
+        OntModel domainModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
         domainModel.read(FileManager.get().open(domainModelFile), "RDF/XML");
 
         return domainModel;
@@ -248,6 +251,31 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         if(dataset != null) {
             dataset.close();
         }
+    }
+
+    public void save(CoraCaseModel caseModel) {
+        String id = caseModel.getCaseId();
+        if(id == null) {
+            System.err.println("No case Id!");
+            return;
+        }
+
+        if(!(caseModel instanceof CoraCaseModelImpl)) {
+            System.err.println("Nicht instanceof CoraCaseModeImpl");
+            return;
+        }
+
+        OntModel original = ((CoraCaseModelImpl) caseModel).getModel();
+        Model toSave = original.getBaseModel();
+
+        dataset.begin(ReadWrite.WRITE);
+
+        dataset.replaceNamedModel(id, toSave);
+
+        dataset.commit();
+        dataset.end();
+
+        System.out.println("Saved");
     }
 
     /**

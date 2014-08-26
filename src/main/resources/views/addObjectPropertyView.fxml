@@ -41,7 +41,7 @@
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnSpan="3" GridPane.rowIndex="3">
                <children>
                   <Button mnemonicParsing="false" onAction="#onCancel" text="Abbrechen" />
-                  <Button mnemonicParsing="false" onAction="#onCreateProperty" text="Sichern" />
+                  <Button mnemonicParsing="false" onAction="#onCreateProperty" text="Hinzufügen" />
                </children>
                <GridPane.margin>
                   <Insets />

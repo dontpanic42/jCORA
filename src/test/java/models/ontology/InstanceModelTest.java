@@ -68,7 +68,7 @@ public class InstanceModelTest {
 
         i = domainModel.getIndividual(namespace + "SimpleTestIndividual");
         inst = factory.wrapInstance(i);
-        Map<CoraObjectPropertyModel, CoraInstanceModel> list = inst.getObjectProperties();
+        Map<CoraObjectPropertyModel, Set<CoraInstanceModel>> list = inst.getObjectProperties();
         assertTrue(list.size() == 1);
 
         i = domainModel.getIndividual(namespace + "AndTestIndividual");
@@ -78,8 +78,8 @@ public class InstanceModelTest {
         assertNotNull(op);
         CoraObjectPropertyModel p = factory.wrapObjectProperty(op);
 
-        assertTrue(list.containsValue(inst));
         assertTrue(list.containsKey(p));
+        assertTrue(list.get(p).contains(inst));
     }
 
     @After
