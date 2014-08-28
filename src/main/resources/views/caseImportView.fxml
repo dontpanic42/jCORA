@@ -25,7 +25,7 @@
             <Label text="Dateiformat" GridPane.rowIndex="1" />
             <ComboBox fx:id="comboFileFormat" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
             <Label text="Fall ID" GridPane.rowIndex="2" />
-            <TextField fx:id="txtCaseID" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <TextField fx:id="txtCaseID" promptText="Fall ID..." GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnSpan="3" GridPane.rowIndex="4">
                <children>
                   <Button fx:id="btnCancel" mnemonicParsing="false" text="Abbrechen" />
@@ -35,7 +35,7 @@
             <Separator prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="3" />
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2">
                <children>
-                  <TextField fx:id="txtFile" editable="false" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="txtFile" editable="false" promptText="Dateiname..." HBox.hgrow="ALWAYS" />
                   <Button fx:id="btnSelectFile" mnemonicParsing="false" text="Auswählen" />
                </children>
             </HBox>

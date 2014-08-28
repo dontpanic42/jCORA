@@ -27,15 +27,34 @@ import java.awt.*;
  */
 public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements SelectProvider {
 
-
+    /**
+     * Die Hauptschicht, auf der die Instanzen angezeigt werden
+     */
     private LayerWidget mainLayer;
+
+    /**
+     * Die Schicht, auf der die Verbindungen angezeigt werden
+     */
     private LayerWidget connectionLayer;
 
+    /**
+     * Der Baum-Layoutmanager
+     */
     private SceneLayout sceneGraphLayout;
+
+    /**
+     * Das Instanz-Rechtsklick-Popupmenü
+     */
     private NodeMenu nodeMenu;
 
+    /**
+     * Die aktuell ausgewählte Instanz (oder null)
+     */
     private InstanceWidget currentSelection;
 
+    /**
+     * Konstruktor, erzeugt eine neue, leere VL-Graph instanz.
+     */
     public InstanceGraph() {
         super();
 
@@ -45,6 +64,8 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
 
         mainLayer = new LayerWidget(this);
 
+        //Die Reihenfolge ist wichtig: Erst mainLayer, _dann_ connectionLayer. Sonst kommt es zu dem
+        //'not a Node' fehler.
         addChild(mainLayer);
         addChild(connectionLayer);
 
@@ -55,10 +76,17 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
         getActions().addAction(ActionFactory.createZoomAction());
     }
 
+    /**
+     * Erzwingt die Neuausrichtung des Graphen (Baum-Layout)
+     */
     public void forceLayout() {
         sceneGraphLayout.invokeLayout();
     }
 
+    /**
+     * Fügt dem Graphen eine neue Relation hinzu
+     * @param edge Das Relationsmodel
+     */
     public void addConnection(EdgeModel edge) {
         addEdge(edge);
 
@@ -66,10 +94,21 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
         setEdgeTarget(edge, edge.getTarget());
     }
 
+    /**
+     * Gibt das Popupmenü zurück, das angezeigt wird, wenn der Nutzer mit der rechten Maustaste auf eine
+     * Instanz klickt.
+     * @return Das Popupmenü
+     */
     public NodeMenu getNodeMenu() {
         return nodeMenu;
     }
 
+    /**
+     * Wird in Folge einer <code>addNode</code> operation aufgerufen. Erzeugt und konfiguriert ein neues Widget für ein
+     * <code>NodeModel</code>.
+     * @param nodeModel Das hinzuzufügende Knoten-Model
+     * @return Ein neues Widget
+     */
     @Override
     protected Widget attachNodeWidget(NodeModel nodeModel) {
         InstanceWidget widget = new InstanceWidget(this);
@@ -83,6 +122,12 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
         return widget;
     }
 
+    /**
+     * Wird in Folge einer <code>addConnection</code> operation aufgerufen. Erzeugt und konfiguriert ein neues
+     * Widget für ein <code>EdgeModel</code>.
+     * @param edgeModel Das Kanten-Model
+     * @return ein neues Kanten-Widget
+     */
     @Override
     protected Widget attachEdgeWidget(EdgeModel edgeModel) {
         ConnectionWidget connectionWidget = new ConnectionWidget(this);
@@ -101,6 +146,12 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
         return connectionWidget;
     }
 
+    /**
+     * Setzt die Quelle einer Kante
+     * @param s Das Kantenmodell
+     * @param oldSourceNode Die vorherige Quelle
+     * @param sourceNode Die aktuelle (neue) Quelle
+     */
     @Override
     protected void attachEdgeSourceAnchor(EdgeModel s, NodeModel oldSourceNode, NodeModel sourceNode) {
         ConnectionWidget c = (ConnectionWidget) findWidget(s);
@@ -108,6 +159,12 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
         c.setSourceAnchor(AnchorFactory.createRectangularAnchor(source));
     }
 
+    /**
+     * Setzt das Ziel einer Kante
+     * @param s Das Kantenmodell
+     * @param oldTargetNode Das vorherige Ziel
+     * @param targetNode Das aktuelle (neue) Ziel
+     */
     @Override
     protected void attachEdgeTargetAnchor(EdgeModel s, NodeModel oldTargetNode, NodeModel targetNode) {
         ConnectionWidget c = (ConnectionWidget) findWidget(s);
@@ -115,16 +172,37 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
         c.setTargetAnchor(AnchorFactory.createRectangularAnchor(target));
     }
 
+    /**
+     *
+     * @param widget
+     * @param point
+     * @param b
+     * @return
+     */
     @Override
     public boolean isAimingAllowed(Widget widget, Point point, boolean b) {
         return false;
     }
 
+    /**
+     * Gibt zurück, ob das Widget <code>widget</code> ausgewählt werden darf/kann.
+     * @param widget Das betreffende Widget
+     * @param point Die Mausposition
+     * @param b
+     * @return
+     */
     @Override
     public boolean isSelectionAllowed(Widget widget, Point point, boolean b) {
         return true;
     }
 
+    /**
+     * Handelt die Auswahl einer Instanz. Setzt diese als "ausgewählt", wählt andere Instanzen ab und
+     * aktualisiert das Feld <code>currentSelection</code>.
+     * @param widget Das neu ausgewählte Widget
+     * @param point Die Mausposition
+     * @param b
+     */
     @Override
     public void select(Widget widget, Point point, boolean b) {
         System.out.println("Selection!");

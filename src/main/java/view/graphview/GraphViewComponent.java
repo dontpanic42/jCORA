@@ -20,12 +20,27 @@ import java.util.HashMap;
 
 /**
  * Created by daniel on 23.08.14.
+ *
+ * Erzeugt einen neuen Fall-Graph als Swing-Komponente
  */
 public class GraphViewComponent extends JPanel {
 
+    /**
+     * Eventhandler Interface
+     */
     public interface GraphViewActionHandler {
+        /**
+         * Wird aufgerufen, wenn der nutzer eine neue Relation anlegen will.
+         * @param graph Der betreffende Graph
+         * @param parent Die Instanz, auf der die Relation angelegt werden soll
+         */
         public void onAddRelation(GraphViewComponent graph, CoraInstanceModel parent);
 
+        /**
+         * Wird aufgerufen, wenn der Nutzer eine Instanz löschen will.
+         * @param graph Der betreffende Graph
+         * @param model Die Instanz, die gelöscht werden soll
+         */
         public void onDeleteInstance(GraphViewComponent graph, CoraInstanceModel model);
     }
 
@@ -60,6 +75,9 @@ public class GraphViewComponent extends JPanel {
         setSize(getPreferredSize());
     }
 
+    /**
+     * Erzwingt ein erneutes Rendern des Graphen.
+     */
     public void forceRedraw() {
         scene.validate();
         scene.revalidate();
@@ -67,14 +85,25 @@ public class GraphViewComponent extends JPanel {
         scene.validate();
     }
 
+    /**
+     * Erzwing eine neuausrichtung des Graphen (Baum-Layout)
+     */
     public void forceLayout() {
         scene.forceLayout();
     }
 
+    /**
+     * Setzt den Actionhandler
+     * @param handler
+     */
     public void setActionHandler(GraphViewActionHandler handler) {
         this.actionHandler = handler;
     }
 
+    /**
+     * Wird aufgerufen, wenn der Nutzer auf "Relation hinzufügen..." klickt
+     * @param parentWidget Das Widget, auf das geklickt wurde
+     */
     private void onAddNodeHandler(InstanceWidget parentWidget) {
         if(actionHandler == null) {
             return;
@@ -91,6 +120,10 @@ public class GraphViewComponent extends JPanel {
         });
     }
 
+    /**
+     * Wird aufgerufen, wenn der Nutzer auf "Instanz löschen" klickt.
+     * @param parentWidget Das Widget, auf das geklickt wurde
+     */
     private void onDeleteNodeHandler(InstanceWidget parentWidget) {
         if(actionHandler == null) {
             return;
@@ -107,12 +140,22 @@ public class GraphViewComponent extends JPanel {
         });
     }
 
+    /**
+     * Erzeugt einen (neuen) Graphen ausgehend von einer Instanz (rekursiv)
+     * @param instance Die Ausgangsinstanz
+     */
     public void createGraphFromInstance(CoraInstanceModel instance) {
         addInstanceRec(instance, nodes);
         scene.forceLayout();
         scene.validate();
     }
 
+    /**
+     * Fügt dem Graphen eine Instanz rekursiv mit allen Relationen und dafür notwendigen Instanzen hinzu.
+     * @param instance Die Ausgangsinstanz
+     * @param visited Liste mit im Graph vorhandenen Instanzen
+     * @return Das hinzugefügte Graph-Knotenmodel
+     */
     private NodeModel addInstanceRec(CoraInstanceModel instance, Map<CoraInstanceModel, NodeModel> visited) {
         if(visited.containsKey(instance)) {
             return visited.get(instance);
@@ -144,6 +187,12 @@ public class GraphViewComponent extends JPanel {
         return instanceModel;
     }
 
+    /**
+     * Exportiert den Graphen als Bild-Datei
+     * @param viewportOnly Exportiere nur den sichtbaren Graphen
+     * @param target Die Zieldatei
+     * @throws IOException
+     */
     public void exportAsImage(boolean viewportOnly, File target) throws IOException {
         int width = scene.getBounds().width;
         int height = scene.getBounds().height;
@@ -151,6 +200,12 @@ public class GraphViewComponent extends JPanel {
                 viewportOnly, false, 0, width, height);
     }
 
+    /**
+     * Fügt einem (vorhandenen) Graphen eine neue Relation und ggf. Instanz hinzu.
+     * @param parent Die vorhandene Eltern-Instanz (Subjekt)
+     * @param child Die Relation (Prädikat)
+     * @param relation Die Kind-Instanz (Objekt)
+     */
     public void addInstance(CoraInstanceModel parent, CoraInstanceModel child, String relation) {
         NodeModel source = addInstanceRec(parent, nodes);
         NodeModel target = addInstanceRec(child, nodes);

@@ -4,12 +4,14 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -22,6 +24,7 @@ import models.ontology.CoraObjectPropertyModel;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Created by daniel on 25.08.14.
@@ -30,9 +33,15 @@ public class AddObjectPropertyViewController {
 
     @FXML
     private ListView<CoraObjectPropertyModel> listProperties;
+    private ObservableList<CoraObjectPropertyModel> itemsProperties;
+    @FXML
+    private TextField txtSearchRelation;
 
     @FXML
     private ListView<CoraInstanceModel> listInstances;
+    private ObservableList<CoraInstanceModel> itemsInstances;
+    @FXML
+    private TextField txtSearchInstance;
 
     private CoraInstanceModel model;
 
@@ -118,13 +127,43 @@ public class AddObjectPropertyViewController {
                 currentClasses);
 
         if(instance != null) {
-            listInstances.getItems().add(instance);
+            itemsInstances.add(instance);
             listInstances.getSelectionModel().select(instance);
+        }
+    }
+
+    @FXML
+    private void onSearchInstance() {
+        if(txtSearchInstance.getText().equals("")) {
+            listInstances.setItems(itemsInstances);
+        } else {
+            String toSearch = txtSearchInstance.getText().toLowerCase();
+            FilteredList<CoraInstanceModel> filteredList;
+            filteredList = itemsInstances.filtered( instance -> instance.toString().toLowerCase().contains(toSearch));
+            listInstances.setItems(filteredList);
+
+            listInstances.getSelectionModel().selectFirst();
+        }
+    }
+
+    @FXML
+    private void onSearchRelation() {
+        if(txtSearchRelation.getText().equals("")) {
+            listProperties.setItems(itemsProperties);
+        } else {
+            String toSearch = txtSearchRelation.getText().toLowerCase();
+            FilteredList<CoraObjectPropertyModel> filteredList;
+            filteredList = itemsProperties.filtered( prop -> prop.toString().toLowerCase().contains(toSearch));
+            listProperties.setItems(filteredList);
+
+            listProperties.getSelectionModel().selectFirst();
         }
     }
 
     private void onSelectProperty(CoraObjectPropertyModel oldProperty,
                                   CoraObjectPropertyModel newProperty) {
+        itemsInstances = FXCollections.observableArrayList();
+
         if(newProperty == null) {
             return;
         }
@@ -137,19 +176,19 @@ public class AddObjectPropertyViewController {
             instances.addAll(clazz.getInstances());
         }
 
-        ObservableList<CoraInstanceModel> list = FXCollections.observableArrayList();
-        list.addAll(instances);
-        listInstances.setItems(list);
+        itemsInstances.addAll(instances);
+        txtSearchInstance.setText("");
+        listInstances.setItems(itemsInstances);
     }
 
     public void setModel(CoraInstanceModel model) {
         this.model = model;
 
-        ObservableList<CoraObjectPropertyModel> properties = FXCollections.observableArrayList();
-        properties.addAll(model.getAvailableObjectProperties());
+        itemsProperties = FXCollections.observableArrayList();
+        itemsProperties.addAll(model.getAvailableObjectProperties());
 
-        listProperties.setItems(properties);
-        if(properties.size() > 0) {
+        listProperties.setItems(itemsProperties);
+        if(itemsProperties.size() > 0) {
             listProperties.getSelectionModel().selectFirst();
         }
     }
