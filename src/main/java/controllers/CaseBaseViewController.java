@@ -1,17 +1,16 @@
 package controllers;
 
+import apple.laf.JRSUIUtils;
 import controllers.commons.WaitViewController;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import mainapp.MainApplication;
@@ -42,9 +41,14 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
     private TableView<TableModel> tblCaseBase;
 
     @FXML
+    private TextField txtSearchCaseID;
+    private ObservableList<TableModel> itemsCases;
+
+    @FXML
     private Button btnImportCase;
 
-    private ObservableList<TableModel> caseList;
+    @FXML
+    private Accordion accordionLeft;
 
     @FXML
     public void initialize() {
@@ -55,34 +59,51 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
 
         btnImportCase.setOnAction( (ActionEvent e) ->
                 CaseImportViewController.showCaseImport(MainApplication.getInstance().getMainStage()));
+
+        if(accordionLeft.getPanes().size() > 0) {
+            accordionLeft.setExpandedPane(accordionLeft.getPanes().get(0));
+        }
+
     }
 
     public void setCaseBase(CoraCaseBase caseBase) {
 
         Iterator<String> iter = caseBase.listCaseIDs();
-        caseList = FXCollections.observableArrayList();
+        itemsCases = FXCollections.observableArrayList();
         while(iter.hasNext()) {
-            caseList.add(new TableModel(iter.next()));
+            itemsCases.add(new TableModel(iter.next()));
         }
 
-        tblCaseBase.setItems(caseList);
+        tblCaseBase.setItems(itemsCases);
 
         caseBase.addCaseBaseChangeHandler(this);
+    }
+
+    @FXML
+    private void onSearchCaseID() {
+        String toSearch = txtSearchCaseID.getText().toLowerCase();
+        if(toSearch.equals("")) {
+            tblCaseBase.setItems(itemsCases);
+        } else {
+            FilteredList<TableModel> filtered;
+            filtered = itemsCases.filtered( model -> model.getCaseId().toLowerCase().contains(toSearch));
+            tblCaseBase.setItems(filtered);
+        }
     }
 
     @Override
     public void onAddCase(String caseId) {
         TableModel t = new TableModel(caseId);
-        if(caseList != null && !caseList.contains(t)) {
-            caseList.add(new TableModel(caseId));
+        if(itemsCases != null && !itemsCases.contains(t)) {
+            itemsCases.add(new TableModel(caseId));
         }
     }
 
     @Override
     public void onRemoveCase(String caseId) {
         TableModel t = new TableModel(caseId);
-        if(caseList != null && caseList.contains(t)) {
-            caseList.remove(t);
+        if(itemsCases != null && itemsCases.contains(t)) {
+            itemsCases.remove(t);
         }
     }
 
