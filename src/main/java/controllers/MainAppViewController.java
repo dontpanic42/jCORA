@@ -1,15 +1,18 @@
 package controllers;
 
 import controllers.commons.WaitViewController;
+import controllers.queryeditor.QueryViewController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseModel;
@@ -44,8 +47,25 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         AnchorPane pane = loader.load();
 
         caseBaseTabPane.getChildren().setAll(pane);
-
         caseBaseViewController = loader.getController();
+    }
+
+    @FXML
+    private void onNewQuery() throws Throwable {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(this.getClass().getClassLoader().getResource("views/queryeditor/queryView.fxml"));
+        AnchorPane pane = loader.load();
+
+        Stage stage = new Stage();
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.setTitle("Anfrageeditor: Neue Anfrage");
+        stage.show();
+
+        QueryViewController controller = loader.getController();
+        CoraCaseModel caseModel = MainApplication.getInstance().getCaseBase().createTemporaryCase();
+        controller.setStage(stage);
+        controller.setCase(caseModel);
     }
 
     public void setCaseBase(CoraCaseBase caseBase) {
@@ -68,7 +88,8 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
             controller.showInstance(c.getCaseRoot());
              */
 
-            final WaitViewController waitView = Commons.createWaitScreen(MainApplication.getInstance().getMainStage());
+            final Stage parentStage = MainApplication.getInstance().getMainStage();
+            final WaitViewController waitView = Commons.createWaitScreen(parentStage);
 
             (new Thread(() -> {
                     try {
@@ -78,6 +99,8 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
                             try {
                                 CaseViewController controller = createCaseView(caseID);
                                 controller.showInstance(c.getCaseRoot());
+                                controller.setStage(parentStage);
+
                                 waitView.close();
                             } catch (IOException e) {
                                 e.printStackTrace();

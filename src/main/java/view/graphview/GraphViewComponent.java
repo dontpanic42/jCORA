@@ -108,12 +108,12 @@ public class GraphViewComponent extends JPanel {
     }
 
     public void createGraphFromInstance(CoraInstanceModel instance) {
-        createGraphFromInstanceRec(instance, nodes);
+        addInstanceRec(instance, nodes);
         scene.forceLayout();
         scene.validate();
     }
 
-    private NodeModel createGraphFromInstanceRec(CoraInstanceModel instance, Map<CoraInstanceModel, NodeModel> visited) {
+    private NodeModel addInstanceRec(CoraInstanceModel instance, Map<CoraInstanceModel, NodeModel> visited) {
         if(visited.containsKey(instance)) {
             return visited.get(instance);
         }
@@ -131,7 +131,7 @@ public class GraphViewComponent extends JPanel {
             Set<CoraInstanceModel> set = e.getValue();
             for(CoraInstanceModel i : set) {
                 NodeModel source = instanceModel;
-                NodeModel target = createGraphFromInstanceRec(i, visited);
+                NodeModel target = addInstanceRec(i, visited);
 
                 EdgeModel edge = new EdgeModel(e.getKey().toString());
                 edge.setSource(source);
@@ -152,29 +152,8 @@ public class GraphViewComponent extends JPanel {
     }
 
     public void addInstance(CoraInstanceModel parent, CoraInstanceModel child, String relation) {
-        NodeModel source;
-        if(nodes.containsKey(parent)) {
-            source = nodes.get(parent);
-        } else {
-            source = new NodeModel();
-            source.setInstanceName(parent.toString());
-            source.setInstanceType(parent.toString());
-            source.setModel(parent);
-
-            scene.addNode(source);
-        }
-
-        NodeModel target;
-        if(nodes.containsKey(child)) {
-            target = nodes.get(child);
-        } else {
-            target = new NodeModel();
-            target.setInstanceName(child.toString());
-            target.setInstanceType(child.toString());
-            target.setModel(child);
-
-            scene.addNode(target);
-        }
+        NodeModel source = addInstanceRec(parent, nodes);
+        NodeModel target = addInstanceRec(child, nodes);
 
         EdgeModel edge = new EdgeModel(relation);
         edge.setSource(source);

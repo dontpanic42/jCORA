@@ -1,15 +1,13 @@
 package models.cbr;
 
-import com.hp.hpl.jena.ontology.Individual;
-import com.hp.hpl.jena.ontology.OntClass;
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntResource;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.ReadWrite;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import exceptions.MalformedOntologyException;
 import factories.ontology.CoraOntologyModelFactory;
 import models.ontology.CoraInstanceModel;
+import models.ontology.CoraObjectPropertyModel;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -131,6 +129,23 @@ public class CoraCaseModelImpl implements CoraCaseModel {
                 caseModel);
 
         //TODO: Create properties
+        checkOrCreateProperty(
+                factory,
+                caseRoot,
+                caseDescription,
+                domainNS + structure.getProperty("hasDescription", "hasCaseDescription"));
+
+        checkOrCreateProperty(
+                factory,
+                caseRoot,
+                caseSolution,
+                domainNS + structure.getProperty("hasSolution", "hasCaseSolution"));
+
+        checkOrCreateProperty(
+                factory,
+                caseRoot,
+                caseJustification,
+                domainNS + structure.getProperty("hasJustification", "hasCaseJustification"));
     }
 
     /**
@@ -145,19 +160,6 @@ public class CoraCaseModelImpl implements CoraCaseModel {
      */
     private CoraInstanceModel getOrCreateIndividual(CoraOntologyModelFactory factory, String fullIndvName, String fullClazzName, OntModel caseModel)
             throws MalformedOntologyException {
-
-        //Vorher
-//        Individual i = caseModel.getIndividual(fullIndvName);
-//        if(i == null) {
-//            OntClass clazz = caseModel.getOntClass(fullClazzName);
-//            if(clazz == null) {
-//                System.err.println("Kann Klasse nicht finden: " + fullClazzName);
-//                throw new MalformedOntologyException();
-//            }
-//
-//            i = caseModel.createIndividual(fullIndvName, clazz);
-//        }
-
 
 
         OntClass clazz = caseModel.getOntClass(fullClazzName);
@@ -177,6 +179,26 @@ public class CoraCaseModelImpl implements CoraCaseModel {
         Individual i = caseModel.createIndividual(fullIndvName, clazz);
 
         return factory.wrapInstance(i);
+    }
+
+    /**
+     * Überprüft, ob <code>subject</code> ein Object-Property <code>fullPropertyName</code> hat, das <code>object</code>
+     * als wert hat. Falls dies nicht der Fall ist, wird ein solches Property angelegt.
+     * @param subject
+     * @param object
+     * @param fullPropertyName
+     */
+    private void checkOrCreateProperty(CoraOntologyModelFactory factory, CoraInstanceModel subject, CoraInstanceModel object, String fullPropertyName)
+            throws MalformedOntologyException {
+        ObjectProperty property = caseModel.getObjectProperty(fullPropertyName);
+        if(property == null) {
+            throw new MalformedOntologyException();
+        }
+
+        if(!subject.getBaseObject().hasProperty(property, object.getBaseObject())) {
+            CoraObjectPropertyModel coraProperty = factory.wrapObjectProperty(property);
+            subject.createObjectRelation(coraProperty, object);
+        }
     }
 
     /**

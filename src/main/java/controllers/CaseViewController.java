@@ -3,6 +3,7 @@ package controllers;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseModel;
@@ -26,10 +27,16 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
 
     private CoraInstanceModel model;
 
+    private Stage stage;
+
     @FXML
     public void initialize() {
         createAndSetSwingContent(swingNode);
         graph.setActionHandler(this);
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     public void showInstance(CoraInstanceModel model) {
@@ -77,7 +84,7 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
 
     @Override
     public void onAddRelation(GraphViewComponent graph, CoraInstanceModel parent) {
-        AddObjectPropertyViewController.showAddRelation(MainApplication.getInstance().getMainStage(), parent);
+        AddObjectPropertyViewController.showAddRelation(stage, parent);
     }
 
     @Override

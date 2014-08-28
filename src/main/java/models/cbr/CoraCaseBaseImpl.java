@@ -159,6 +159,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         modelSpec.setDocumentManager(documentManager);
 
         OntModel model = ModelFactory.createOntologyModel(modelSpec);
+        model.setNsPrefix("", "http://example.com/case#");
         documentManager.loadImport(model, domainModel.getNsPrefixURI(""));
 
         CoraCaseModelImpl caseModel = new CoraCaseModelImpl(null, model, this);
