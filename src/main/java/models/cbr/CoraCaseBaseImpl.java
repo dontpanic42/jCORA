@@ -100,7 +100,11 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         Model m = ModelFactory.createDefaultModel();
         m.add(tdbModel);
         //TODO: Prefixes?
-        m.setNsPrefix("", tdbModel.getNsPrefixURI(""));
+        if(tdbModel.getNsPrefixURI("") == null) {
+            m.setNsPrefix("", "http://example.com/case#");
+        } else {
+            m.setNsPrefix("", tdbModel.getNsPrefixURI(""));
+        }
 
         dataset.end();
 
@@ -160,6 +164,8 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
         OntModel model = ModelFactory.createOntologyModel(modelSpec);
         model.setNsPrefix("", "http://example.com/case#");
+        model.getBaseModel().setNsPrefix("", "http://example.com/case#");
+
         documentManager.loadImport(model, domainModel.getNsPrefixURI(""));
 
         CoraCaseModelImpl caseModel = new CoraCaseModelImpl(null, model, this);
@@ -173,7 +179,11 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      */
     @Override
     public boolean caseExists(String name) {
-        return dataset.containsNamedModel(name);
+        dataset.begin(ReadWrite.READ);
+        boolean test = dataset.containsNamedModel(name);
+        dataset.end();
+
+        return test;
     }
 
     /**
@@ -292,6 +302,31 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         System.out.println("Saved");
     }
 
+    @Override
+    public void saveAsNewCase(CoraCaseModel caseModel, String name) {
+        String id = name;
+
+        if(!(caseModel instanceof CoraCaseModelImpl)) {
+            System.err.println("Nicht instanceof CoraCaseModeImpl");
+            return;
+        }
+
+        OntModel original = ((CoraCaseModelImpl) caseModel).getModel();
+        Model toSave = original.getBaseModel();
+
+        dataset.begin(ReadWrite.WRITE);
+
+        //dataset.replaceNamedModel(id, toSave);
+        dataset.addNamedModel(id, toSave);
+
+        dataset.commit();
+        dataset.end();
+
+        for(CaseBaseChangeHandler h : caseBaseChangeHandlers) {
+            h.onAddCase(id);
+        }
+    }
+
     /**
      * Initialisiert die TDB-Datenbank, wie in der Konfiguration (<code>caseBaseProperties</code>)
      * spezifziert
@@ -320,6 +355,19 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     @Override
     public void removeCaseBaseChangeHandler(CaseBaseChangeHandler handler) {
         caseBaseChangeHandlers.remove(handler);
+    }
+
+    public List<String> getCaseIDs() {
+        List<String> names = new ArrayList<>();
+
+        dataset.begin(ReadWrite.READ);
+        Iterator<String> iter = dataset.listNames();
+        while(iter.hasNext()) {
+            names.add(iter.next());
+        }
+        dataset.end();
+
+        return names;
     }
 
     /**

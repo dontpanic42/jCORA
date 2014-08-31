@@ -222,6 +222,10 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
 
         float weight = getQuery().getWeights().getWeight(prop);
         SimilarityFunction<?> simFunc = getFactory().getFunction(valuesA.get(0).getClass());
+        if(simFunc == null) {
+            System.err.println("--> Ignoriere DataProperty " + prop + ": Keine Ähnlichkeitsfunktion für" + valuesA.get(0).getClass().getSimpleName());
+            return new Pair(1.f, 1.f);
+        }
 
         List<Object> objListA = new ArrayList<>(valuesA);
         List<Object> objListB = new ArrayList<>(valuesB);

@@ -176,4 +176,10 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
 
     }
 
+    @FXML
+    private void onSaveAsNew() {
+        CoraCaseModel caseModel = model.getFactory().getCase();
+        SaveAsNewViewController.showSaveAsNew(stage, caseModel);
+    }
+
 }

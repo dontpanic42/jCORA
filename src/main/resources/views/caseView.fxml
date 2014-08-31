@@ -50,6 +50,18 @@
                         <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                      </padding>
                   </Button>
+                  <Button mnemonicParsing="false" onAction="#onSaveAsNew">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/saveAsNew.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
+                     </padding>
+                  </Button>
               </items>
             </ToolBar>
             <SplitPane dividerPositions="0.5852842809364549" prefHeight="160.0" prefWidth="200.0" HBox.hgrow="ALWAYS">

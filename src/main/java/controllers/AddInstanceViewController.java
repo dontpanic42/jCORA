@@ -117,6 +117,10 @@ public class AddInstanceViewController {
         this.stage.close();
     }
 
+    private String escapeInstanceName(String name) {
+        return name.replaceAll("[^a-zA-Z0-9]", "_");
+    }
+
     @FXML
     private void onCreateInstance() {
         CoraClassModel clazz = classTree.getSelectionModel()
@@ -127,7 +131,7 @@ public class AddInstanceViewController {
             return;
         }
 
-        String instanceName = txtInstanceName.getText();
+        String instanceName = escapeInstanceName(txtInstanceName.getText());
 
         if(instanceName.equals("")) {
             System.err.println("Kein Instanzname angegeben");

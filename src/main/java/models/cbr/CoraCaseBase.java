@@ -3,6 +3,7 @@ package models.cbr;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by daniel on 22.08.14.
@@ -51,6 +52,10 @@ public interface CoraCaseBase {
      */
     public Iterator<String> listCaseIDs();
 
+    public List<String> getCaseIDs();
+
+    public void saveAsNewCase(CoraCaseModel caseModel, String name);
+
     /**
      * Gibt die Anzahl der in dieser Fallbasis gespeicherten Fälle zurück.
      * @return Anzahl der in dieser Fallbasis gespeicherten Fälle
@@ -77,4 +82,5 @@ public interface CoraCaseBase {
     public void addCaseBaseChangeHandler(CaseBaseChangeHandler handler);
 
     public void removeCaseBaseChangeHandler(CaseBaseChangeHandler handler);
+
 }

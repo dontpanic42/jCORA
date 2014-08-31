@@ -251,7 +251,7 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
      */
     @Override
     public void close() {
-        this.caseModel.close();
+        this.caseModel.getBaseModel().close();
     }
 
     @Override
