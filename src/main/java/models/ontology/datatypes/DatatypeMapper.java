@@ -1,6 +1,8 @@
 package models.ontology.datatypes;
 
 import com.hp.hpl.jena.ontology.OntResource;
+import com.hp.hpl.jena.rdf.model.Literal;
+import models.datatypes.TypedValue;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
@@ -73,5 +75,36 @@ public class DatatypeMapper {
      */
     public static Class<?> getMapping(OntResource r) {
         return getMapping(r.getURI());
+    }
+
+    /**
+     * Gibt den Wert des Literals <code>l</code> als <code>TypedValue</code> zurück.
+     * @param l Das Literal
+     * @return TypedValue oder null im Fehlerfall.
+     */
+    public static TypedValue<?> getValue(Literal l) {
+        String datatypeURI = l.getDatatypeURI();
+
+        try {
+            Class<? extends TypedValue<?>> clazz = (Class<? extends TypedValue<?>>) getMapping(datatypeURI);
+            if(clazz == null) {
+                return null;
+            }
+
+            TypedValue<?> value = clazz.newInstance();
+            value.setFromLiteral(l);
+            return value;
+        } catch (ClassCastException e) {
+            System.out.println("ClassCastException DatatypeURI: " + datatypeURI);
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            System.out.println("InstantiationException DatatypeURI: " + datatypeURI);
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            System.out.println("IllegalAccessException DatatypeURI: " + datatypeURI);
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

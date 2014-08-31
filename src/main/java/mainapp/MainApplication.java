@@ -19,6 +19,9 @@ import java.io.FileNotFoundException;
  */
 public class MainApplication extends Application {
 
+    public static final String APPLICATION_NAME = "jCora";
+    public static final String VERSION_STRING = "Alpha 1";
+
     private static MainApplication instance;
     public static MainApplication getInstance() {
         return instance;
@@ -46,6 +49,7 @@ public class MainApplication extends Application {
             }
         });
         stage.setMaximized(true);
+        stage.setTitle(APPLICATION_NAME + " " + VERSION_STRING);
 
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(this.getClass().getClassLoader().getResource("views/mainAppView.fxml"));

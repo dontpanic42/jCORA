@@ -41,7 +41,7 @@
             </Accordion>
             <TableView fx:id="tblCaseBase" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
               <columns>
-                <TableColumn fx:id="tcCaseId" prefWidth="362.0" text="Fall ID" />
+                <TableColumn fx:id="tcCaseId" prefWidth="362.0" text="Fall-ID" />
                   <TableColumn fx:id="tcViewCase" minWidth="100.0" prefWidth="100.0" text="Fall ansehen" />
                   <TableColumn fx:id="tcDeleteCase" minWidth="100.0" prefWidth="100.0" text="Fall löschen" />
               </columns>

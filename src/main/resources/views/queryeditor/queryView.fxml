@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
@@ -19,11 +20,25 @@
                   <content>
                     <AnchorPane fx:id="paneCase" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                   </content>
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" >
+                            <image>
+                                <Image url="@../../icons/instance.png" />
+                            </image>
+                        </ImageView>
+                     </graphic>
                 </Tab>
                 <Tab text="Gewichte">
                   <content>
                     <AnchorPane fx:id="paneWeights" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                   </content>
+                    <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" >
+                            <image>
+                                <Image url="@../../icons/settings.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
                 </Tab>
               </tabs>
             </TabPane>

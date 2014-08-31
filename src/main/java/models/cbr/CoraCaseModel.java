@@ -1,5 +1,6 @@
 package models.cbr;
 
+import models.ontology.CoraDataPropertyModel;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
 
@@ -17,6 +18,9 @@ public interface CoraCaseModel {
         public void onCreateObjectRelation( CoraObjectPropertyModel objectProperty,
                                             CoraInstanceModel subject,
                                             CoraInstanceModel object);
+
+        //public void onCreateDataRelation(   CoraDataPropertyModel dataProperty,
+        //                                    CoraInstanceModel subject);
     }
 
     public String getCaseId();

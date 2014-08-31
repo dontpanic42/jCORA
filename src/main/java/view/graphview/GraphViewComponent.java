@@ -4,7 +4,9 @@ import javafx.application.Platform;
 import javafx.scene.layout.Border;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
+import org.netbeans.api.visual.action.SelectProvider;
 import org.netbeans.api.visual.export.SceneExporter;
+import org.netbeans.api.visual.widget.Widget;
 import view.graphview.menus.NodeMenu;
 import view.graphview.models.EdgeModel;
 import view.graphview.models.NodeModel;
@@ -23,7 +25,7 @@ import java.util.HashMap;
  *
  * Erzeugt einen neuen Fall-Graph als Swing-Komponente
  */
-public class GraphViewComponent extends JPanel {
+public class GraphViewComponent extends JPanel implements SelectProvider {
 
     /**
      * Eventhandler Interface
@@ -42,6 +44,10 @@ public class GraphViewComponent extends JPanel {
          * @param model Die Instanz, die gelöscht werden soll
          */
         public void onDeleteInstance(GraphViewComponent graph, CoraInstanceModel model);
+
+        public void onChangeSelection(GraphViewComponent graph,
+                                      CoraInstanceModel oldSelection,
+                                      CoraInstanceModel newSelection);
     }
 
     private InstanceGraph scene;
@@ -49,8 +55,11 @@ public class GraphViewComponent extends JPanel {
 
     private GraphViewActionHandler actionHandler = null;
 
+    private InstanceWidget currentSelection;
+
     public GraphViewComponent() {
         scene = new InstanceGraph();
+        scene.setSelectProvider(this);
         scene.getNodeMenu().setActionHandler(new NodeMenu.NodeActionHandler() {
             @Override
             public void onAddNode(InstanceWidget parentWidget) {
@@ -218,5 +227,69 @@ public class GraphViewComponent extends JPanel {
 
         scene.forceLayout();
         scene.validate();
+    }
+
+    /**
+     * Select Provider Stuff
+     */
+
+    /**
+     *
+     * @param widget
+     * @param point
+     * @param b
+     * @return
+     */
+    @Override
+    public boolean isAimingAllowed(Widget widget, Point point, boolean b) {
+        return false;
+    }
+
+    /**
+     * Gibt zurück, ob das Widget <code>widget</code> ausgewählt werden darf/kann.
+     * @param widget Das betreffende Widget
+     * @param point Die Mausposition
+     * @param b
+     * @return
+     */
+    @Override
+    public boolean isSelectionAllowed(Widget widget, Point point, boolean b) {
+        return true;
+    }
+
+    /**
+     * Handelt die Auswahl einer Instanz. Setzt diese als "ausgewählt", wählt andere Instanzen ab und
+     * aktualisiert das Feld <code>currentSelection</code>.
+     * @param widget Das neu ausgewählte Widget
+     * @param point Die Mausposition
+     * @param b
+     */
+    @Override
+    public void select(Widget widget, Point point, boolean b) {
+        if(widget == currentSelection) {
+            return;
+        }
+
+        if(widget instanceof InstanceWidget) {
+            if(currentSelection != null) {
+                currentSelection.setSelected(false);
+            }
+
+            InstanceWidget oldSelection = currentSelection;
+
+            currentSelection = (InstanceWidget) widget;
+            currentSelection.setSelected(true);
+
+            if(actionHandler != null) {
+                InstanceWidget newSelection = currentSelection;
+
+                CoraInstanceModel oldInstance = (oldSelection == null)? null : oldSelection.getNodeModel().getModel();
+                CoraInstanceModel newInstance = (newSelection == null)? null : newSelection.getNodeModel().getModel();
+
+                actionHandler.onChangeSelection(this, oldInstance, newInstance);
+            }
+        } else {
+            System.out.println("Selectd: " + widget.getClass().getSimpleName());
+        }
     }
 }

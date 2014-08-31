@@ -3,6 +3,10 @@ package models.cbr;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.ReadWrite;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelChangedListener;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import exceptions.MalformedOntologyException;
 import factories.ontology.CoraOntologyModelFactory;
@@ -13,13 +17,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
 /**
  * Created by daniel on 20.08.14.
  */
-public class CoraCaseModelImpl implements CoraCaseModel {
+public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
 
     private CoraInstanceModel caseRoot;
     private CoraInstanceModel caseDescription;
@@ -86,6 +91,7 @@ public class CoraCaseModelImpl implements CoraCaseModel {
             throws MalformedOntologyException {
 
         this.caseModel = caseModel;
+        this.caseModel.register(this);
 
         CoraOntologyModelFactory factory = new CoraOntologyModelFactory(caseModel, this);
         createCaseStructure(factory, ((CoraCaseBaseImpl) caseBase).getDomainModel(), caseModel, structure);
@@ -265,5 +271,64 @@ public class CoraCaseModelImpl implements CoraCaseModel {
     @Override
     public String getCaseId() {
         return caseId;
+    }
+
+    /*
+     * Model change methods
+     */
+
+    @Override
+    public void addedStatement(Statement statement) {
+        System.out.println("Added statement: " + statement.getSubject() + " - " + statement.getPredicate() + " - " + statement.getObject());
+    }
+
+    @Override
+    public void addedStatements(Statement[] statements) {
+
+    }
+
+    @Override
+    public void addedStatements(List<Statement> statements) {
+
+    }
+
+    @Override
+    public void addedStatements(StmtIterator stmtIterator) {
+
+    }
+
+    @Override
+    public void addedStatements(Model model) {
+
+    }
+
+    @Override
+    public void removedStatement(Statement statement) {
+
+    }
+
+    @Override
+    public void removedStatements(Statement[] statements) {
+
+    }
+
+    @Override
+    public void removedStatements(List<Statement> statements) {
+
+    }
+
+    @Override
+    public void removedStatements(StmtIterator stmtIterator) {
+
+    }
+
+    @Override
+    public void removedStatements(Model model) {
+
+    }
+
+    @Override
+    public void notifyEvent(Model model, Object o) {
+
     }
 }

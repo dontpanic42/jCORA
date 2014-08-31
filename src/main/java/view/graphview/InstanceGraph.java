@@ -25,7 +25,7 @@ import java.awt.*;
 /**
  * Created by daniel on 23.08.14.
  */
-public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements SelectProvider {
+public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
 
     /**
      * Die Hauptschicht, auf der die Instanzen angezeigt werden
@@ -52,6 +52,8 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
      */
     private InstanceWidget currentSelection;
 
+    private SelectProvider selectProvider;
+
     /**
      * Konstruktor, erzeugt eine neue, leere VL-Graph instanz.
      */
@@ -74,6 +76,14 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
 
         getActions().addAction(ActionFactory.createPanAction());
         getActions().addAction(ActionFactory.createZoomAction());
+    }
+
+    public SelectProvider getSelectProvider() {
+        return selectProvider;
+    }
+
+    public void setSelectProvider(SelectProvider selectProvider) {
+        this.selectProvider = selectProvider;
     }
 
     /**
@@ -172,55 +182,5 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> implements S
         c.setTargetAnchor(AnchorFactory.createRectangularAnchor(target));
     }
 
-    /**
-     *
-     * @param widget
-     * @param point
-     * @param b
-     * @return
-     */
-    @Override
-    public boolean isAimingAllowed(Widget widget, Point point, boolean b) {
-        return false;
-    }
 
-    /**
-     * Gibt zurück, ob das Widget <code>widget</code> ausgewählt werden darf/kann.
-     * @param widget Das betreffende Widget
-     * @param point Die Mausposition
-     * @param b
-     * @return
-     */
-    @Override
-    public boolean isSelectionAllowed(Widget widget, Point point, boolean b) {
-        return true;
-    }
-
-    /**
-     * Handelt die Auswahl einer Instanz. Setzt diese als "ausgewählt", wählt andere Instanzen ab und
-     * aktualisiert das Feld <code>currentSelection</code>.
-     * @param widget Das neu ausgewählte Widget
-     * @param point Die Mausposition
-     * @param b
-     */
-    @Override
-    public void select(Widget widget, Point point, boolean b) {
-        System.out.println("Selection!");
-
-        if(widget == currentSelection) {
-            return;
-        }
-
-        if(widget instanceof InstanceWidget) {
-            if(currentSelection != null) {
-                currentSelection.setSelected(false);
-            }
-
-            System.out.println("Selected");
-            currentSelection = (InstanceWidget) widget;
-            currentSelection.setSelected(true);
-        } else {
-            System.out.println("Selectd: " + widget.getClass().getSimpleName());
-        }
-    }
 }

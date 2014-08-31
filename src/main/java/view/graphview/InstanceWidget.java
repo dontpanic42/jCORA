@@ -95,10 +95,11 @@ public class InstanceWidget extends Widget {
 
         setOpaque(true);
 
-
-
         InstanceGraph graph = (InstanceGraph) scene;
-        getActions().addAction(ActionFactory.createSelectAction(graph));
+
+        if(graph.getSelectProvider() != null) {
+            getActions().addAction(ActionFactory.createSelectAction(graph.getSelectProvider()));
+        }
     }
 
     public void setSelected(boolean value) {

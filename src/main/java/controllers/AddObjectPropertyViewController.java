@@ -8,10 +8,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -51,6 +48,8 @@ public class AddObjectPropertyViewController {
 
     @FXML
     public void initialize() {
+        listProperties.setPlaceholder(new Label("Keine Relationen vorhanden"));
+
         listProperties.getSelectionModel().selectedItemProperty().addListener(
                 new ChangeListener<CoraObjectPropertyModel>() {
             @Override
@@ -61,7 +60,7 @@ public class AddObjectPropertyViewController {
             }
         });
 
-
+        listInstances.setPlaceholder(new Label("Keine Instanzen vorhanden"));
     }
 
     public static void showAddRelation(Stage parent, CoraInstanceModel model) {

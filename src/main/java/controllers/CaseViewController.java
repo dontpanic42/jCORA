@@ -1,19 +1,30 @@
 package controllers;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseModel;
+import models.datatypes.TypedValue;
+import models.ontology.CoraDataPropertyModel;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
+import models.util.Pair;
 import view.graphview.GraphViewComponent;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by daniel on 24.08.14.
@@ -22,6 +33,15 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
         CoraCaseModel.CaseChangeHandler {
     @FXML
     private SwingNode swingNode;
+
+    @FXML
+    private TableColumn<Pair<CoraDataPropertyModel, TypedValue>, CoraDataPropertyModel> columnPropertyName;
+
+    @FXML
+    private TableColumn<Pair<CoraDataPropertyModel, TypedValue>, String>  columnPropertyValue;
+
+    @FXML
+    private TableView<Pair<CoraDataPropertyModel, TypedValue>> tblDataProperties;
 
     private final GraphViewComponent graph = new GraphViewComponent();
 
@@ -33,6 +53,28 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
     public void initialize() {
         createAndSetSwingContent(swingNode);
         graph.setActionHandler(this);
+
+        tblDataProperties.setPlaceholder(new Label("Keine Daten vorhanden"));
+
+        columnPropertyName.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Pair<CoraDataPropertyModel, TypedValue>, CoraDataPropertyModel>,
+                        ObservableValue<CoraDataPropertyModel>>() {
+            @Override
+            public ObservableValue<CoraDataPropertyModel> call(TableColumn.CellDataFeatures<Pair<CoraDataPropertyModel,
+                    TypedValue>, CoraDataPropertyModel> p) {
+                return new ReadOnlyObjectWrapper<>(p.getValue().getFirst());
+            }
+        });
+
+        columnPropertyValue.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Pair<CoraDataPropertyModel, TypedValue>,
+                        String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Pair<CoraDataPropertyModel,
+                    TypedValue>, String> p) {
+                return new ReadOnlyObjectWrapper<>(p.getValue().getSecond().getAsString());
+            }
+        });
     }
 
     public void setStage(Stage stage) {
@@ -82,6 +124,22 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
         }
     }
 
+    /**
+     * Wenn eine Instanz ausgewählt wird, zeige deren Daten-Properties in der Tabelle an.
+     * @param graph
+     * @param oldSelection
+     * @param newSelection
+     */
+    @Override
+    public void onChangeSelection(GraphViewComponent graph, CoraInstanceModel oldSelection, CoraInstanceModel newSelection) {
+        if(newSelection == null) {
+            return;
+        }
+
+        List<Pair<CoraDataPropertyModel, TypedValue>> props = newSelection.getDataProperties();
+        tblDataProperties.setItems(FXCollections.observableArrayList(props));
+    }
+
     @Override
     public void onAddRelation(GraphViewComponent graph, CoraInstanceModel parent) {
         AddObjectPropertyViewController.showAddRelation(stage, parent);
@@ -107,4 +165,15 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
             }
         });
     }
+
+    @FXML
+    private void onAddDataProperty() {
+
+    }
+
+    @FXML
+    private void onRemoveDataProperty() {
+
+    }
+
 }
