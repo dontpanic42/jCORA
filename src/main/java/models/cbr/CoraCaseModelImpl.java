@@ -198,6 +198,7 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
             throws MalformedOntologyException {
         ObjectProperty property = caseModel.getObjectProperty(fullPropertyName);
         if(property == null) {
+            System.err.println("Property fehlt: " + fullPropertyName);
             throw new MalformedOntologyException();
         }
 
