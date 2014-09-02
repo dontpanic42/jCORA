@@ -81,6 +81,7 @@ public class KNNRetrievalService extends RetrievalService {
         }
 
         public List<CoraRetrievalResult> asList() {
+            Collections.reverse(list);
             return list;
         }
     }

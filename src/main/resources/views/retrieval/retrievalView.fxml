@@ -10,24 +10,33 @@
    <children>
       <VBox layoutX="257.0" layoutY="26.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <LineChart fx:id="chart" VBox.vgrow="ALWAYS">
-              <xAxis>
-                <CategoryAxis side="BOTTOM" />
-              </xAxis>
-              <yAxis>
-                <NumberAxis side="LEFT" />
-              </yAxis>
-            </LineChart>
-            <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="10.0">
+            <AnchorPane fx:id="anchorPaneChart" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <Separator prefWidth="200.0" />
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <ProgressIndicator />
-                  <Label fx:id="lblStatus" text="Bitte Warten..." />
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <ProgressIndicator fx:id="spinner" />
+                        <Label fx:id="lblStatus" text="Label" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                     <children>
+                        <Button fx:id="btnShowResults" mnemonicParsing="false" text="Ergebnisse Anzeigen..." />
+                     </children>
+                  </HBox>
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
-            </HBox>
-         </children>
-      </VBox>
+            </GridPane>
+         </children></VBox>
    </children>
 </AnchorPane>

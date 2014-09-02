@@ -2,6 +2,7 @@ package controllers;
 
 import controllers.commons.WaitViewController;
 import controllers.queryeditor.QueryViewController;
+import controllers.retrieval.RetrievalResultsViewController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -12,14 +13,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mainapp.MainApplication;
-import models.cbr.CoraCaseBase;
-import models.cbr.CoraCaseModel;
+import models.cbr.*;
 import view.Commons;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by daniel on 24.08.14.
@@ -153,5 +155,23 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
             tabPane.getTabs().remove(tab);
             openCases.remove(caseId);
         }
+    }
+
+    public void showRetrievalResults(List<CoraRetrievalResult> results) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(this.getClass().getClassLoader().getResource("views/retrieval/retrievalResultsView.fxml"));
+        AnchorPane pane = loader.load();
+
+        Tab caseTab = new Tab();
+        caseTab.setText("Anfrageergebnisse");
+        AnchorPane casePane = new AnchorPane();
+        caseTab.setContent(casePane);
+
+        casePane.getChildren().add(pane);
+        tabPane.getTabs().add(caseTab);
+        tabPane.getSelectionModel().select(caseTab);
+
+        RetrievalResultsViewController controller = loader.getController();
+        controller.setRetrievalResults(results);
     }
 }

@@ -116,8 +116,8 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
             this.caseId = new SimpleStringProperty();
             this.caseId.set(caseId);
 
-            btnView = new SimpleObjectProperty<Button>(new Button("Anzeigen"));
-            btnDelete = new SimpleObjectProperty<Button>(new Button("Löschen"));
+            btnView = new SimpleObjectProperty<>(new Button("Anzeigen"));
+            btnDelete = new SimpleObjectProperty<>(new Button("Löschen"));
 
             btnView.getValue().setOnAction( (ActionEvent e) -> {
                 MainAppViewController mainAppView = MainApplication.getInstance().getMainAppView();

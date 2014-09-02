@@ -1,6 +1,7 @@
 package controllers.queryeditor;
 
 import controllers.CaseViewController;
+import controllers.retrieval.RetrievalResultsViewController;
 import controllers.retrieval.RetrievalViewController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,11 +9,15 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import mainapp.MainApplication;
 import models.cbr.CoraCaseModel;
 import models.cbr.CoraQueryModel;
+import models.cbr.CoraRetrievalResult;
 import models.cbr.CoraWeightModel;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by daniel on 26.08.14.
@@ -74,6 +79,7 @@ public class QueryViewController {
         stage.show();
 
         RetrievalViewController controller = loader.getController();
+        controller.setStage(stage);
         controller.startRetrieval(queryModel);
     }
 
