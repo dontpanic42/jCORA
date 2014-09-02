@@ -182,4 +182,14 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
         SaveAsNewViewController.showSaveAsNew(stage, caseModel);
     }
 
+    @FXML
+    private void onSaveAsXML() {
+        CoraCaseModel caseModel = model.getFactory().getCase();
+        FileChooser fileChooser = new FileChooser();
+        File outputFile = fileChooser.showSaveDialog(null);
+        if(outputFile != null) {
+            MainApplication.getInstance().getCaseBase().saveAsFile(caseModel, outputFile);
+        }
+    }
+
 }

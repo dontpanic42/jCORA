@@ -5,12 +5,11 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.ModelGetter;
-import com.hp.hpl.jena.rdf.model.ModelReader;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.util.FileManager;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.mindswap.pellet.jena.PelletReasonerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -28,9 +27,11 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      * Pfad zur Standard-Konfiguration
      */
     private static final String CASE_BASE_PROPERTIES_FILE = "config/casebase.properties";
+    private static final String CASE_NS = "http://example.com/case#";
 
-    private LocalModelGetter localModelGetter;
-    private OntModel domainModel;
+    //private LocalModelGetter localModelGetter;
+    //private OntModel domainModel;
+    private Model domainModel;
     private Dataset dataset;
     private OntDocumentManager documentManager;
 
@@ -78,8 +79,8 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
         domainModel = loadDomainModel();
 
-        localModelGetter = new LocalModelGetter();
-        localModelGetter.addModel(domainModel);
+        //localModelGetter = new LocalModelGetter();
+        //localModelGetter.addModel(domainModel);
 
         dataset = createTDBDataset();
         documentManager = new OntDocumentManager();
@@ -101,15 +102,15 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         m.add(tdbModel);
         //TODO: Prefixes?
         if(tdbModel.getNsPrefixURI("") == null) {
-            m.setNsPrefix("", "http://example.com/case#");
+            m.setNsPrefix("", CASE_NS);
         } else {
             m.setNsPrefix("", tdbModel.getNsPrefixURI(""));
         }
 
         dataset.end();
 
-        OntModelSpec modelSpec = new OntModelSpec(PelletReasonerFactory.THE_SPEC);
-        modelSpec.setImportModelGetter(localModelGetter);
+  //      OntModelSpec modelSpec = new OntModelSpec(PelletReasonerFactory.THE_SPEC);
+/*        modelSpec.setImportModelGetter(localModelGetter);
         modelSpec.setDocumentManager(documentManager);
         documentManager.setProcessImports(false);
 
@@ -117,7 +118,17 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         OntModel model = ModelFactory.createOntologyModel(modelSpec, m);
 
         documentManager.setProcessImports(true);
-        documentManager.loadImport(model, domainModel.getNsPrefixURI(""));
+        documentManager.loadImport(model, domainModel.getNsPrefixURI(""));*/
+
+//        Model dmod = ModelFactory.createDefaultModel();
+//        dmod.add(domainModel.getBaseModel());
+//
+//        OntModel model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
+//        model.addSubModel(m);
+//        model.addSubModel(dmod);
+
+        OntModel model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, m);
+        model.addSubModel(domainModel);
 
         CoraCaseModelImpl caseModel = new CoraCaseModelImpl(name, model, this);
         return caseModel;
@@ -158,15 +169,11 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      */
     @Override
     public CoraCaseModel createTemporaryCase() throws Throwable {
-        OntModelSpec modelSpec = new OntModelSpec(PelletReasonerFactory.THE_SPEC);
-        modelSpec.setImportModelGetter(localModelGetter);
-        modelSpec.setDocumentManager(documentManager);
-
-        OntModel model = ModelFactory.createOntologyModel(modelSpec);
-        model.setNsPrefix("", "http://example.com/case#");
-        model.getBaseModel().setNsPrefix("", "http://example.com/case#");
-
-        documentManager.loadImport(model, domainModel.getNsPrefixURI(""));
+        Model m = ModelFactory.createDefaultModel();
+        m.setNsPrefix("", CASE_NS);
+        OntModel model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, m);
+        model.setNsPrefix("", CASE_NS);
+        model.addSubModel(domainModel);
 
         CoraCaseModelImpl caseModel = new CoraCaseModelImpl(null, model, this);
         return caseModel;
@@ -226,7 +233,8 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      * @throws ConfigurationException
      * @throws FileNotFoundException
      */
-    private OntModel loadDomainModel()
+    //private OntModel loadDomainModel()
+    private Model loadDomainModel()
             throws ConfigurationException, FileNotFoundException {
 
         String domainModelFile = caseBaseProperties.getProperty("domainModelFile");
@@ -239,19 +247,13 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
             throw new FileNotFoundException();
         }
 
-        //OntModel domainModel = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
-        OntModel domainModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-        domainModel.read(FileManager.get().open(domainModelFile), "RDF/XML");
+        Model m = RDFDataMgr.loadModel(domainModelFile, Lang.RDFXML);
 
         if(caseBaseProperties.getProperty("domainNsOverride", null) != null) {
-            domainModel.setNsPrefix("", caseBaseProperties.getProperty("domainNsOverride"));
+            m.setNsPrefix("", caseBaseProperties.getProperty("domainNsOverride"));
         }
 
-        String ns = domainModel.getNsPrefixURI("");
-
-        System.out.println(ns);
-
-        return domainModel;
+        return m;
     }
 
     @Override
@@ -264,7 +266,9 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      * @return
      */
     public OntModel getDomainModel() {
-        return domainModel;
+
+        OntModel m = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, domainModel);
+        return m;
     }
 
     /**
@@ -300,6 +304,19 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         dataset.end();
 
         System.out.println("Saved");
+    }
+
+    public void saveAsFile(CoraCaseModel caseModel, File file) {
+        try {
+            OutputStream os = new FileOutputStream(file);
+            CoraCaseModelImpl cimp = (CoraCaseModelImpl) caseModel;
+            cimp.getModel().write(os, "RDF/XML-ABBREV", CASE_NS);
+            os.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -421,59 +438,6 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
                 throwable.printStackTrace();
                 return null;
             }
-        }
-    }
-
-    /**
-     * Lokaler Model-Getter. Diese Klasse wird verwendet, um Imports einer Ontologie
-     * zu laden. Da die Domain-Ontologie (import) nicht unter der angegebenen Webaddesse
-     * verfügbar ist, wird der versuch unterbrochen und die lokale (gecachte) version der
-     * Domain-Ontologie verwendet.
-     */
-    private class LocalModelGetter implements ModelGetter {
-        private Map<String, OntModel> mapping;
-
-        public LocalModelGetter() {
-            mapping = new HashMap<String, OntModel>();
-        }
-
-        /**
-         * Fügt eine Modell für den lokalen import hinzu.
-         * @param toImport
-         */
-        public void addModel(OntModel toImport) {
-            mapping.put(toImport.getNsPrefixURI(""), toImport);
-        }
-
-        /**
-         * Nicht verwendete Methode zum Laden von Imports
-         * @param s die angeforderte Url
-         * @return
-         */
-        @Override
-        public Model getModel(String s) {
-            throw new NotImplementedException();
-        }
-
-        /**
-         * Import Lademethode. Ist die angeforderte Url bekannt, gib die gecachte, lokale Version
-         * des Modells zurück. Ist die Url unbekannt, nutze die Standard-Lademethode
-         * (via http), um die Ontologie zu laden.
-         * @param s die zu ladende Url
-         * @param modelReader die Standard-Lademethode
-         * @return das geladene Model
-         */
-        @Override
-        public Model getModel(String s, ModelReader modelReader) {
-            if(mapping.containsKey(s)) {
-                System.out.println("importing domain ontology -> " + s);
-                return mapping.get(s);
-            }
-
-            System.out.println("unknown ontology import -> " + s);
-            Model m = ModelFactory.createDefaultModel();
-            modelReader.readModel(m, s);
-            return m;
         }
     }
 }

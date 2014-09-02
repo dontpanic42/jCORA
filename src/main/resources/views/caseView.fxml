@@ -14,30 +14,6 @@
          <children>
             <ToolBar orientation="VERTICAL" prefHeight="40.0" prefWidth="40.0">
               <items>
-                <Button mnemonicParsing="false">
-                     <graphic>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../Downloads/WindowsIcons-master/WindowsPhone/light/appbar.cell.insert.above.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <padding>
-                        <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
-                     </padding>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#onExportAsImage">
-                     <graphic>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../../../Downloads/WindowsIcons-master/WindowsPhone/light/appbar.page.image.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <padding>
-                        <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
-                     </padding>
-                  </Button>
                   <Button mnemonicParsing="false" onAction="#onSaveCase">
                      <graphic>
                         <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
@@ -55,6 +31,31 @@
                         <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../icons/saveAsNew.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
+                     </padding>
+                  </Button>
+                  <Separator />
+                  <Button mnemonicParsing="false" onAction="#onSaveAsXML">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/xmlfile.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
+                     </padding>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onExportAsImage">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/pngfile.png" />
                            </image>
                         </ImageView>
                      </graphic>

@@ -54,7 +54,19 @@ public interface CoraCaseBase {
 
     public List<String> getCaseIDs();
 
+    /**
+     * Speichert den Fall unter einem neuen Namen
+     * @param caseModel
+     * @param name
+     */
     public void saveAsNewCase(CoraCaseModel caseModel, String name);
+
+    /**
+     * Speichert den Fall in einer RDF/XML-Datei
+     * @param caseModel
+     * @param file
+     */
+    public void saveAsFile(CoraCaseModel caseModel, File file);
 
     /**
      * Gibt die Anzahl der in dieser Fallbasis gespeicherten Fälle zurück.

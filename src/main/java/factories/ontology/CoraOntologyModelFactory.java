@@ -36,6 +36,7 @@ public class CoraOntologyModelFactory {
     public CoraInstanceModel createInstance(CoraClassModel fromClass, String name)
             throws ResourceAlreadyExistsException {
 
+        System.out.println("Model NS: " + model.getNsPrefixURI(""));
 
         //Versuchen das individual mit dem Namen zu laden...
         Individual i = model.getIndividual(model.getNsPrefixURI("") + name);
@@ -60,24 +61,6 @@ public class CoraOntologyModelFactory {
 
         return instance;
     }
-
-//    public void tryLock(ReadWrite type) {
-//        if(caseModel instanceof CoraCaseModelImpl) {
-//            ((CoraCaseModelImpl) caseModel).tryLock(type);
-//        }
-//    }
-//
-//    public void tryCommit() {
-//        if(caseModel instanceof CoraCaseModelImpl) {
-//            ((CoraCaseModelImpl) caseModel).tryCommit();
-//        }
-//    }
-//
-//    public void tryEndLock() {
-//        if(caseModel instanceof CoraCaseModelImpl) {
-//            ((CoraCaseModelImpl) caseModel).tryEndLock();
-//        }
-//    }
 
 
     public CoraClassModel wrapClass(OntClass clazz) {
