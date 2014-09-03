@@ -89,6 +89,10 @@ public class SimilarityFactoryImpl implements SimilarityFactory {
         return null;
     }
 
+    /**
+     * Gibt die Case-Base zurück
+     * @return Die Case-Base
+     */
     @Override
     public CoraCaseBase getCaseBase() {
         return caseBase;

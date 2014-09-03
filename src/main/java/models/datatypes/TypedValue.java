@@ -50,10 +50,26 @@ public abstract class TypedValue<T extends Comparable> implements Comparable {
      */
     public abstract Literal getLiteral(OntModel model);
 
+    /**
+     * Gibt den maximalen Wert zurück, den dieses Objekt annehmen kann.
+     * @return Ein TypedValue-Objekt, das den größten darzustellenden Wert repräsentiert
+     */
     public abstract TypedValue<T> getMaxValue();
 
+    /**
+     * Gibt den minimalen Wert zurück, den dieses Objekt annehmen kann. Der Minimale Wert ist
+     * dabei (im gegensatz etwa zu <code>Float.MIN_VALUE</code> der absolut kleinste Wert (negativ).
+     * @return Ein TypedValue-Objekt, das den kleinsten darzustellenden Wert repräsentiert
+     */
     public abstract TypedValue<T> getMinValue();
 
+    /**
+     * Komparator. Gibt das <code>compareTo</code> Ergebnis des Basis-Objekts zurück. Kann mit einem
+     * TypedValue-Objekt mit der selben Klasse aufgerufen werden, oder mit einem Wert vom Typ des
+     * Basisobjekts
+     * @param o Ein anderes TypedValue oder Basis-Objekt
+     * @return <0 wenn diese Kleiner, 0 wenn gleich, \>0 wenn dieses Größer
+     */
     @Override
     public int compareTo(Object o) {
         if(o.getClass().equals(this.getClass())) {

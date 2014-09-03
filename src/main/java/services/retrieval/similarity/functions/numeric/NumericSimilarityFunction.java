@@ -14,6 +14,9 @@ import java.util.List;
 
 /**
  * Created by daniel on 03.09.14.
+ *
+ * Abstrakte numerische Ähnlichkeitsfunktion, die die einige für numerische Berechnungen notwendige
+ * hilfs-Methoden enthält sowie die Metrik auf basis von <code>BigDecimal</code>s.
  */
 public abstract class NumericSimilarityFunction<T extends TypedValue> extends SimilarityFunction<T> {
 
