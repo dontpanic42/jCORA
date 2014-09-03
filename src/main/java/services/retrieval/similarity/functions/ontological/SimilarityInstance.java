@@ -30,7 +30,7 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
         //Berechne die Attributsähnlichkeit ----------------------------------------------------------------------------
 
         Pair<Float, Float> oSim = getObjectPropertySimilarity(a, b);
-        Pair<Float, Float> dSim = getObjectPropertySimilarity(a, b);
+        Pair<Float, Float> dSim = getDataPropertySimilarity(a, b);
 
         //Instanzen haben weder Object- noch DataProperties
         if(oSim == null && dSim == null) {
@@ -190,7 +190,7 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
                 //Das Attribut kann keine gemeinsame Eigenschaft sein, diese wurden schon vorher
                 //abgearbeitet.
 
-                //Das Property ist NUR in A vorhanden
+                //Das Property ist NUR in B vorhanden
                 float weight = getQuery().getWeights().getWeight(dataProperty);
                 float sumWeights = similarity.getSecond() + weight;
 
@@ -207,7 +207,7 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
 
         for(Pair<CoraDataPropertyModel, TypedValue> p : propsList) {
             if(!props.containsKey(p.getFirst())) {
-                props.put(p.getFirst(), new ArrayList<TypedValue>());
+                props.put(p.getFirst(), new ArrayList<>());
             }
 
             props.get(p.getFirst()).add(p.getSecond());
@@ -225,6 +225,8 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
         if(simFunc == null) {
             System.err.println("--> Ignoriere DataProperty " + prop + ": Keine Ähnlichkeitsfunktion für" + valuesA.get(0).getClass().getSimpleName());
             return new Pair(1.f, 1.f);
+        } else {
+            System.err.println("Berechne Ähnlichkeit für dataproperty: " + prop);
         }
 
         List<Object> objListA = new ArrayList<>(valuesA);

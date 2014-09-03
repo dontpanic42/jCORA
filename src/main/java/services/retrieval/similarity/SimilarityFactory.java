@@ -1,5 +1,6 @@
 package services.retrieval.similarity;
 
+import models.cbr.CoraCaseBase;
 import services.retrieval.similarity.SimilarityCache;
 import services.retrieval.similarity.functions.SimilarityFunction;
 
@@ -13,6 +14,12 @@ public interface SimilarityFactory {
      * @return Der Cache
      */
     public SimilarityCache getCache();
+
+    /**
+     * Gibt die CaseBase zurück
+     * @return Die CaseBase
+     */
+    public CoraCaseBase getCaseBase();
 
     /**
      * Gibt eine zum Datentyp <code>Class\<T\></code> passende Ähnlichkeitsfunktion zurück, oder

@@ -6,6 +6,7 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.ReadWrite;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.util.FileManager;
 import org.apache.jena.riot.Lang;
@@ -103,29 +104,12 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         //TODO: Prefixes?
         if(tdbModel.getNsPrefixURI("") == null) {
             m.setNsPrefix("", CASE_NS);
+            System.out.println("Prefix ist null");
         } else {
             m.setNsPrefix("", tdbModel.getNsPrefixURI(""));
         }
 
         dataset.end();
-
-  //      OntModelSpec modelSpec = new OntModelSpec(PelletReasonerFactory.THE_SPEC);
-/*        modelSpec.setImportModelGetter(localModelGetter);
-        modelSpec.setDocumentManager(documentManager);
-        documentManager.setProcessImports(false);
-
-
-        OntModel model = ModelFactory.createOntologyModel(modelSpec, m);
-
-        documentManager.setProcessImports(true);
-        documentManager.loadImport(model, domainModel.getNsPrefixURI(""));*/
-
-//        Model dmod = ModelFactory.createDefaultModel();
-//        dmod.add(domainModel.getBaseModel());
-//
-//        OntModel model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC);
-//        model.addSubModel(m);
-//        model.addSubModel(dmod);
 
         OntModel model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, m);
         model.addSubModel(domainModel);
@@ -171,6 +155,10 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     public CoraCaseModel createTemporaryCase() throws Throwable {
         Model m = ModelFactory.createDefaultModel();
         m.setNsPrefix("", CASE_NS);
+
+        Reasoner r = PelletReasonerFactory.theInstance().create();
+
+
         OntModel model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, m);
         model.setNsPrefix("", CASE_NS);
         model.addSubModel(domainModel);
@@ -385,6 +373,10 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         dataset.end();
 
         return names;
+    }
+
+    public Dataset getDataset() {
+        return dataset;
     }
 
     /**

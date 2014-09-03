@@ -1,5 +1,9 @@
 package services.retrieval.similarity.functions.numeric;
 
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import models.cbr.CoraCaseBaseImpl;
 import models.datatypes.FloatValue;
 import models.datatypes.LongValue;
 import models.datatypes.TypedValue;
@@ -7,20 +11,23 @@ import models.ontology.CoraPropertyModel;
 import services.retrieval.similarity.functions.SimilarityFunction;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by daniel on 31.08.14.
+ * Created by daniel on 03.09.14.
  */
-public class SimilarityFloat extends NumericSimilarityFunction<FloatValue> {
+public class SimilarityLong extends NumericSimilarityFunction<LongValue> {
 
-    private Float globalMax = null;
-    private Float globalMin = null;
+    private Long globalMax = null;
+    private Long globalMin = null;
 
     @Override
-    public Float calculateItemSim(CoraPropertyModel property, FloatValue a, FloatValue b) {
+    public Float calculateItemSim(CoraPropertyModel property, LongValue a, LongValue b) {
         //Globale min/max Werte
-        globalMax = (globalMax == null)? getGlobalMaxValue(property, FloatValue.class).getValue() : globalMax;
-        globalMin = (globalMin == null)? getGlobalMinValue(property, FloatValue.class).getValue() : globalMin;
+        globalMax = (globalMax == null)? getGlobalMaxValue(property, LongValue.class).getValue() : globalMax;
+        globalMin = (globalMin == null)? getGlobalMinValue(property, LongValue.class).getValue() : globalMin;
 
         //Globale min/max Werte inkl. der Werte aus der Anfrage
         //globalMax/globalMin könnten an dieser stelle Long.minValue/Long.maxValue enthalten, wenn keine

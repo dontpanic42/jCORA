@@ -1,26 +1,24 @@
 package services.retrieval.similarity.functions.numeric;
 
-import models.datatypes.FloatValue;
+import models.datatypes.IntegerValue;
 import models.datatypes.LongValue;
-import models.datatypes.TypedValue;
 import models.ontology.CoraPropertyModel;
-import services.retrieval.similarity.functions.SimilarityFunction;
 
 import java.math.BigDecimal;
 
 /**
- * Created by daniel on 31.08.14.
+ * Created by daniel on 03.09.14.
  */
-public class SimilarityFloat extends NumericSimilarityFunction<FloatValue> {
+public class SimilarityInteger extends NumericSimilarityFunction<IntegerValue> {
 
-    private Float globalMax = null;
-    private Float globalMin = null;
+    private Integer globalMax = null;
+    private Integer globalMin = null;
 
     @Override
-    public Float calculateItemSim(CoraPropertyModel property, FloatValue a, FloatValue b) {
+    public Float calculateItemSim(CoraPropertyModel property, IntegerValue a, IntegerValue b) {
         //Globale min/max Werte
-        globalMax = (globalMax == null)? getGlobalMaxValue(property, FloatValue.class).getValue() : globalMax;
-        globalMin = (globalMin == null)? getGlobalMinValue(property, FloatValue.class).getValue() : globalMin;
+        globalMax = (globalMax == null)? getGlobalMaxValue(property, IntegerValue.class).getValue() : globalMax;
+        globalMin = (globalMin == null)? getGlobalMinValue(property, IntegerValue.class).getValue() : globalMin;
 
         //Globale min/max Werte inkl. der Werte aus der Anfrage
         //globalMax/globalMin könnten an dieser stelle Long.minValue/Long.maxValue enthalten, wenn keine

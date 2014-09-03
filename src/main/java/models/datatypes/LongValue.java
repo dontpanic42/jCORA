@@ -8,9 +8,15 @@ import com.hp.hpl.jena.rdf.model.Literal;
  *
  * Repräsentiert einen Long-Wert
  */
-public class LongValue implements TypedValue<Long> {
+public class LongValue extends TypedValue<Long> {
 
     private Long value = 0l;
+
+    public LongValue() {}
+
+    public LongValue(Long value) {
+        this.value = value;
+    }
 
     @Override
     public boolean isValidString(String val) {
@@ -50,5 +56,15 @@ public class LongValue implements TypedValue<Long> {
     @Override
     public String getAsString() {
         return value.toString();
+    }
+
+    @Override
+    public TypedValue<Long> getMaxValue() {
+        return new LongValue(Long.MAX_VALUE);
+    }
+
+    @Override
+    public TypedValue<Long> getMinValue() {
+        return new LongValue(Long.MIN_VALUE);
     }
 }

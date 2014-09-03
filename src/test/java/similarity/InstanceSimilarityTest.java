@@ -62,7 +62,7 @@ public class InstanceSimilarityTest {
         CoraWeightModel weights = new CoraWeightModel();
         CoraQueryModel query = new CoraQueryModel(caseA, weights, 10);
 
-        SimilarityFactory simfac = new SimilarityFactoryImpl(query);
+        SimilarityFactory simfac = new SimilarityFactoryImpl(query, caseBase);
         SimilarityFunction<CoraInstanceModel> simFunc = simfac.getFunction(CoraInstanceModel.class);
         assertNotNull(simFunc);
 

@@ -8,9 +8,15 @@ import com.hp.hpl.jena.rdf.model.Literal;
  *
  * Repräsentiert einen Float-Wert
  */
-public class FloatValue implements TypedValue<Float> {
+public class FloatValue extends TypedValue<Float> {
 
     private Float value = 0.f;
+
+    public FloatValue() { }
+
+    public FloatValue(Float value) {
+        this.value = value;
+    }
 
     @Override
     public boolean isValidString(String val) {
@@ -50,5 +56,15 @@ public class FloatValue implements TypedValue<Float> {
     @Override
     public String getAsString() {
         return value.toString();
+    }
+
+    @Override
+    public TypedValue<Float> getMaxValue() {
+        return new FloatValue(Float.MAX_VALUE);
+    }
+
+    @Override
+    public TypedValue<Float> getMinValue() {
+        return new FloatValue(-Float.MAX_VALUE);
     }
 }

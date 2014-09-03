@@ -10,9 +10,13 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseBaseImpl;
+import org.mindswap.pellet.ABox;
+import org.mindswap.pellet.KnowledgeBase;
+import org.mindswap.pellet.PelletOptions;
 
 import javax.naming.ConfigurationException;
 import java.io.FileNotFoundException;
+import java.util.logging.Level;
 
 /**
  * Created by daniel on 24.08.14.

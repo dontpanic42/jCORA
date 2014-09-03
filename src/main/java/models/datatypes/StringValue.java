@@ -8,9 +8,15 @@ import com.hp.hpl.jena.rdf.model.Literal;
  *
  * Repräsentiert einen String
  */
-public class StringValue implements TypedValue<String> {
+public class StringValue extends TypedValue<String> {
 
     private String value = "";
+
+    public StringValue() { }
+
+    public StringValue(String value) {
+        this.value = value;
+    }
 
     @Override
     public boolean isValidString(String val) {
@@ -40,5 +46,15 @@ public class StringValue implements TypedValue<String> {
     @Override
     public String getAsString() {
         return value;
+    }
+
+    @Override
+    public TypedValue<String> getMaxValue() {
+        return null;
+    }
+
+    @Override
+    public TypedValue<String> getMinValue() {
+        return null;
     }
 }

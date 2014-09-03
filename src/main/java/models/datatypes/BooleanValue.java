@@ -8,12 +8,18 @@ import com.hp.hpl.jena.rdf.model.Literal;
  *
  * Repräsentiert einen bool'schen Wert
  */
-public class BooleanValue implements TypedValue<Boolean> {
+public class BooleanValue extends TypedValue<Boolean> {
 
     private static final String TRUE_STRING = "ja";
     private static final String FALSE_STRING = "nein";
 
     private Boolean value = false;
+
+    public BooleanValue() { }
+
+    public BooleanValue(Boolean value) {
+        this.value = value;
+    }
 
     @Override
     public boolean isValidString(String val) {
@@ -48,5 +54,15 @@ public class BooleanValue implements TypedValue<Boolean> {
     @Override
     public Literal getLiteral(OntModel model) {
         return model.createTypedLiteral(value);
+    }
+
+    @Override
+    public TypedValue<Boolean> getMaxValue() {
+        return null;
+    }
+
+    @Override
+    public TypedValue<Boolean> getMinValue() {
+        return null;
     }
 }

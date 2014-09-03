@@ -1,11 +1,16 @@
 package services.retrieval.similarity;
 
+import models.cbr.CoraCaseBase;
 import models.cbr.CoraQueryModel;
 import models.datatypes.FloatValue;
+import models.datatypes.IntegerValue;
+import models.datatypes.LongValue;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
 import services.retrieval.similarity.functions.SimilarityFunction;
 import services.retrieval.similarity.functions.numeric.SimilarityFloat;
+import services.retrieval.similarity.functions.numeric.SimilarityInteger;
+import services.retrieval.similarity.functions.numeric.SimilarityLong;
 import services.retrieval.similarity.functions.ontological.SimilarityClass;
 import services.retrieval.similarity.functions.ontological.SimilarityInstance;
 
@@ -18,6 +23,7 @@ import java.util.HashMap;
 public class SimilarityFactoryImpl implements SimilarityFactory {
 
     private SimilarityCache cache = new SimilarityCache();
+    private CoraCaseBase caseBase;
 
     /**
      * Enthält die Zuordnung von Datentypen zu Ähnlichkeitsfunktionen
@@ -29,6 +35,8 @@ public class SimilarityFactoryImpl implements SimilarityFactory {
              * Für numerische Objekte
              */
             put(FloatValue.class, new SimilarityFloat());
+            put(LongValue.class, new SimilarityLong());
+            put(IntegerValue.class, new SimilarityInteger());
 
             /*
              * Für Ontologie-Objekte
@@ -41,7 +49,9 @@ public class SimilarityFactoryImpl implements SimilarityFactory {
     /**
      * Konstruktor. Injeziert Abhänigigkeiten in die <code>functions</code>-Map
      */
-    public SimilarityFactoryImpl(CoraQueryModel query) {
+    public SimilarityFactoryImpl(CoraQueryModel query, CoraCaseBase caseBase) {
+        this.caseBase = caseBase;
+
         for(Map.Entry<Class<?>, SimilarityFunction<?>> e : functions.entrySet()) {
             e.getValue().setFactory(this);
             e.getValue().setQuery(query);
@@ -77,5 +87,10 @@ public class SimilarityFactoryImpl implements SimilarityFactory {
         }
 
         return null;
+    }
+
+    @Override
+    public CoraCaseBase getCaseBase() {
+        return caseBase;
     }
 }

@@ -65,7 +65,7 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
             Statement s = iter.next();
             Property p = s.getPredicate();
 
-            System.out.println("Habe Dataproperty: " + p + ": " + s.getObject());
+            //System.out.println("Habe Dataproperty: " + p + ": " + s.getObject());
 
             if(!p.canAs(DatatypeProperty.class)) {
                 continue;

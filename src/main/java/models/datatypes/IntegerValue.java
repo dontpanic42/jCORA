@@ -8,9 +8,15 @@ import com.hp.hpl.jena.rdf.model.Literal;
  *
  * Repräsentiert einen Integer wert
  */
-public class IntegerValue implements TypedValue<Integer> {
+public class IntegerValue extends TypedValue<Integer> {
 
     Integer value = 0;
+
+    public IntegerValue() { }
+
+    public IntegerValue(Integer value) {
+        this.value = value;
+    }
 
     @Override
     public boolean isValidString(String val) {
@@ -50,5 +56,15 @@ public class IntegerValue implements TypedValue<Integer> {
     @Override
     public String getAsString() {
         return value.toString();
+    }
+
+    @Override
+    public TypedValue<Integer> getMaxValue() {
+        return new IntegerValue(Integer.MAX_VALUE);
+    }
+
+    @Override
+    public TypedValue<Integer> getMinValue() {
+        return new IntegerValue(Integer.MIN_VALUE);
     }
 }

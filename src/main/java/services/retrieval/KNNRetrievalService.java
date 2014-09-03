@@ -30,7 +30,7 @@ public class KNNRetrievalService extends RetrievalService {
         List<String> cases = getCaseBase().getCaseIDs();
         for(String caseId : cases) {
             try {
-                SimilarityFactory simFac = new SimilarityFactoryImpl(getQuery());
+                SimilarityFactory simFac = new SimilarityFactoryImpl(getQuery(), getCaseBase());
                 next = getCaseBase().loadCase(caseId);
 
                 notifyOnProgress(0, 0, getQuery(), last, simLast, next);
