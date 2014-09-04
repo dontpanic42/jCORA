@@ -1,19 +1,13 @@
 package models.cbr;
 
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelChangedListener;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import exceptions.MalformedOntologyException;
-import factories.ontology.CoraOntologyModelFactory;
+import models.ontology.CoraOntologyModelFactory;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -305,7 +299,16 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
 
     @Override
     public void removedStatement(Statement statement) {
-
+        System.out.println("Removed statement: " + statement.getSubject() + " - " + statement.getPredicate() + " - " + statement.getObject());
+//        System.out.println("Vorhandene Statements:");
+//        RDFNode node = statement.getObject();
+//        if(node.isResource()) {
+//            StmtIterator iter = node.asResource().listProperties();
+//            while(iter.hasNext()) {
+//                Statement s = iter.next();
+//                System.out.println("Habe " + s.getSubject() + ", " + s.getPredicate() + ", " + s.getObject());
+//            }
+//        }
     }
 
     @Override

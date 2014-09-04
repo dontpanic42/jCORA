@@ -1,12 +1,10 @@
-package factories.ontology;
+package models.ontology;
 
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.query.ReadWrite;
+import com.hp.hpl.jena.rdf.model.Statement;
 import exceptions.ResourceAlreadyExistsException;
 import models.cbr.CoraCaseModel;
-import models.cbr.CoraCaseModelImpl;
-import models.ontology.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import models.ontology.assertions.DataPropertyAssertion;
 
 /**
  * Created by daniel on 20.08.14.
@@ -62,7 +60,6 @@ public class CoraOntologyModelFactory {
         return instance;
     }
 
-
     public CoraClassModel wrapClass(OntClass clazz) {
         CoraClassModel model = new CoraClassModel();
         model.setBaseObject(clazz);
@@ -107,5 +104,11 @@ public class CoraOntologyModelFactory {
         }
 
         return null;
+    }
+
+    public DataPropertyAssertion wrapDataPropertyStatement(Statement s) {
+        DataPropertyAssertion assertion = new DataPropertyAssertion(s);
+        assertion.setFactory(this);
+        return assertion;
     }
 }

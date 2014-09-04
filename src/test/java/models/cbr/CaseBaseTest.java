@@ -3,8 +3,7 @@ package models.cbr;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.query.ReadWrite;
-import factories.ontology.CoraOntologyModelFactory;
+import models.ontology.CoraOntologyModelFactory;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
 import org.junit.After;
@@ -15,7 +14,6 @@ import org.junit.Test;
 import javax.naming.ConfigurationException;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Set;
 
 import static org.junit.Assert.*;

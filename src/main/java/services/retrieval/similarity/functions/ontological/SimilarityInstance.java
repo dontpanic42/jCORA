@@ -201,10 +201,15 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
         return similarity;
     }
 
+    /**
+     * Gibt eine Map zurück, die alle Property-Werte einer Instanz, geordnet nach DataProperty
+     * enthält.
+     * @param a Die Betreffende Instanz
+     * @return Die Map
+     */
     private Map<CoraDataPropertyModel, List<TypedValue>> getDataPropertyMap(CoraInstanceModel a) {
         List<Pair<CoraDataPropertyModel, TypedValue>> propsList = a.getDataProperties();
         Map<CoraDataPropertyModel, List<TypedValue>> props = new HashMap<>();
-
         for(Pair<CoraDataPropertyModel, TypedValue> p : propsList) {
             if(!props.containsKey(p.getFirst())) {
                 props.put(p.getFirst(), new ArrayList<>());

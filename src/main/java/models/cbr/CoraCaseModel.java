@@ -1,8 +1,8 @@
 package models.cbr;
 
-import models.ontology.CoraDataPropertyModel;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
+import models.ontology.assertions.DataPropertyAssertion;
 
 import java.util.Set;
 
@@ -13,14 +13,37 @@ public interface CoraCaseModel {
 
     public interface CaseChangeHandler {
 
+        /**
+         * Wird aufgerufen, wenn auf diesem Fall eine neue Instanz erzeugt wurde.
+         * @see models.ontology.CoraOntologyModelFactory#createInstance(models.ontology.CoraClassModel, String)
+         * @param instance Die neue Instanz
+         */
         public void onAddInstance(CoraInstanceModel instance);
 
+        /**
+         * Wird aufgerufen, wenn auf diesem Fall eine neue Objekt-Relation erzeugt wurde.
+         * @see models.ontology.CoraInstanceModel#createObjectRelation(models.ontology.CoraObjectPropertyModel, models.ontology.CoraInstanceModel)
+         * @param objectProperty Das Prädikat (ObjectProperty)
+         * @param subject Das Subjekt (Instanz)
+         * @param object Das Objekt (Instanz)
+         */
         public void onCreateObjectRelation( CoraObjectPropertyModel objectProperty,
                                             CoraInstanceModel subject,
                                             CoraInstanceModel object);
 
-        //public void onCreateDataRelation(   CoraDataPropertyModel dataProperty,
-        //                                    CoraInstanceModel subject);
+        /**
+         * Wird aufgerufen, wenn auf diesem Fall eine neue Daten-Relation erzeugt wurde.
+         * @see models.ontology.CoraInstanceModel#createDataPropertyAssertion(models.ontology.CoraDataPropertyModel, models.datatypes.TypedValue)
+         * @param assertion Das Statement
+         */
+        public void onCreateDataRelation(DataPropertyAssertion assertion);
+
+        /**
+         * Wird aufgerufen, wenn auf diesem Fall eine Daten-Relation entfernt wurde.
+         * @see models.ontology.CoraInstanceModel#removeAssertion(models.ontology.assertions.Assertion)
+         * @param assertion Das Statement
+         */
+        public void onDeleteDataRelation(DataPropertyAssertion assertion);
     }
 
     public String getCaseId();

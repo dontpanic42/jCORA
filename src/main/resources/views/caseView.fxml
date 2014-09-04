@@ -79,9 +79,9 @@
                               <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="5.0">
                                  <children>
                                     <Label maxWidth="1000.0" prefWidth="1000.0" text="Daten" />
-                                    <Button mnemonicParsing="false">
+                                    <Button mnemonicParsing="false" onAction="#onAddDataProperty">
                                        <graphic>
-                                          <ImageView fx:id="onAddDataProperty" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../icons/add.png" />
                                              </image>
@@ -91,9 +91,9 @@
                                           <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                                        </padding>
                                     </Button>
-                                    <Button mnemonicParsing="false">
+                                    <Button mnemonicParsing="false" onAction="#onRemoveDataProperty">
                                        <graphic>
-                                          <ImageView fx:id="onRemoveDataProperty" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../icons/delete.png" />
                                              </image>

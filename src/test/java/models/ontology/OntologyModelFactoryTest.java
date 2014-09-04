@@ -5,7 +5,6 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
-import factories.ontology.CoraOntologyModelFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

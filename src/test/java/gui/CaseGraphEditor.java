@@ -1,13 +1,8 @@
 package gui;
 
-import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.FileManager;
-import factories.ontology.CoraOntologyModelFactory;
+import models.ontology.CoraOntologyModelFactory;
 import models.ontology.CoraInstanceModel;
-import org.mindswap.pellet.jena.PelletReasonerFactory;
 import view.graphview.GraphViewComponent;
 
 import javax.swing.*;

@@ -2,7 +2,7 @@ package similarity;
 
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
-import factories.ontology.CoraOntologyModelFactory;
+import models.ontology.CoraOntologyModelFactory;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseBaseImpl;
 import models.cbr.CoraCaseModel;
@@ -15,7 +15,6 @@ import services.retrieval.similarity.functions.ontological.SimilarityClass;
 
 import javax.naming.ConfigurationException;
 import java.io.FileNotFoundException;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.Assert.*;

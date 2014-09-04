@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.dataproperty.impl.GenericDataPropertyEditor">
+   <children>
+      <GridPane hgap="10.0" layoutX="158.0" layoutY="170.0" prefWidth="400.0" vgap="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="185.0" minWidth="10.0" prefWidth="145.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="245.0" minWidth="10.0" prefWidth="235.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Instanz" />
+            <Label fx:id="lblInstanceName" text="Instanz Name" GridPane.columnIndex="1" />
+            <Label text="Datentyp" GridPane.rowIndex="2" />
+            <Label fx:id="lblDatatypeName" text="Datentyp Name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Wert" GridPane.rowIndex="3" />
+            <TextField fx:id="txtValue" promptText="Wert..." GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Separator GridPane.columnSpan="2" GridPane.rowIndex="4" />
+            <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnSpan="2" GridPane.rowIndex="5">
+               <children>
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#onCancel" text="Abbrechen" />
+                  <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onSave" text="Übernehmen" />
+               </children>
+            </HBox>
+            <Label text="Eigenschaft" GridPane.rowIndex="1" />
+            <ComboBox fx:id="comboProperty" maxWidth="1.7976931348623157E308" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </GridPane>
+   </children>
+</AnchorPane>

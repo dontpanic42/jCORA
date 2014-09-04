@@ -1,21 +1,15 @@
 package models.ontology;
 
-import com.hp.hpl.jena.ontology.DatatypeProperty;
-import com.hp.hpl.jena.ontology.Individual;
-import com.hp.hpl.jena.ontology.ObjectProperty;
-import com.hp.hpl.jena.ontology.OntClass;
-import com.hp.hpl.jena.query.ReadWrite;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import models.cbr.CoraCaseModel;
 import models.datatypes.TypedValue;
 import models.ontology.datatypes.DatatypeMapper;
+import models.ontology.assertions.DataPropertyAssertion;
 import models.util.Pair;
+import org.mindswap.pellet.jena.PelletInfGraph;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -38,14 +32,18 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
         return list;
     }
 
+    /**
+     * Erzeugt eine neue ObjectProperty relation auf dieser Instanz mit dem
+     * Prädikat <code>property</code> und dem Objekt <code>toObjekt</code>
+     * @param property Das Prädikat
+     * @param toObject Das Objekt
+     */
     public void createObjectRelation(CoraObjectPropertyModel property,
                                        CoraInstanceModel toObject) {
 
-        //this.getBaseObject().addProperty(property.getBaseObject(), toObject.getBaseObject());
         getModel().add( this.getBaseObject(),
                         property.getBaseObject(),
                         toObject.getBaseObject());
-
 
         CoraCaseModel caseModel = getFactory().getCase();
         if(caseModel != null) {
@@ -55,6 +53,13 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
         }
     }
 
+    /**
+     * Gibt alle DataProperties und Werte zurück, die mit dieser Instanz als Subjekt
+     * definiert sind.
+     * @deprecated Nur für die Ähnlichkeitsberechnung
+     * @see CoraInstanceModel#getDataPropertyAssertions()
+     * @return Eine Liste von DataProperty/Wert-Paaren
+     */
     public List<Pair<CoraDataPropertyModel, TypedValue>> getDataProperties() {
         Individual i = getBaseObject();
 
@@ -88,6 +93,72 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
         }
 
         return list;
+    }
+
+    /**
+     * Gibt eine Liste mit DataProperty-Assertions zurück, die diese Instanz als Subjekt besitzen.
+     * @return Liste der DataProperty-Assertions
+     */
+    public List<DataPropertyAssertion> getDataPropertyAssertions() {
+        Model m = getModel();
+        List<DataPropertyAssertion> assertions = new ArrayList<>();
+        StmtIterator iter = m.listStatements(getBaseObject(), null, (RDFNode) null);
+        while(iter.hasNext()) {
+            Statement s = iter.next();
+            if(s.getPredicate().canAs(DatatypeProperty.class)) {
+                assertions.add(getFactory().wrapDataPropertyStatement(s));
+            }
+        }
+
+        return assertions;
+    }
+
+    /**
+     * Erzeugt eine neue DataProperty-Assertion
+     * @param predicat
+     * @param object
+     * @return
+     */
+    public DataPropertyAssertion createDataPropertyAssertion(CoraDataPropertyModel predicat, TypedValue object) {
+        Statement s = getModel().createStatement(this.getBaseObject(),
+                predicat.getBaseObject(), object.getLiteral(getModel()));
+
+        getModel().add(s);
+        getModel().prepare();
+
+        DataPropertyAssertion assertion = getFactory().wrapDataPropertyStatement(s);
+
+        CoraCaseModel caseModel = getFactory().getCase();
+        if(caseModel != null) {
+            for(CoraCaseModel.CaseChangeHandler handler : caseModel.getOnChangeHandlers()) {
+                handler.onCreateDataRelation(assertion);
+            }
+        }
+
+        return assertion;
+    }
+
+    /**
+     * Löscht eine DataProperty-Assertion
+     * @param assertion Das Statement
+     */
+    public void removePropertyAssertion(DataPropertyAssertion assertion) {
+        getModel().remove(assertion.getBaseObject());
+        getModel().prepare();
+
+        // Lade das Pellet-Inferenz-Modell komplett neu, da sonst die
+        // 'remove' änderungen erst bei neu Laden des Falles übernommen werden...
+        if(getModel().getGraph() instanceof PelletInfGraph) {
+            PelletInfGraph pg = (PelletInfGraph) getModel().getGraph();
+            pg.reload();
+        }
+
+        CoraCaseModel caseModel = getFactory().getCase();
+        if(caseModel != null) {
+            for(CoraCaseModel.CaseChangeHandler handler : caseModel.getOnChangeHandlers()) {
+                handler.onDeleteDataRelation(assertion);
+            }
+        }
     }
 
     /**
@@ -145,6 +216,26 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
             for(CoraPropertyModel p : typeProperties) {
                 if(p.isObjectProperty()) {
                     results.add(p.asObjectProperty());
+                }
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * Gibt eine Liste mit hinzufügbaren DataProperties zurück (abhängig vom Typ der Instanz)
+     * @return Liste mit "erlaubten" DataProperties.
+     */
+    public Set<CoraDataPropertyModel> getAvailableDataProperties() {
+        Set<CoraClassModel> types = getFlattenedTypes();
+        Set<CoraDataPropertyModel> results = new HashSet<>();
+
+        for(CoraClassModel clazz : types) {
+            Set<CoraPropertyModel<?>> typeProperties = clazz.getProperties();
+            for(CoraPropertyModel p : typeProperties) {
+                if(p.isDataProperty()) {
+                    results.add(p.asDataProperty());
                 }
             }
         }

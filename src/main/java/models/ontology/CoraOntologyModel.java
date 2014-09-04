@@ -2,10 +2,6 @@ package models.ontology;
 
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import factories.ontology.CoraOntologyModelFactory;
-import mainapp.MainApplication;
-import models.cbr.CoraCaseModel;
-import models.cbr.CoraCaseModelImpl;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Set;

@@ -3,7 +3,6 @@ package models.ontology;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
-import factories.ontology.CoraOntologyModelFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,11 +10,6 @@ import org.mindswap.pellet.jena.PelletReasonerFactory;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
-import java.util.List;
 import java.util.Set;
 
 /**
