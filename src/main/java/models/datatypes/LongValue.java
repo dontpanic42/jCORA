@@ -10,12 +10,12 @@ import com.hp.hpl.jena.rdf.model.Literal;
  */
 public class LongValue extends TypedValue<Long> {
 
-    private Long value = 0l;
-
-    public LongValue() {}
+    public LongValue() {
+        setValue(0l);
+    }
 
     public LongValue(Long value) {
-        this.value = value;
+        setValue(value);
     }
 
     @Override
@@ -32,30 +32,15 @@ public class LongValue extends TypedValue<Long> {
     @Override
     public void setFromString(String val) {
         try {
-            value = Long.parseLong(val);
+            setValue(Long.parseLong(val));
         } catch (NumberFormatException e) {
 
         }
     }
 
     @Override
-    public void setFromLiteral(Literal literal) {
-        value = literal.getLong();
-    }
-
-    @Override
-    public Long getValue() {
-        return value;
-    }
-
-    @Override
     public Literal getLiteral(OntModel model) {
-        return model.createTypedLiteral(value);
-    }
-
-    @Override
-    public String getAsString() {
-        return value.toString();
+        return model.createTypedLiteral(getValue());
     }
 
     @Override
@@ -66,5 +51,10 @@ public class LongValue extends TypedValue<Long> {
     @Override
     public TypedValue<Long> getMinValue() {
         return new LongValue(Long.MIN_VALUE);
+    }
+
+    @Override
+    public String getUnitName() {
+        return "(Long)";
     }
 }

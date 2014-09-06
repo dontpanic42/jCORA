@@ -13,12 +13,13 @@ public class BooleanValue extends TypedValue<Boolean> {
     private static final String TRUE_STRING = "ja";
     private static final String FALSE_STRING = "nein";
 
-    private Boolean value = false;
 
-    public BooleanValue() { }
+    public BooleanValue() {
+        setValue(false);
+    }
 
     public BooleanValue(Boolean value) {
-        this.value = value;
+        setValue(value);
     }
 
     @Override
@@ -30,30 +31,25 @@ public class BooleanValue extends TypedValue<Boolean> {
     @Override
     public void setFromString(String val) {
         if(val.toLowerCase().equals(TRUE_STRING)) {
-            value = true;
+            setValue(true);
         } else if(val.toLowerCase().equals(FALSE_STRING)) {
-            value = false;
+            setValue(false);
         }
     }
 
     @Override
     public void setFromLiteral(Literal literal) {
-        value = literal.getBoolean();
+        setValue(literal.getBoolean());
     }
 
     @Override
     public String getAsString() {
-        return (value)? TRUE_STRING : FALSE_STRING;
-    }
-
-    @Override
-    public Boolean getValue() {
-        return value;
+        return (getValue())? TRUE_STRING : FALSE_STRING;
     }
 
     @Override
     public Literal getLiteral(OntModel model) {
-        return model.createTypedLiteral(value);
+        return model.createTypedLiteral(getValue());
     }
 
     @Override
@@ -64,5 +60,10 @@ public class BooleanValue extends TypedValue<Boolean> {
     @Override
     public TypedValue<Boolean> getMinValue() {
         return null;
+    }
+
+    @Override
+    public String getUnitName() {
+        return "(Bool'scher Wert)";
     }
 }

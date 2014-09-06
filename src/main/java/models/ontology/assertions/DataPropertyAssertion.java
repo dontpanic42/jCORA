@@ -44,6 +44,10 @@ public class DataPropertyAssertion extends Assertion<CoraInstanceModel, CoraData
 
         try {
             clazz = (Class<? extends TypedValue>) property.getRangeDataType();
+
+            if(clazz == null) {
+                return null;
+            }
         } catch (ClassCastException e) {
             e.printStackTrace();
             return null;

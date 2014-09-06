@@ -160,6 +160,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
 
         OntModel model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, m);
+
         model.setNsPrefix("", CASE_NS);
         model.addSubModel(domainModel);
 

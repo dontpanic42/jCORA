@@ -10,12 +10,12 @@ import com.hp.hpl.jena.rdf.model.Literal;
  */
 public class StringValue extends TypedValue<String> {
 
-    private String value = "";
-
-    public StringValue() { }
+    public StringValue() {
+        setValue("");
+    }
 
     public StringValue(String value) {
-        this.value = value;
+        setValue(value);
     }
 
     @Override
@@ -25,27 +25,12 @@ public class StringValue extends TypedValue<String> {
 
     @Override
     public void setFromString(String val) {
-        value = val;
-    }
-
-    @Override
-    public void setFromLiteral(Literal literal) {
-        value = literal.getString();
-    }
-
-    @Override
-    public String getValue() {
-        return value;
+        setValue(val);
     }
 
     @Override
     public Literal getLiteral(OntModel model) {
-        return model.createTypedLiteral(value);
-    }
-
-    @Override
-    public String getAsString() {
-        return value;
+        return model.createTypedLiteral(getValue());
     }
 
     @Override
@@ -56,5 +41,10 @@ public class StringValue extends TypedValue<String> {
     @Override
     public TypedValue<String> getMinValue() {
         return null;
+    }
+
+    @Override
+    public String getUnitName() {
+        return "(String)";
     }
 }

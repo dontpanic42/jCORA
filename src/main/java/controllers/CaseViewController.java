@@ -42,6 +42,9 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
     private TableColumn<DataPropertyAssertion, String>  columnPropertyValue;
 
     @FXML
+    private TableColumn<DataPropertyAssertion, String> columnPropertyUnit;
+
+    @FXML
     private TableView<DataPropertyAssertion> tblDataProperties;
 
     private final GraphViewComponent graph = new GraphViewComponent();
@@ -78,6 +81,15 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
                 } else {
                     return new ReadOnlyObjectWrapper<>(object.getAsString());
                 }
+            }
+        });
+
+        columnPropertyUnit.setCellValueFactory( (p) -> {
+            TypedValue object = p.getValue().getObject();
+            if(object == null) {
+                return new ReadOnlyObjectWrapper<>("Unbek. Einheit");
+            } else {
+                return new ReadOnlyObjectWrapper<>(object.getUnitName());
             }
         });
     }

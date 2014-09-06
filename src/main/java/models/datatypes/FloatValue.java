@@ -1,5 +1,8 @@
 package models.datatypes;
 
+import com.hp.hpl.jena.datatypes.BaseDatatype;
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
 
@@ -10,12 +13,12 @@ import com.hp.hpl.jena.rdf.model.Literal;
  */
 public class FloatValue extends TypedValue<Float> {
 
-    private Float value = 0.f;
-
-    public FloatValue() { }
+    public FloatValue() {
+        setValue(0.f);
+    }
 
     public FloatValue(Float value) {
-        this.value = value;
+        setValue(value);
     }
 
     @Override
@@ -32,35 +35,25 @@ public class FloatValue extends TypedValue<Float> {
     @Override
     public void setFromString(String val) {
         try {
-            value = Float.parseFloat(val);
+            setValue(Float.parseFloat(val));
         } catch (NumberFormatException e) {
 
         }
     }
 
     @Override
-    public void setFromLiteral(Literal literal) {
-        value = literal.getFloat();
-    }
-
-    @Override
-    public Float getValue() {
-        return value;
-    }
-
-    @Override
     public Literal getLiteral(OntModel model) {
-        return model.createTypedLiteral(value);
-    }
-
-    @Override
-    public String getAsString() {
-        return value.toString();
+        return model.createTypedLiteral(getValue());
     }
 
     @Override
     public TypedValue<Float> getMaxValue() {
         return new FloatValue(Float.MAX_VALUE);
+    }
+
+    @Override
+    public String getUnitName() {
+        return "(Fließkomma)";
     }
 
     @Override

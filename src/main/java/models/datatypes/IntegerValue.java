@@ -10,12 +10,12 @@ import com.hp.hpl.jena.rdf.model.Literal;
  */
 public class IntegerValue extends TypedValue<Integer> {
 
-    Integer value = 0;
-
-    public IntegerValue() { }
+    public IntegerValue() {
+        setValue(0);
+    }
 
     public IntegerValue(Integer value) {
-        this.value = value;
+        setValue(value);
     }
 
     @Override
@@ -32,30 +32,15 @@ public class IntegerValue extends TypedValue<Integer> {
     @Override
     public void setFromString(String val) {
         try {
-            value = Integer.parseInt(val);
+            setValue(Integer.parseInt(val));
         } catch (NumberFormatException e) {
-
+            System.err.println("Parsing-Fehler: [" + val + "] ist kein valider Integer");
         }
     }
 
     @Override
-    public void setFromLiteral(Literal literal) {
-        value = literal.getInt();
-    }
-
-    @Override
-    public Integer getValue() {
-        return value;
-    }
-
-    @Override
     public Literal getLiteral(OntModel model) {
-        return model.createTypedLiteral(value);
-    }
-
-    @Override
-    public String getAsString() {
-        return value.toString();
+        return model.createTypedLiteral(getValue());
     }
 
     @Override
@@ -66,5 +51,10 @@ public class IntegerValue extends TypedValue<Integer> {
     @Override
     public TypedValue<Integer> getMinValue() {
         return new IntegerValue(Integer.MIN_VALUE);
+    }
+
+    @Override
+    public String getUnitName() {
+        return "(Integer)";
     }
 }

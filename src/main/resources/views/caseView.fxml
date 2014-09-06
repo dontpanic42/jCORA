@@ -8,7 +8,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CaseViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CaseViewController">
    <children>
       <HBox prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -25,6 +25,9 @@
                      <padding>
                         <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                      </padding>
+                     <tooltip>
+                        <Tooltip text="Diesen Fall speichern" />
+                     </tooltip>
                   </Button>
                   <Button mnemonicParsing="false" onAction="#onSaveAsNew">
                      <graphic>
@@ -37,6 +40,9 @@
                      <padding>
                         <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                      </padding>
+                     <tooltip>
+                        <Tooltip text="Diesen Fall duplizieren und als neuen Fall speichern" />
+                     </tooltip>
                   </Button>
                   <Separator />
                   <Button mnemonicParsing="false" onAction="#onSaveAsXML">
@@ -50,6 +56,9 @@
                      <padding>
                         <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                      </padding>
+                     <tooltip>
+                        <Tooltip text="Diesen Fall im RDF/XML-Format speichern" />
+                     </tooltip>
                   </Button>
                   <Button mnemonicParsing="false" onAction="#onExportAsImage">
                      <graphic>
@@ -62,6 +71,9 @@
                      <padding>
                         <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                      </padding>
+                     <tooltip>
+                        <Tooltip text="Den Fall-Graphen als PNG-Bild speichern" />
+                     </tooltip>
                   </Button>
               </items>
             </ToolBar>
@@ -90,6 +102,9 @@
                                        <padding>
                                           <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                                        </padding>
+                                       <tooltip>
+                                          <Tooltip text="Daten hinzufügen" />
+                                       </tooltip>
                                     </Button>
                                     <Button mnemonicParsing="false" onAction="#onRemoveDataProperty">
                                        <graphic>
@@ -102,6 +117,9 @@
                                        <padding>
                                           <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                                        </padding>
+                                       <tooltip>
+                                          <Tooltip text="Ausgewählte Zeile löschen" />
+                                       </tooltip>
                                     </Button>
                                  </children>
                                  <padding>
@@ -112,6 +130,7 @@
                                 <columns>
                                   <TableColumn fx:id="columnPropertyName" prefWidth="115.0" text="Eigenschaft" />
                                   <TableColumn fx:id="columnPropertyValue" prefWidth="111.0" text="Wert" />
+                                    <TableColumn fx:id="columnPropertyUnit" prefWidth="75.0" text="Einheit" />
                                 </columns>
                               </TableView>
                            </children>

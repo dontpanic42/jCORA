@@ -1,5 +1,6 @@
 package models.datatypes;
 
+import com.hp.hpl.jena.datatypes.BaseDatatype;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
 
@@ -10,6 +11,8 @@ import com.hp.hpl.jena.rdf.model.Literal;
  * Daten-Attribute in der Ontologie zu lesen, setzten oder zu bearbeiten.
  */
 public abstract class TypedValue<T extends Comparable> implements Comparable {
+
+    private T value;
 
     /**
      * Gibt zurück, ob der String <code>val</code> eine gülitge Repräsentation des Wertes
@@ -29,19 +32,45 @@ public abstract class TypedValue<T extends Comparable> implements Comparable {
      * Setzt den Wert durch ein Literal
      * @param literal Wert als Literal
      */
-    public abstract void setFromLiteral(Literal literal);
+    public void setFromLiteral(Literal literal) {
+        //Benutze hier _nicht_ (z.B.)
+        //value = literal.getFloat();
+        //damit auch derivative Typen diese Methode nutzen können.
+        Object o = literal.getValue();
+        if(o instanceof BaseDatatype.TypedValue) {
+            BaseDatatype.TypedValue jenaTV = (BaseDatatype.TypedValue) o;
+            setFromString(jenaTV.lexicalValue);
+            return;
+        } else if(isValidString(literal.getLexicalForm())) {
+            setFromString(literal.getLexicalForm());
+        } else {
+            System.err.println("Typ-Missmatch: Kann Literal " + literal + " nicht als " + this.getClass().getSimpleName() + " darstellen.");
+        }
+    }
 
     /**
      * Gibt den Wert als String zurück.
      * @return Der Wert als String
      */
-    public abstract String getAsString();
+    public String getAsString() {
+        return (value == null)? "(kein Wert)" : value.toString();
+    }
 
     /**
      * Gibt den Wert zurück
      * @return der Wert
      */
-    public abstract T getValue();
+    public T getValue() {
+        return value;
+    }
+
+    /**
+     * Setzt den Wert direkt.
+     * @param value Der Wert
+     */
+    protected void setValue(T value) {
+        this.value = value;
+    }
 
     /**
      * Gibt den Wert als Literal zurück
@@ -62,6 +91,15 @@ public abstract class TypedValue<T extends Comparable> implements Comparable {
      * @return Ein TypedValue-Objekt, das den kleinsten darzustellenden Wert repräsentiert
      */
     public abstract TypedValue<T> getMinValue();
+
+    /**
+     * Gibt den Namen der Einheit zurück, den dieser Wert repräsentiert.
+     * Z.B. "Euro", "Meter", "Fließkomma", etc.
+     * @return Der Name der Einheit als String
+     */
+    public String getUnitName() {
+        return "(kein Typ)";
+    }
 
     /**
      * Komparator. Gibt das <code>compareTo</code> Ergebnis des Basis-Objekts zurück. Kann mit einem
