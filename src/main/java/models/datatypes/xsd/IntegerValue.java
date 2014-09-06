@@ -1,27 +1,28 @@
-package models.datatypes;
+package models.datatypes.xsd;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
+import models.datatypes.TypedValue;
 
 /**
  * Created by daniel on 23.08.14.
  *
- * Repräsentiert einen Long-Wert
+ * Repräsentiert einen Integer wert
  */
-public class LongValue extends TypedValue<Long> {
+public class IntegerValue extends TypedValue<Integer> {
 
-    public LongValue() {
-        setValue(0l);
+    public IntegerValue() {
+        setValue(0);
     }
 
-    public LongValue(Long value) {
+    public IntegerValue(Integer value) {
         setValue(value);
     }
 
     @Override
     public boolean isValidString(String val) {
         try {
-            Float.parseFloat(val);
+            Integer.parseInt(val);
         } catch (NumberFormatException e) {
             return false;
         }
@@ -32,9 +33,9 @@ public class LongValue extends TypedValue<Long> {
     @Override
     public void setFromString(String val) {
         try {
-            setValue(Long.parseLong(val));
+            setValue(Integer.parseInt(val));
         } catch (NumberFormatException e) {
-
+            System.err.println("Parsing-Fehler: [" + val + "] ist kein valider Integer");
         }
     }
 
@@ -44,17 +45,17 @@ public class LongValue extends TypedValue<Long> {
     }
 
     @Override
-    public TypedValue<Long> getMaxValue() {
-        return new LongValue(Long.MAX_VALUE);
+    public TypedValue<Integer> getMaxValue() {
+        return new IntegerValue(Integer.MAX_VALUE);
     }
 
     @Override
-    public TypedValue<Long> getMinValue() {
-        return new LongValue(Long.MIN_VALUE);
+    public TypedValue<Integer> getMinValue() {
+        return new IntegerValue(Integer.MIN_VALUE);
     }
 
     @Override
     public String getUnitName() {
-        return "(Long)";
+        return "(Integer)";
     }
 }

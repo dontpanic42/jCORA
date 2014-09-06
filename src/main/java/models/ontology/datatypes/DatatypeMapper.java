@@ -3,6 +3,7 @@ package models.ontology.datatypes;
 import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.rdf.model.Literal;
 import models.datatypes.TypedValue;
+import models.ontology.CoraDataPropertyModel;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
@@ -70,6 +71,7 @@ public class DatatypeMapper {
 
     /**
      * Gibt den Java-Typ für eine <code>OntResource</code> zurück.
+     * @see models.ontology.CoraDataPropertyModel#getRangeDataType()
      * @param r Die OntResource, deren URI den Typ beschreibt
      * @return Den Java-Typ oder <code>null</code>, wenn dieser unbekannt ist
      */
@@ -78,11 +80,48 @@ public class DatatypeMapper {
     }
 
     /**
+     * Gibt den Wert eines Literals unter Berücksichtigung des vorgegebenen typs
+     * aus der DataProperty-Range zurück
+     * @param property
+     * @param l
+     * @return
+     */
+    public static TypedValue<?> getTypedValue(CoraDataPropertyModel property, Literal l) {
+        Class<TypedValue<?>> tv = null;
+        try {
+            tv = (Class<TypedValue<?>>) property.getRangeDataType();
+        } catch (ClassCastException e) {
+            e.printStackTrace();;
+            tv = null;
+        }
+
+        //Wenn das Property keine range definiert hat, oder die Range unbekannt ist,
+        //gib das literal als xsd-typ zurück
+        if(tv == null) {
+            return getDefaultValue(l);
+        }
+
+        try {
+            TypedValue<?> value = tv.newInstance();
+            value.setFromLiteral(l);
+            return value;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
      * Gibt den Wert des Literals <code>l</code> als <code>TypedValue</code> zurück.
+     * Dabei wird nur der Typ des Literals beachtet - das Ergebniss kann also nur ein
+     * TypedValue für einen xsd-typ sein.
      * @param l Das Literal
      * @return TypedValue oder null im Fehlerfall.
      */
-    public static TypedValue<?> getValue(Literal l) {
+    public static TypedValue<?> getDefaultValue(Literal l) {
         String datatypeURI = l.getDatatypeURI();
 
         try {

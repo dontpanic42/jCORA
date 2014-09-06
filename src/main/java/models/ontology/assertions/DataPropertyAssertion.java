@@ -2,10 +2,12 @@ package models.ontology.assertions;
 
 import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Statement;
 import models.datatypes.TypedValue;
 import models.ontology.CoraDataPropertyModel;
 import models.ontology.CoraInstanceModel;
+import models.ontology.datatypes.DatatypeMapper;
 
 /**
  * Created by daniel on 04.09.14.
@@ -40,35 +42,38 @@ public class DataPropertyAssertion extends Assertion<CoraInstanceModel, CoraData
     public TypedValue getObject() {
         Statement s = getBaseObject();
         CoraDataPropertyModel property = getPredicat();
-        Class<? extends TypedValue> clazz;
+        Literal l = s.getObject().asLiteral();
 
-        try {
-            clazz = (Class<? extends TypedValue>) property.getRangeDataType();
-
-            if(clazz == null) {
-                return null;
-            }
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        TypedValue typedValue;
-        try {
-            typedValue = clazz.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        if(s.getObject().isLiteral()) {
-            typedValue.setFromLiteral(s.getObject().asLiteral());
-            return typedValue;
-        }
-
-        return null;
+        return DatatypeMapper.getTypedValue(property, l);
+//        Class<? extends TypedValue> clazz;
+//
+//        try {
+//            clazz = (Class<? extends TypedValue>) property.getRangeDataType();
+//
+//            if(clazz == null) {
+//                return null;
+//            }
+//        } catch (ClassCastException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//
+//        TypedValue typedValue;
+//        try {
+//            typedValue = clazz.newInstance();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//            return null;
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//
+//        if(s.getObject().isLiteral()) {
+//            typedValue.setFromLiteral(s.getObject().asLiteral());
+//            return typedValue;
+//        }
+//
+//        return null;
     }
 }

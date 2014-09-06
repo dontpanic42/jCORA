@@ -1,19 +1,9 @@
 package services.retrieval.similarity.functions.numeric;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import models.cbr.CoraCaseBaseImpl;
-import models.datatypes.FloatValue;
-import models.datatypes.LongValue;
-import models.datatypes.TypedValue;
+import models.datatypes.xsd.LongValue;
 import models.ontology.CoraPropertyModel;
-import services.retrieval.similarity.functions.SimilarityFunction;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by daniel on 03.09.14.

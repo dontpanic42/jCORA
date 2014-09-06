@@ -81,12 +81,14 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
                 continue;
             }
 
-            TypedValue value = DatatypeMapper.getValue(r.asLiteral());
+            CoraDataPropertyModel property = getFactory().wrapDataProperty(p.as(DatatypeProperty.class));
+
+            //TypedValue value = DatatypeMapper.getValue(r.asLiteral());
+            TypedValue value = DatatypeMapper.getTypedValue(property, r.asLiteral());
             if(value == null) {
                 continue;
             }
 
-            CoraDataPropertyModel property = getFactory().wrapDataProperty(p.as(DatatypeProperty.class));
 
 
             list.add(new Pair(property, value));

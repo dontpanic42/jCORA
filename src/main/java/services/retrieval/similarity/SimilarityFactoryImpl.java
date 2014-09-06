@@ -2,9 +2,9 @@ package services.retrieval.similarity;
 
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraQueryModel;
-import models.datatypes.FloatValue;
-import models.datatypes.IntegerValue;
-import models.datatypes.LongValue;
+import models.datatypes.xsd.FloatValue;
+import models.datatypes.xsd.IntegerValue;
+import models.datatypes.xsd.LongValue;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
 import services.retrieval.similarity.functions.SimilarityFunction;

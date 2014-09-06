@@ -1,7 +1,6 @@
 package services.retrieval.similarity.functions.numeric;
 
-import models.datatypes.IntegerValue;
-import models.datatypes.LongValue;
+import models.datatypes.xsd.IntegerValue;
 import models.ontology.CoraPropertyModel;
 
 import java.math.BigDecimal;

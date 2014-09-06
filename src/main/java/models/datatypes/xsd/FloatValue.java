@@ -1,27 +1,28 @@
-package models.datatypes;
+package models.datatypes.xsd;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
+import models.datatypes.TypedValue;
 
 /**
  * Created by daniel on 23.08.14.
  *
- * Repräsentiert einen Integer wert
+ * Repräsentiert einen Float-Wert
  */
-public class IntegerValue extends TypedValue<Integer> {
+public class FloatValue extends TypedValue<Float> {
 
-    public IntegerValue() {
-        setValue(0);
+    public FloatValue() {
+        setValue(0.f);
     }
 
-    public IntegerValue(Integer value) {
+    public FloatValue(Float value) {
         setValue(value);
     }
 
     @Override
     public boolean isValidString(String val) {
         try {
-            Integer.parseInt(val);
+            Float.parseFloat(val);
         } catch (NumberFormatException e) {
             return false;
         }
@@ -32,9 +33,9 @@ public class IntegerValue extends TypedValue<Integer> {
     @Override
     public void setFromString(String val) {
         try {
-            setValue(Integer.parseInt(val));
+            setValue(Float.parseFloat(val));
         } catch (NumberFormatException e) {
-            System.err.println("Parsing-Fehler: [" + val + "] ist kein valider Integer");
+
         }
     }
 
@@ -44,17 +45,17 @@ public class IntegerValue extends TypedValue<Integer> {
     }
 
     @Override
-    public TypedValue<Integer> getMaxValue() {
-        return new IntegerValue(Integer.MAX_VALUE);
-    }
-
-    @Override
-    public TypedValue<Integer> getMinValue() {
-        return new IntegerValue(Integer.MIN_VALUE);
+    public TypedValue<Float> getMaxValue() {
+        return new FloatValue(Float.MAX_VALUE);
     }
 
     @Override
     public String getUnitName() {
-        return "(Integer)";
+        return "(Fließkomma)";
+    }
+
+    @Override
+    public TypedValue<Float> getMinValue() {
+        return new FloatValue(-Float.MAX_VALUE);
     }
 }

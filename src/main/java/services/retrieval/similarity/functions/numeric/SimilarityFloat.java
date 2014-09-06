@@ -1,10 +1,7 @@
 package services.retrieval.similarity.functions.numeric;
 
-import models.datatypes.FloatValue;
-import models.datatypes.LongValue;
-import models.datatypes.TypedValue;
+import models.datatypes.xsd.FloatValue;
 import models.ontology.CoraPropertyModel;
-import services.retrieval.similarity.functions.SimilarityFunction;
 
 import java.math.BigDecimal;
 

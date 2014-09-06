@@ -1,7 +1,8 @@
-package models.datatypes;
+package models.datatypes.xsd;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Literal;
+import models.datatypes.TypedValue;
 
 /**
  * Created by daniel on 23.08.14.

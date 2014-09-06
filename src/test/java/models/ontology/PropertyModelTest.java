@@ -3,7 +3,7 @@ package models.ontology;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
-import models.datatypes.FloatValue;
+import models.datatypes.xsd.FloatValue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
