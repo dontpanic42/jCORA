@@ -50,7 +50,12 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
         try {
             InputStream is = this.getClass().getClassLoader().getResourceAsStream(CASE_BASE_PROPERTIES_FILE);
-            defaultProperties.load(is);
+            //defaultProperties.load(is);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF8"));
+            defaultProperties.load(reader);
+
+            reader.close();
             is.close();
         } catch (IOException e) {
             throw new FileNotFoundException("Keine CaseBase-Konfiguration gefunden");
@@ -127,7 +132,13 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
         try {
             InputStream is = new FileInputStream(file);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF8"));
+
             m.read(is, fileFormat);
+
+            reader.close();
+            is.close();
+
             dataset.commit();
 
             m.close();
@@ -236,7 +247,20 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
             throw new FileNotFoundException();
         }
 
-        Model m = RDFDataMgr.loadModel(domainModelFile, Lang.RDFXML);
+        //Model m = RDFDataMgr.loadModel(domainModelFile, Lang.RDFXML);
+        Model m = ModelFactory.createDefaultModel();
+
+        try {
+            InputStream is = new FileInputStream(domainModelFile);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF8"));
+
+            m.read(is, "RDF/XML-ABBREV", null);
+
+            reader.close();
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if(caseBaseProperties.getProperty("domainNsOverride", null) != null) {
             m.setNsPrefix("", caseBaseProperties.getProperty("domainNsOverride"));

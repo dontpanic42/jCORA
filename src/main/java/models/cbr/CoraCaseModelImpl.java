@@ -8,8 +8,10 @@ import models.ontology.CoraOntologyModelFactory;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -48,7 +50,10 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
         if(caseStructureMapping == null) {
             caseStructureMapping = new Properties();
             InputStream is = this.getClass().getClassLoader().getResourceAsStream(CASE_STRUCTURE_MAPPING_FILE);
-            caseStructureMapping.load(is);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF8"));
+            caseStructureMapping.load(reader);
+            reader.close();
             is.close();
         }
 
@@ -64,8 +69,6 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
      */
     public CoraCaseModelImpl(OntModel caseModel, CoraCaseBaseImpl caseBase, Properties structure)
             throws MalformedOntologyException  {
-
-        this.caseId = caseId;
 
         setupCaseModel(caseModel, caseBase, structure);
     }
@@ -164,7 +167,7 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
 
         OntClass clazz = caseModel.getOntClass(fullClazzName);
         if(clazz == null) {
-            throw new MalformedOntologyException();
+            throw new MalformedOntologyException("Kann Klasse " + fullClazzName + " nicht finden.");
         }
 
         ExtendedIterator<? extends OntResource> iter = clazz.listInstances();
