@@ -9,6 +9,10 @@ public class KgValue extends FloatValue {
 
     private static final String TYPE_NAME = "Kg";
 
+    public KgValue() {
+        super();
+    }
+
     @Override
     public String getUnitName() {
         return TYPE_NAME;

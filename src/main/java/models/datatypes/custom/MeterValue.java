@@ -9,6 +9,10 @@ public class MeterValue extends FloatValue {
 
     private static final String TYPE_NAME = "Meter";
 
+    public MeterValue() {
+        super();
+    }
+
     @Override
     public String getUnitName() {
         return TYPE_NAME;

@@ -2,12 +2,14 @@ package services.retrieval.similarity;
 
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraQueryModel;
+import models.datatypes.custom.EuroValue;
 import models.datatypes.xsd.FloatValue;
 import models.datatypes.xsd.IntegerValue;
 import models.datatypes.xsd.LongValue;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
 import services.retrieval.similarity.functions.SimilarityFunction;
+import services.retrieval.similarity.functions.numeric.SimilarityEuro;
 import services.retrieval.similarity.functions.numeric.SimilarityFloat;
 import services.retrieval.similarity.functions.numeric.SimilarityInteger;
 import services.retrieval.similarity.functions.numeric.SimilarityLong;
@@ -37,6 +39,7 @@ public class SimilarityFactoryImpl implements SimilarityFactory {
             put(FloatValue.class, new SimilarityFloat());
             put(LongValue.class, new SimilarityLong());
             put(IntegerValue.class, new SimilarityInteger());
+            put(EuroValue.class, new SimilarityEuro());
 
             /*
              * Für Ontologie-Objekte

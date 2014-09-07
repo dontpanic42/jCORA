@@ -1,5 +1,6 @@
 package models.datatypes.custom;
 
+import models.datatypes.TypedValue;
 import models.datatypes.xsd.FloatValue;
 
 /**

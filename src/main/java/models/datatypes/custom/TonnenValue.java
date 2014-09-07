@@ -9,6 +9,10 @@ public class TonnenValue extends FloatValue {
 
     private static final String TYPE_NAME = "Tonnen";
 
+    public TonnenValue() {
+        super();
+    }
+
     @Override
     public String getUnitName() {
         return TYPE_NAME;

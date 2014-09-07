@@ -116,6 +116,10 @@ public abstract class NumericSimilarityFunction<T extends TypedValue> extends Si
                     valueType.newInstance().getMinValue():
                     valueType.newInstance().getMaxValue();
 
+            if(result == null) {
+                System.err.println("Fehler: Null! " + goal + " Klasse: " + valueType.getSimpleName());
+            }
+
             int tmp;
             for(T v : inputList) {
                 if(v.getClass() == valueType) {
@@ -245,8 +249,8 @@ public abstract class NumericSimilarityFunction<T extends TypedValue> extends Si
         BigDecimal nen = ( (aVal.subtract(bVal)).abs() );
         BigDecimal zae = ( (maxVal.subtract(minVal)).abs() );
 
-        if(nen.equals(BigDecimal.ZERO) || zae.equals(BigDecimal.ZERO)) {
-            System.out.println("Sim: 1.0f");
+        //@see http://stackoverflow.com/questions/10950914/how-to-check-if-bigdecimal-variable-0-in-java
+        if(nen.compareTo(BigDecimal.ZERO) == 0 || zae.compareTo(BigDecimal.ZERO) == 0) {
             return 1.f;
         }
 

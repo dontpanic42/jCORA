@@ -110,9 +110,10 @@ public abstract class TypedValue<T extends Comparable> implements Comparable {
      */
     @Override
     public int compareTo(Object o) {
-        if(o.getClass().equals(this.getClass())) {
-            TypedValue<T> otv = (TypedValue<T>) o;
-            return getValue().compareTo(otv.getValue());
+
+        if(TypedValue.class.isInstance(o)) {
+            TypedValue vOther = (TypedValue) o;
+            return getValue().compareTo(vOther.getValue());
         }
 
         if(o.getClass().equals(getValue().getClass())) {
