@@ -121,12 +121,7 @@ public class GraphViewComponent extends JPanel implements SelectProvider {
         GraphViewComponent self = this;
 
         //Run the event handler on the javafx-Thread
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                actionHandler.onAddRelation(self, parentWidget.getNodeModel().getModel());
-            }
-        });
+        Platform.runLater(() -> actionHandler.onAddRelation(self, parentWidget.getModel().getModel()) );
     }
 
     /**
@@ -141,12 +136,7 @@ public class GraphViewComponent extends JPanel implements SelectProvider {
         GraphViewComponent self = this;
 
         //Run the event handler on the javafx-Thread
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                actionHandler.onDeleteInstance(self, parentWidget.getNodeModel().getModel());
-            }
-        });
+        Platform.runLater(() -> actionHandler.onDeleteInstance(self, parentWidget.getModel().getModel()));
     }
 
     /**

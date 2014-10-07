@@ -174,9 +174,6 @@ public class InstanceWidget extends Widget {
         this.model.set(model);
     }
 
-    public NodeModel getNodeModel() {
-        return nodeModel;
-    }
 
     private void setIsPartOfDomainOntology() {
         final float[] gradientFractions = {0.0f, 1.0f};
