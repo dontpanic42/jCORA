@@ -5,6 +5,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -31,12 +33,16 @@ public class AddObjectPropertyViewController {
     @FXML
     private ListView<CoraObjectPropertyModel> listProperties;
     private ObservableList<CoraObjectPropertyModel> itemsProperties;
+    private Task<ObservableList<CoraObjectPropertyModel>> listPropertiesTask;
+
     @FXML
     private TextField txtSearchRelation;
 
     @FXML
     private ListView<CoraInstanceModel> listInstances;
     private ObservableList<CoraInstanceModel> itemsInstances;
+    private Task<ObservableList<CoraInstanceModel>> listInstancesTask;
+
     @FXML
     private TextField txtSearchInstance;
 
@@ -48,19 +54,12 @@ public class AddObjectPropertyViewController {
 
     @FXML
     public void initialize() {
-        listProperties.setPlaceholder(new Label("Keine Relationen vorhanden"));
+        listProperties.setPlaceholder(new Label("Nicht initialisiert."));
 
-        listProperties.getSelectionModel().selectedItemProperty().addListener(
-                new ChangeListener<CoraObjectPropertyModel>() {
-            @Override
-            public void changed(ObservableValue<? extends CoraObjectPropertyModel> observableValue,
-                                CoraObjectPropertyModel oldValue,
-                                CoraObjectPropertyModel newValue) {
-                onSelectProperty(oldValue, newValue);
-            }
-        });
+        listProperties.getSelectionModel().selectedItemProperty().addListener((ov, oldProperty, newProperty) ->
+            onSelectProperty(oldProperty, newProperty));
 
-        listInstances.setPlaceholder(new Label("Keine Instanzen vorhanden"));
+        listInstances.setPlaceholder(new Label("Nicht initialisiert."));
     }
 
     public static void showAddRelation(Stage parent, CoraInstanceModel model) {
@@ -166,34 +165,86 @@ public class AddObjectPropertyViewController {
 
     private void onSelectProperty(CoraObjectPropertyModel oldProperty,
                                   CoraObjectPropertyModel newProperty) {
-        itemsInstances = FXCollections.observableArrayList();
 
-        if(newProperty == null) {
+        if(newProperty == null || oldProperty == newProperty) {
             return;
         }
 
-        Set<CoraClassModel> domainClasses = newProperty.getRangeClasses();
-        currentClasses = domainClasses;
-        Set<CoraInstanceModel> instances = new HashSet<>();
+        txtSearchInstance.setText("");
+        ProgressIndicator pi = new ProgressIndicator();
+        pi.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+        pi.setMaxSize(50.0, 50.0);
+        listInstances.setPlaceholder(pi);
 
-        for(CoraClassModel clazz : domainClasses) {
-            instances.addAll(clazz.getInstances());
+        if(listInstancesTask != null) {
+            listInstancesTask.cancel();
         }
 
-        itemsInstances.addAll(instances);
-        txtSearchInstance.setText("");
-        listInstances.setItems(itemsInstances);
+        listInstancesTask = new Task<ObservableList<CoraInstanceModel>>() {
+            @Override
+            protected ObservableList<CoraInstanceModel> call() throws Exception {
+                ObservableList<CoraInstanceModel> localItemsInstances;
+                localItemsInstances = FXCollections.observableArrayList();
+
+
+                Set<CoraClassModel> domainClasses = newProperty.getRangeClasses();
+                currentClasses = domainClasses;
+                Set<CoraInstanceModel> instances = new HashSet<>();
+
+                for(CoraClassModel clazz : domainClasses) {
+                    instances.addAll(clazz.getInstances());
+                }
+
+                localItemsInstances.addAll(instances);
+                return localItemsInstances;
+            }
+        };
+
+        listInstancesTask.stateProperty().addListener((ov, oldState, newState) -> {
+            if(newState == Worker.State.SUCCEEDED) {
+                itemsInstances = listInstancesTask.getValue();
+                listInstances.setItems(itemsInstances);
+                listInstances.setPlaceholder(new Label("Keine Instanzen vorhanden"));
+            }
+        });
+
+        new Thread(listInstancesTask).start();
     }
 
     public void setModel(CoraInstanceModel model) {
         this.model = model;
 
-        itemsProperties = FXCollections.observableArrayList();
-        itemsProperties.addAll(model.getAvailableObjectProperties());
+        ProgressIndicator pi = new ProgressIndicator();
+        pi.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+        pi.setMaxSize(50.0, 50.0);
+        listProperties.setPlaceholder(pi);
 
-        listProperties.setItems(itemsProperties);
-        if(itemsProperties.size() > 0) {
-            listProperties.getSelectionModel().selectFirst();
+        if(listPropertiesTask != null) {
+            listPropertiesTask.cancel();
         }
+
+        listPropertiesTask = new Task<ObservableList<CoraObjectPropertyModel>>() {
+            @Override
+            protected ObservableList<CoraObjectPropertyModel> call() throws Exception {
+                ObservableList<CoraObjectPropertyModel> localItemsProperties;
+                localItemsProperties = FXCollections.observableArrayList();
+                localItemsProperties.addAll(model.getAvailableObjectProperties());
+                return localItemsProperties;
+            }
+        };
+
+        listPropertiesTask.stateProperty().addListener((ov, oldState, newState) -> {
+            if(newState == Worker.State.SUCCEEDED) {
+                itemsProperties = listPropertiesTask.getValue();
+                listProperties.setItems(itemsProperties);
+                if(itemsProperties.size() > 0) {
+                    listProperties.getSelectionModel().selectFirst();
+                }
+
+                listProperties.setPlaceholder(new Label("Keine Relationen vorhanden"));
+            }
+        });
+
+        new Thread(listPropertiesTask).start();
     }
 }
