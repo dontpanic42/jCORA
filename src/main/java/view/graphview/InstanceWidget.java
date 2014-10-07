@@ -1,6 +1,12 @@
 package view.graphview;
 
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import mainapp.MainApplication;
+import models.ontology.CoraClassModel;
+import models.ontology.CoraInstanceModel;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.SelectProvider;
 import org.netbeans.api.visual.border.Border;
@@ -16,6 +22,8 @@ import view.graphview.models.NodeModel;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by daniel on 23.08.14.
@@ -23,7 +31,11 @@ import java.awt.geom.Point2D;
 public class InstanceWidget extends Widget {
 
     private LabelWidget instanceName;
-    private LabelWidget instanceType;
+
+    private Widget instanceTypeWidget;
+    private Scene scene;
+
+    private SimpleObjectProperty<NodeModel> model = new SimpleObjectProperty<>();
 
     private NodeModel nodeModel;
     private final static Color FOREGROUND_COLOR = Color.BLACK;
@@ -57,6 +69,7 @@ public class InstanceWidget extends Widget {
 
     public InstanceWidget(Scene scene) {
         super(scene);
+        this.scene = scene;
 
         setLayout(LayoutFactory.createVerticalFlowLayout());
         setBorder(WIDGET_BORDER);
@@ -78,28 +91,67 @@ public class InstanceWidget extends Widget {
         instanceNameWidget.addChild(instanceName);
         addChild(instanceNameWidget);
 
-        Widget instanceTypeWidget = new Widget(scene);
+        instanceTypeWidget = new Widget(scene);
         instanceTypeWidget.setLayout(LayoutFactory.createHorizontalFlowLayout());
         instanceTypeWidget.setBorder(BORDER_4);
 
-        ImageWidget typeImage = new ImageWidget(scene);
-        typeImage.setImage(IMAGE_TYPE);
-        instanceTypeWidget.addChild(typeImage);
-
-        instanceType = new LabelWidget(scene);
-        instanceType.setFont(scene.getDefaultFont());
-        instanceType.setForeground(FOREGROUND_COLOR);
-
-        instanceTypeWidget.addChild(instanceType);
         addChild(instanceTypeWidget);
 
         setOpaque(true);
+
+
+        model.addListener( (ov, oldModel, newModel ) -> {
+            if(newModel != null) {
+                instanceName.setLabel(newModel.getModel().toString());
+                setTypeList(newModel.getModel());
+
+                String instanceNs = newModel.getModel().getNs();
+                String domainNs = MainApplication.getInstance().getCaseBase().getDomainNs();
+                if(instanceNs.equals(domainNs)) {
+                    setIsPartOfDomainOntology();
+                } else {
+                    setIsPartOfTaskOntology();
+                }
+            } else {
+                instanceName.setLabel("");
+                setTypeList(null);
+            }
+        });
+
 
         InstanceGraph graph = (InstanceGraph) scene;
 
         if(graph.getSelectProvider() != null) {
             getActions().addAction(ActionFactory.createSelectAction(graph.getSelectProvider()));
         }
+    }
+
+    private void setTypeList(CoraInstanceModel instance) {
+        instanceTypeWidget.removeChildren();
+        if(instance == null) {
+            return;
+        }
+
+        Set<CoraClassModel> s = instance.getFlattenedTypes();
+        for(CoraClassModel c : s) {
+            addType(c.toString());
+            //TODO: Das Widget kann derzeit nur _einen_ typ anzeigen (layout).
+            //Use-Case für mehrere Klassen?
+            return;
+        }
+    }
+
+    private void addType(String type) {
+        ImageWidget typeImage = new ImageWidget(scene);
+        typeImage.setImage(IMAGE_TYPE);
+        instanceTypeWidget.addChild(typeImage);
+
+        LabelWidget instanceType = new LabelWidget(scene);
+        instanceType.setFont(scene.getDefaultFont());
+        instanceType.setForeground(FOREGROUND_COLOR);
+        instanceType.setLabel(type);
+
+        instanceTypeWidget.addChild(instanceType);
     }
 
     public void setSelected(boolean value) {
@@ -110,36 +162,20 @@ public class InstanceWidget extends Widget {
         }
     }
 
-    public void setInstanceName(String name) {
-        instanceName.setLabel(name);
+    public NodeModel getModel() {
+        return model.get();
     }
 
-    public String getInstanceName() {
-        return instanceName.getLabel();
+    public SimpleObjectProperty<NodeModel> modelProperty() {
+        return model;
     }
 
-    public void setInstanceType(String name) {
-        instanceType.setLabel(name);
-    }
-
-    public String getInstanceType() {
-        return instanceType.getLabel();
+    public void setModel(NodeModel model) {
+        this.model.set(model);
     }
 
     public NodeModel getNodeModel() {
         return nodeModel;
-    }
-
-    public void setNodeModel(NodeModel nodeModel) {
-        this.nodeModel = nodeModel;
-
-        String instanceNs = nodeModel.getModel().getNs();
-        String domainNs = MainApplication.getInstance().getCaseBase().getDomainNs();
-        if(instanceNs.equals(domainNs)) {
-            setIsPartOfDomainOntology();
-        } else {
-            setIsPartOfTaskOntology();
-        }
     }
 
     private void setIsPartOfDomainOntology() {

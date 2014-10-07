@@ -171,8 +171,8 @@ public class GraphViewComponent extends JPanel implements SelectProvider {
         }
 
         NodeModel instanceModel = new NodeModel();
-        instanceModel.setInstanceName(instance.toString());
-        instanceModel.setInstanceType(instance.toString());
+        //instanceModel.setInstanceName(instance.toString());
+        //instanceModel.setInstanceType(instance.toString());
         instanceModel.setModel(instance);
 
         visited.put(instance, instanceModel);
@@ -283,8 +283,8 @@ public class GraphViewComponent extends JPanel implements SelectProvider {
             if(actionHandler != null) {
                 InstanceWidget newSelection = currentSelection;
 
-                CoraInstanceModel oldInstance = (oldSelection == null)? null : oldSelection.getNodeModel().getModel();
-                CoraInstanceModel newInstance = (newSelection == null)? null : newSelection.getNodeModel().getModel();
+                CoraInstanceModel oldInstance = (oldSelection == null)? null : oldSelection.getModel().getModel();
+                CoraInstanceModel newInstance = (newSelection == null)? null : newSelection.getModel().getModel();
 
                 actionHandler.onChangeSelection(this, oldInstance, newInstance);
             }

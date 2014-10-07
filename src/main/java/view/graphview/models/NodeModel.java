@@ -1,40 +1,27 @@
 package view.graphview.models;
 
+import javafx.beans.property.SimpleObjectProperty;
 import models.ontology.CoraInstanceModel;
 
 /**
  * Created by daniel on 23.08.14.
  */
 public class NodeModel {
-    private String instanceName = "";
-    private String instanceType = "";
 
-    private CoraInstanceModel model;
+    private SimpleObjectProperty<CoraInstanceModel> model = new SimpleObjectProperty<>();
 
     public NodeModel() {
     }
 
     public CoraInstanceModel getModel() {
+        return model.get();
+    }
+
+    public SimpleObjectProperty<CoraInstanceModel> modelProperty() {
         return model;
     }
 
     public void setModel(CoraInstanceModel model) {
-        this.model = model;
-    }
-
-    public String getInstanceName() {
-        return instanceName;
-    }
-
-    public void setInstanceName(String instanceName) {
-        this.instanceName = instanceName;
-    }
-
-    public String getInstanceType() {
-        return instanceType;
-    }
-
-    public void setInstanceType(String instanceType) {
-        this.instanceType = instanceType;
+        this.model.set(model);
     }
 }

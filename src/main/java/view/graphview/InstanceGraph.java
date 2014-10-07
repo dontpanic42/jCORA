@@ -122,11 +122,12 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
     @Override
     protected Widget attachNodeWidget(NodeModel nodeModel) {
         InstanceWidget widget = new InstanceWidget(this);
-        widget.setInstanceName(nodeModel.getInstanceName());
-        widget.setInstanceType(nodeModel.getInstanceType());
+        //widget.setInstanceName(nodeModel.getInstanceName());
+        //widget.setInstanceType(nodeModel.getInstanceType());
         widget.getActions().addAction(ActionFactory.createMoveAction());
         widget.getActions().addAction(ActionFactory.createPopupMenuAction(nodeMenu));
-        widget.setNodeModel(nodeModel);
+        //widget.setNodeModel(nodeModel);
+        widget.setModel(nodeModel);
 
         mainLayer.addChild(widget);
         return widget;
