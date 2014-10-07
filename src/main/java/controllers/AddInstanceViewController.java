@@ -56,8 +56,6 @@ public class AddInstanceViewController {
 
         stage.showAndWait();
 
-        CoraInstanceModel instance = c.getReturnValue();
-
         return c.getReturnValue();
     }
 
@@ -112,6 +110,7 @@ public class AddInstanceViewController {
         }
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onCancel() {
         this.stage.close();
@@ -121,6 +120,7 @@ public class AddInstanceViewController {
         return name.replaceAll("[^a-zA-Z0-9]", "_");
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onCreateInstance() {
         CoraClassModel clazz = classTree.getSelectionModel()
@@ -153,7 +153,6 @@ public class AddInstanceViewController {
     public class ClassTreeItem extends TreeItem<CoraClassModel> {
 
         private boolean isFirstRequest = true;
-        private boolean isLeafNode = false;
 
         public ClassTreeItem(CoraClassModel model) {
             valueProperty().setValue(model);

@@ -4,12 +4,16 @@ import controllers.commons.WaitViewController;
 import controllers.queryeditor.QueryViewController;
 import controllers.retrieval.RetrievalResultsViewController;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
@@ -34,12 +38,17 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
     @FXML
     private AnchorPane caseBaseTabPane;
 
+    @FXML
+    private MenuBar menuBar;
+
     private CaseBaseViewController caseBaseViewController;
+    private SimpleObjectProperty<CoraCaseBase> caseBase = new SimpleObjectProperty<>();
 
     private HashMap<String, Tab> openCases = new HashMap<String, Tab>();
 
     @FXML
     public void initialize() throws IOException {
+        menuBar.setUseSystemMenuBar(true);
         initializeCaseBaseView();
     }
 
@@ -50,8 +59,10 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
 
         caseBaseTabPane.getChildren().setAll(pane);
         caseBaseViewController = loader.getController();
+        caseBaseViewController.caseBaseProperty().bind(caseBaseProperty());
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onNewQuery() throws Throwable {
         FXMLLoader loader = new FXMLLoader();
@@ -70,50 +81,47 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         controller.setCase(caseModel);
     }
 
+    public CoraCaseBase getCaseBase() {
+        return caseBase.get();
+    }
+
+    public SimpleObjectProperty<CoraCaseBase> caseBaseProperty() {
+        return caseBase;
+    }
+
     public void setCaseBase(CoraCaseBase caseBase) {
-        caseBaseViewController.setCaseBase(caseBase);
+        this.caseBase.set(caseBase);
     }
 
     public void showCase(final String caseID) throws IOException {
         if(openCases.containsKey(caseID)) {
             tabPane.getSelectionModel().select(openCases.get(caseID));
         } else {
-            final CoraCaseBase caseBase = MainApplication.getInstance().getCaseBase();
-
-            /*
-            Das folgende Konstrukt ist eine Threaded-Version von
-
-            // In einem neuen Thread
-            CoraCaseModel c = caseBase.loadCase(caseID);
-            // Im javafx-Thread
-            CaseViewController controller = createCaseView(caseID);
-            controller.showInstance(c.getCaseRoot());
-             */
-
             final Stage parentStage = MainApplication.getInstance().getMainStage();
             final WaitViewController waitView = Commons.createWaitScreen(parentStage);
 
-            (new Thread(() -> {
-                    try {
-                        final CoraCaseModel c = caseBase.loadCase(caseID);
-                        //switch to javafx-thread to show the created case...
-                        Platform.runLater(() -> {
-                            try {
-                                CaseViewController controller = createCaseView(caseID);
-                                controller.showInstance(c.getCaseRoot());
-                                controller.setStage(parentStage);
+            Task<CoraCaseModel> loadCaseTask = new Task<CoraCaseModel>() {
+                @Override
+                protected CoraCaseModel call() throws Exception {
+                    return caseBaseProperty().getValue().loadCase(caseID);
+                }
+            };
 
-                                waitView.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        });
-                    } catch (Throwable throwable) {
-                        throwable.printStackTrace();
-                        return;
+            loadCaseTask.stateProperty().addListener((ov, oldState, newState) -> {
+                if(newState == Worker.State.SUCCEEDED) {
+                    try {
+                        CaseViewController c = createCaseView(caseID);
+                        c.showInstance(loadCaseTask.getValue().getCaseRoot());
+                        c.setStage(parentStage);
+
+                        waitView.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                })
-            ).start();
+                }
+            });
+
+            new Thread(loadCaseTask).start();
         }
     }
 
@@ -173,5 +181,11 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
 
         RetrievalResultsViewController controller = loader.getController();
         controller.setRetrievalResults(results);
+    }
+
+    @SuppressWarnings("unused")
+    @FXML
+    private void onExit() {
+        MainApplication.getInstance().exitApp();
     }
 }

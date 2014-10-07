@@ -4,9 +4,13 @@ import apple.laf.JRSUIUtils;
 import controllers.commons.WaitViewController;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -43,42 +47,77 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
     @FXML
     private TextField txtSearchCaseID;
     private ObservableList<TableModel> itemsCases;
-
-    @FXML
-    private Button btnImportCase;
+    private Task<ObservableList<TableModel>> loadCaseBaseTask;
 
     @FXML
     private Accordion accordionLeft;
 
+    private SimpleObjectProperty<CoraCaseBase> caseBase = new SimpleObjectProperty<>();
+
     @FXML
     public void initialize() {
 
-        tcViewCase.setCellValueFactory(new PropertyValueFactory<TableModel, Button>("btnView"));
-        tcDeleteCase.setCellValueFactory(new PropertyValueFactory<TableModel, Button>("btnDelete"));
-        tcCaseId.setCellValueFactory(new PropertyValueFactory<TableModel, String>("caseId"));
+        ProgressIndicator spinner = new ProgressIndicator();
+        spinner.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+        spinner.setMaxSize(50.0, 50.0);
+        tblCaseBase.setPlaceholder(spinner);
 
-        btnImportCase.setOnAction( (ActionEvent e) ->
-                CaseImportViewController.showCaseImport(MainApplication.getInstance().getMainStage()));
+        tcViewCase.setCellValueFactory(new PropertyValueFactory<>("btnView"));
+        tcDeleteCase.setCellValueFactory(new PropertyValueFactory<>("btnDelete"));
+        tcCaseId.setCellValueFactory(new PropertyValueFactory<>("caseId"));
 
         if(accordionLeft.getPanes().size() > 0) {
             accordionLeft.setExpandedPane(accordionLeft.getPanes().get(0));
         }
 
+        caseBase.addListener((ov, oldCaseBase, newCaseBase) -> {
+            if(newCaseBase != null) {
+                showCaseBase(newCaseBase);
+            }
+        });
     }
 
-    public void setCaseBase(CoraCaseBase caseBase) {
+    @SuppressWarnings("unused")
+    @FXML
+    private void onCaseImport() {
+        CaseImportViewController.showCaseImport(MainApplication.getInstance().getMainStage());
+    }
 
-        Iterator<String> iter = caseBase.listCaseIDs();
-        itemsCases = FXCollections.observableArrayList();
-        while(iter.hasNext()) {
-            itemsCases.add(new TableModel(iter.next()));
+    private void showCaseBase(CoraCaseBase caseBase) {
+        if(loadCaseBaseTask != null) {
+            loadCaseBaseTask.cancel();
         }
 
-        tblCaseBase.setItems(itemsCases);
+        loadCaseBaseTask = new Task<ObservableList<TableModel>>() {
+            @Override
+            protected ObservableList<TableModel> call() throws Exception {
+                List<String> ids = caseBase.getCaseIDs();
+                ObservableList<TableModel> tblModels = FXCollections.observableArrayList();
 
+                for(String id : ids) {
+                    tblModels.add(new TableModel(id));
+                }
+
+                return tblModels;
+            }
+        };
+
+        loadCaseBaseTask.stateProperty().addListener((ov, oldState, newState) -> {
+            if(newState == Worker.State.SUCCEEDED) {
+                itemsCases = loadCaseBaseTask.getValue();
+                tblCaseBase.setItems(itemsCases);
+
+                tblCaseBase.setPlaceholder(new Label("Keine Fälle in der Fallbasis."));
+            } else if(newState == Worker.State.FAILED) {
+                tblCaseBase.setPlaceholder(new Label("Fehler beim Laden der Fallbasis"));
+            }
+        });
+
+        new Thread(loadCaseBaseTask).start();
         caseBase.addCaseBaseChangeHandler(this);
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onSearchCaseID() {
         String toSearch = txtSearchCaseID.getText().toLowerCase();
@@ -105,6 +144,18 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
         if(itemsCases != null && itemsCases.contains(t)) {
             itemsCases.remove(t);
         }
+    }
+
+    public CoraCaseBase getCaseBase() {
+        return caseBase.get();
+    }
+
+    public SimpleObjectProperty<CoraCaseBase> caseBaseProperty() {
+        return caseBase;
+    }
+
+    public void setCaseBase(CoraCaseBase caseBase) {
+        this.caseBase.set(caseBase);
     }
 
     public class TableModel {

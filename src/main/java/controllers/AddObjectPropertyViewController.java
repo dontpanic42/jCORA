@@ -92,6 +92,7 @@ public class AddObjectPropertyViewController {
         this.stage = stage;
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onCancel() {
         if(this.stage != null) {
@@ -99,6 +100,7 @@ public class AddObjectPropertyViewController {
         }
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onCreateProperty() {
         CoraObjectPropertyModel property = listProperties.getSelectionModel().getSelectedItem();
@@ -114,6 +116,7 @@ public class AddObjectPropertyViewController {
         stage.close();
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onCreateInstance() throws IOException {
         if(currentClasses == null) {
@@ -131,6 +134,7 @@ public class AddObjectPropertyViewController {
         }
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onSearchInstance() {
         if(txtSearchInstance.getText().equals("")) {
@@ -145,6 +149,7 @@ public class AddObjectPropertyViewController {
         }
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onSearchRelation() {
         if(txtSearchRelation.getText().equals("")) {

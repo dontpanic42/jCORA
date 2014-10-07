@@ -100,7 +100,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      * @throws Throwable
      */
     @Override
-    public CoraCaseModel loadCase(String name) throws Throwable {
+    public CoraCaseModel loadCase(String name) throws Exception {
         dataset.begin(ReadWrite.READ);
 
         Model tdbModel = dataset.getNamedModel(name);

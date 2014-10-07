@@ -4,6 +4,9 @@ import controllers.dataproperty.DataPropertyEditorFactory;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -51,6 +54,7 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
 
     private CoraInstanceModel model;
     private CoraInstanceModel currentSelection;
+    private Task<ObservableList<DataPropertyAssertion>> showDataPropertiesTask;
 
     private Stage stage;
 
@@ -118,6 +122,7 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
         });
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onSaveCase() {
         CoraCaseBase caseBase = MainApplication.getInstance().getCaseBase();
@@ -132,6 +137,7 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
         caseBase.save(caseModel);
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onExportAsImage() throws IOException {
         FileChooser fileChooser = new FileChooser();
@@ -149,14 +155,32 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
      */
     @Override
     public void onChangeSelection(GraphViewComponent graph, CoraInstanceModel oldSelection, CoraInstanceModel newSelection) {
+        if(showDataPropertiesTask != null) {
+            showDataPropertiesTask.cancel();
+            showDataPropertiesTask = null;
+        }
+
         if(newSelection == null) {
             currentSelection = null;
             return;
         }
 
-        List<DataPropertyAssertion> props = newSelection.getDataPropertyAssertions();
-        tblDataProperties.setItems(FXCollections.observableArrayList(props));
         currentSelection = newSelection;
+
+        showDataPropertiesTask = new Task<ObservableList<DataPropertyAssertion>>() {
+            @Override
+            protected ObservableList<DataPropertyAssertion> call() throws Exception {
+                return FXCollections.observableArrayList(newSelection.getDataPropertyAssertions());
+            }
+        };
+
+        showDataPropertiesTask.stateProperty().addListener((ov, oldState, newState) -> {
+            if(newState == Worker.State.SUCCEEDED) {
+                tblDataProperties.setItems(showDataPropertiesTask.getValue());
+            }
+        });
+
+        new Thread(showDataPropertiesTask).start();
     }
 
     @Override
@@ -202,6 +226,7 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
         }
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onAddDataProperty() {
         if(currentSelection != null) {
@@ -209,6 +234,7 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
         }
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onRemoveDataProperty() {
         if(currentSelection != null) {
@@ -221,12 +247,14 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
         }
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onSaveAsNew() {
         CoraCaseModel caseModel = model.getFactory().getCase();
         SaveAsNewViewController.showSaveAsNew(stage, caseModel);
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onSaveAsXML() {
         CoraCaseModel caseModel = model.getFactory().getCase();

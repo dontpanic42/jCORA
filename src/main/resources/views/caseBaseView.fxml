@@ -12,7 +12,7 @@
          <children>
             <ToolBar orientation="VERTICAL" prefHeight="40.0" HBox.hgrow="NEVER">
               <items>
-                <Button fx:id="btnImportCase" mnemonicParsing="false">
+                <Button fx:id="btnImportCase" mnemonicParsing="false" onAction="#onCaseImport">
                      <graphic>
                         <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                            <image>

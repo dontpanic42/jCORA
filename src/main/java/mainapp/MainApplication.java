@@ -2,6 +2,9 @@ package mainapp;
 
 import controllers.MainAppViewController;
 import javafx.application.Application;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -16,6 +19,7 @@ import org.mindswap.pellet.PelletOptions;
 
 import javax.naming.ConfigurationException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.logging.Level;
 
 /**
@@ -35,49 +39,84 @@ public class MainApplication extends Application {
 
     private Stage mainStage;
 
-    private CoraCaseBase caseBase;
+    ///private CoraCaseBase caseBase;
+    private SimpleObjectProperty<CoraCaseBase> caseBase = new SimpleObjectProperty<>();
+    private Task<CoraCaseBase> initCaseBaseTask;
 
     @Override
     public void start(Stage stage) throws Exception {
+        //Singleton-Instanz
         instance = this;
-
+        //Hauptfenster zugänglich machen
         mainStage = stage;
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                if(caseBase != null) {
-                    System.out.println("Bye.");
-                    caseBase.close();
-                    System.exit(0);
-                }
-            }
-        });
-        stage.setMaximized(true);
-        stage.setTitle(APPLICATION_NAME + " " + VERSION_STRING);
+        //Wenn das Hauptfenster geschlossen wird, schließe die Anwendung
+        mainStage.setOnCloseRequest((windowEvent) -> exitApp());
+
+        mainStage.setMaximized(true);
+        mainStage.setTitle(APPLICATION_NAME + " " + VERSION_STRING);
 
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(this.getClass().getClassLoader().getResource("views/mainAppView.fxml"));
         AnchorPane pane = loader.load();
 
         mainAppViewController = loader.getController();
-
-        initCaseBase();
-        mainAppViewController.setCaseBase(caseBase);
+        mainAppViewController.caseBaseProperty().bind(caseBase);
 
         Scene scene = new Scene(pane);
-        stage.setScene(scene);
-        stage.show();
+        mainStage.setScene(scene);
+        mainStage.show();
+
+        installShutdownHooks();
+        initCaseBase();
     }
 
+    /**
+     * Installiert einen <code>ShutdownHook</code>, der dafür sorgt,
+     * dass die Fallbasis (TDB) geschlossen wird, wenn das Programm z.B. mittels
+     * <code>System.exit(0)</code> beendet wird.
+     */
+    private void installShutdownHooks() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                if(caseBase.getValue() != null) {
+                    caseBase.getValue().close();
+                    System.out.println("CaseBase closed.");
+                }
+            }
+        });
+    }
+
+    /**
+     * Beendet die Anwendung.
+     */
+    public void exitApp() {
+        System.out.println("Bye.");
+        System.exit(0);
+    }
+
+    /**
+     * Läd die Fallbasis asynchron.
+     */
     private void initCaseBase() {
-        try {
-            CoraCaseBase caseBase = new CoraCaseBaseImpl();
-            this.caseBase = caseBase;
-        } catch (ConfigurationException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if(initCaseBaseTask != null) {
+            initCaseBaseTask.cancel();
         }
+
+        initCaseBaseTask = new Task<CoraCaseBase>() {
+            @Override
+            protected CoraCaseBase call() throws Exception {
+                return new CoraCaseBaseImpl();
+            }
+        };
+
+        initCaseBaseTask.stateProperty().addListener((ov, oldState, newState) -> {
+            if(newState == Worker.State.SUCCEEDED) {
+                caseBase.setValue(initCaseBaseTask.getValue());
+            }
+        });
+
+        new Thread(initCaseBaseTask).start();
     }
 
     public Stage getMainStage() {
@@ -85,7 +124,15 @@ public class MainApplication extends Application {
     }
 
     public CoraCaseBase getCaseBase() {
+        return caseBase.get();
+    }
+
+    public SimpleObjectProperty<CoraCaseBase> caseBaseProperty() {
         return caseBase;
+    }
+
+    public void setCaseBase(CoraCaseBase caseBase) {
+        this.caseBase.set(caseBase);
     }
 
     public MainAppViewController getMainAppView() {

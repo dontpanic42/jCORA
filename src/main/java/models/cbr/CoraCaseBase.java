@@ -29,7 +29,7 @@ public interface CoraCaseBase {
      * @return Die Ontologie als Cbr-Fall
      * @throws Throwable
      */
-    public CoraCaseModel loadCase(String name) throws Throwable;
+    public CoraCaseModel loadCase(String name) throws Exception;
 
     /**
      * Gibt zurück, ob ein Fall mit dem Namen <code>name</code> in der Fallbasis existiert.

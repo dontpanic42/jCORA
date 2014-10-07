@@ -11,6 +11,8 @@ import java.util.Set;
 
 /**
  * Created by daniel on 31.08.14.
+ *
+ * TODO: Diese Klasse als JavaFX.Concurrent.Task implementieren (Progress?).
  */
 public abstract class RetrievalService implements Runnable {
 
