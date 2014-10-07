@@ -41,6 +41,7 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
     @FXML
     private MenuBar menuBar;
 
+    @FXML
     private CaseBaseViewController caseBaseViewController;
     private SimpleObjectProperty<CoraCaseBase> caseBase = new SimpleObjectProperty<>();
 
@@ -52,13 +53,7 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         initializeCaseBaseView();
     }
 
-    private void initializeCaseBaseView() throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(this.getClass().getClassLoader().getResource("views/caseBaseView.fxml"));
-        AnchorPane pane = loader.load();
-
-        caseBaseTabPane.getChildren().setAll(pane);
-        caseBaseViewController = loader.getController();
+    private void initializeCaseBaseView() {
         caseBaseViewController.caseBaseProperty().bind(caseBaseProperty());
     }
 

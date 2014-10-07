@@ -24,31 +24,21 @@ import java.util.List;
  */
 public class QueryViewController {
 
-    @FXML
-    private AnchorPane paneCase;
-
-    @FXML
-    private AnchorPane paneWeights;
-
     private CoraCaseModel caseModel;
 
+    @FXML
     private CaseViewController caseViewController;
 
     private Stage stage;
 
+    @SuppressWarnings("unused")
     @FXML
     private void initialize() throws IOException {
-        loadCaseView();
-        loadWeightsView();
+        initializeCaseView();
+        initializeWeightsView();
     }
 
-    private void loadCaseView() throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(this.getClass().getClassLoader().getResource("views/caseView.fxml"));
-        AnchorPane pane = loader.load();
-
-        paneCase.getChildren().setAll(pane);
-        caseViewController = loader.getController();
+    private void initializeCaseView() {
         caseViewController.setStage(stage);
     }
 
@@ -56,10 +46,11 @@ public class QueryViewController {
         this.stage = parentStage;
     }
 
-    private void loadWeightsView() {
+    private void initializeWeightsView() {
 
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onStartRetrieval() throws IOException {
         CoraCaseModel c = this.caseModel;
