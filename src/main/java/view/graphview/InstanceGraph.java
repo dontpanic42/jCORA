@@ -1,6 +1,7 @@
 package view.graphview;
 
 import com.sun.javafx.accessible.providers.SelectionProvider;
+import javafx.beans.property.SimpleObjectProperty;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.SelectProvider;
 import org.netbeans.api.visual.anchor.AnchorFactory;
@@ -47,12 +48,7 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
      */
     private NodeMenu nodeMenu;
 
-    /**
-     * Die aktuell ausgewählte Instanz (oder null)
-     */
-    private InstanceWidget currentSelection;
-
-    private SelectProvider selectProvider;
+    private SimpleObjectProperty<InstanceWidget> currentSelection = new SimpleObjectProperty<>();
 
     /**
      * Konstruktor, erzeugt eine neue, leere VL-Graph instanz.
@@ -76,14 +72,6 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
 
         getActions().addAction(ActionFactory.createPanAction());
         getActions().addAction(ActionFactory.createZoomAction());
-    }
-
-    public SelectProvider getSelectProvider() {
-        return selectProvider;
-    }
-
-    public void setSelectProvider(SelectProvider selectProvider) {
-        this.selectProvider = selectProvider;
     }
 
     /**
@@ -122,11 +110,8 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
     @Override
     protected Widget attachNodeWidget(NodeModel nodeModel) {
         InstanceWidget widget = new InstanceWidget(this);
-        //widget.setInstanceName(nodeModel.getInstanceName());
-        //widget.setInstanceType(nodeModel.getInstanceType());
         widget.getActions().addAction(ActionFactory.createMoveAction());
         widget.getActions().addAction(ActionFactory.createPopupMenuAction(nodeMenu));
-        //widget.setNodeModel(nodeModel);
         widget.setModel(nodeModel);
 
         mainLayer.addChild(widget);
@@ -184,4 +169,15 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
     }
 
 
+    public InstanceWidget getCurrentSelection() {
+        return currentSelection.get();
+    }
+
+    public SimpleObjectProperty<InstanceWidget> currentSelectionProperty() {
+        return currentSelection;
+    }
+
+    public void setCurrentSelection(InstanceWidget currentSelection) {
+        this.currentSelection.set(currentSelection);
+    }
 }

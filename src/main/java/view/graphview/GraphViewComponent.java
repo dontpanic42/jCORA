@@ -29,7 +29,7 @@ import java.util.HashMap;
  *
  * Erzeugt einen neuen Fall-Graph als Swing-Komponente
  */
-public class GraphViewComponent extends JPanel implements SelectProvider {
+public class GraphViewComponent extends JPanel {
 
     private SimpleObjectProperty<CoraInstanceModel> selection = new SimpleObjectProperty<>();
     private SimpleObjectProperty<EventHandler<CreateRelationEvent>> onCreateRelation = new SimpleObjectProperty<>();
@@ -42,7 +42,15 @@ public class GraphViewComponent extends JPanel implements SelectProvider {
 
     public GraphViewComponent() {
         scene = new InstanceGraph();
-        scene.setSelectProvider(this);
+
+        //"Übersetze" das InstanceGraph-Widget-Selection-Event in ein CoraInstanceModel-Selection-Event
+        scene.currentSelectionProperty().addListener((ov, oldSelection, newSelection) -> {
+            if(newSelection != null) {
+                setSelection(newSelection.getModel().getModel());
+            } else {
+                setSelection(null);
+            }
+        });
 
         GraphViewComponent self = this;
         scene.getNodeMenu().setActionHandler(new NodeMenu.NodeActionHandler() {
@@ -168,61 +176,6 @@ public class GraphViewComponent extends JPanel implements SelectProvider {
 
         scene.forceLayout();
         scene.validate();
-    }
-
-    /**
-     * Select Provider Stuff
-     */
-
-    /**
-     *
-     * @param widget
-     * @param point
-     * @param b
-     * @return
-     */
-    @Override
-    public boolean isAimingAllowed(Widget widget, Point point, boolean b) {
-        return false;
-    }
-
-    /**
-     * Gibt zurück, ob das Widget <code>widget</code> ausgewählt werden darf/kann.
-     * @param widget Das betreffende Widget
-     * @param point Die Mausposition
-     * @param b
-     * @return
-     */
-    @Override
-    public boolean isSelectionAllowed(Widget widget, Point point, boolean b) {
-        return true;
-    }
-
-    /**
-     * Handelt die Auswahl einer Instanz. Setzt diese als "ausgewählt", wählt andere Instanzen ab und
-     * aktualisiert das Feld <code>currentSelection</code>.
-     * @param widget Das neu ausgewählte Widget
-     * @param point Die Mausposition
-     * @param b
-     */
-    @Override
-    public void select(Widget widget, Point point, boolean b) {
-        if(widget == currentSelection) {
-            return;
-        }
-
-        if(widget instanceof InstanceWidget) {
-            if(currentSelection != null) {
-                currentSelection.setSelected(false);
-            }
-
-            currentSelection = (InstanceWidget) widget;
-            currentSelection.setSelected(true);
-
-            selection.setValue(currentSelection.getModel().getModel());
-        } else {
-            System.out.println("Selectd: " + widget.getClass().getSimpleName());
-        }
     }
 
     /**

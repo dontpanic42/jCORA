@@ -37,7 +37,6 @@ public class InstanceWidget extends Widget {
 
     private SimpleObjectProperty<NodeModel> model = new SimpleObjectProperty<>();
 
-    private NodeModel nodeModel;
     private final static Color FOREGROUND_COLOR = Color.BLACK;
 
     /**
@@ -118,12 +117,25 @@ public class InstanceWidget extends Widget {
             }
         });
 
-
         InstanceGraph graph = (InstanceGraph) scene;
+        InstanceWidget self = this;
+        getActions().addAction(ActionFactory.createSelectAction(new SelectProvider() {
+            @Override
+            public boolean isAimingAllowed(Widget widget, Point point, boolean b) {
+                return false;
+            }
 
-        if(graph.getSelectProvider() != null) {
-            getActions().addAction(ActionFactory.createSelectAction(graph.getSelectProvider()));
-        }
+            @Override
+            public boolean isSelectionAllowed(Widget widget, Point point, boolean b) {
+                return true;
+            }
+
+            @Override
+            public void select(Widget widget, Point point, boolean b) {
+                graph.setCurrentSelection(self);
+            }
+        }));
+        graph.currentSelectionProperty().addListener((ov, oldSelection, newSelection) -> setSelected(self == newSelection));
     }
 
     private void setTypeList(CoraInstanceModel instance) {
@@ -154,7 +166,12 @@ public class InstanceWidget extends Widget {
         instanceTypeWidget.addChild(instanceType);
     }
 
-    public void setSelected(boolean value) {
+    /**
+     * Ändere die Darstellung dieses Widgets in den "Ausgewählt" Zustand, wenn <code>value</code> <code>true</code> ist,
+     * sonst Ändere die Darstellung in den nicht ausgewählten Zustand.
+     * @param value Ausgewählt ja/nein
+     */
+    private void setSelected(boolean value) {
         if(value) {
             setBorder(WIDGET_BORDER_SELECTED);
         } else {
@@ -162,6 +179,10 @@ public class InstanceWidget extends Widget {
         }
     }
 
+    /**
+     * Gibt das zugrundeliegende NodeModel zurück
+     * @return das NodeModel
+     */
     public NodeModel getModel() {
         return model.get();
     }
@@ -173,7 +194,6 @@ public class InstanceWidget extends Widget {
     public void setModel(NodeModel model) {
         this.model.set(model);
     }
-
 
     private void setIsPartOfDomainOntology() {
         final float[] gradientFractions = {0.0f, 1.0f};
