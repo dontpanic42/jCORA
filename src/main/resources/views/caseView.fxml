@@ -77,7 +77,25 @@
                   </Button>
               </items>
             </ToolBar>
-            <SplitPane dividerPositions="0.5852842809364549" prefHeight="160.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <TitledPane text="Navigation">
+                     <content>
+                        <SwingNode fx:id="navNode" />
+                     </content>
+                  </TitledPane>
+                  <TitledPane text="Legende">
+                     <content>
+                        <ImageView fitHeight="200.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/legend.png" />
+                           </image>
+                        </ImageView>
+                     </content>
+                  </TitledPane>
+               </children>
+            </VBox>
+            <SplitPane dividerPositions="0.7" prefHeight="160.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                      <children>

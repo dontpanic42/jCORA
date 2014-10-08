@@ -38,8 +38,6 @@ public class GraphViewComponent extends JPanel {
     private InstanceGraph scene;
     private Map<CoraInstanceModel, NodeModel> nodes = new HashMap<CoraInstanceModel, NodeModel>();
 
-    private InstanceWidget currentSelection;
-
     public GraphViewComponent() {
         scene = new InstanceGraph();
 
@@ -77,10 +75,19 @@ public class GraphViewComponent extends JPanel {
 
         scrollPane.setViewportView(sceneView);
         add(scrollPane, BorderLayout.CENTER);
-        add(scene.createSatelliteView(), BorderLayout.WEST);
+        //add(scene.createSatelliteView(), BorderLayout.WEST);
 
         setPreferredSize(new Dimension(800, 600));
         setSize(getPreferredSize());
+    }
+
+    public JPanel createNavigationView() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(scene.createSatelliteView(), BorderLayout.CENTER);
+        panel.setPreferredSize(new Dimension(180, 200));
+        panel.setSize(panel.getPreferredSize());
+        return panel;
     }
 
     /**

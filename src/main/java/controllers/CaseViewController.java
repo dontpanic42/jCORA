@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -38,6 +39,9 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
     private SwingNode swingNode;
 
     @FXML
+    private SwingNode navNode;
+
+    @FXML
     private TableColumn<DataPropertyAssertion, CoraDataPropertyModel> columnPropertyName;
 
     @FXML
@@ -59,7 +63,7 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
 
     @FXML
     public void initialize() {
-        createAndSetSwingContent(swingNode);
+        createAndSetSwingContent(swingNode, navNode);
 
         //Setup Evenent-Handlers
         graph.selectionProperty().addListener((ov, oldSelection, newSelection) ->
@@ -114,15 +118,23 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         this.model = model;
     }
 
-    private void createAndSetSwingContent(final SwingNode swingNode) {
+    private void createAndSetSwingContent(final SwingNode swingNode, final SwingNode navNode) {
+
+
+        //navNode.resize(400, 400);
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 //Workaround für den getClipBounds() bug!
                 swingNode.resize(800, 600);
                 swingNode.setContent(graph);
+
+
+                navNode.setContent(graph.createNavigationView());
             }
         });
+
+
     }
 
     @SuppressWarnings("unused")
