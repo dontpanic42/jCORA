@@ -1,6 +1,10 @@
 package view.graphview;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.event.EventTarget;
 import javafx.scene.layout.Border;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
@@ -27,48 +31,35 @@ import java.util.HashMap;
  */
 public class GraphViewComponent extends JPanel implements SelectProvider {
 
-    /**
-     * Eventhandler Interface
-     */
-    public interface GraphViewActionHandler {
-        /**
-         * Wird aufgerufen, wenn der nutzer eine neue Relation anlegen will.
-         * @param graph Der betreffende Graph
-         * @param parent Die Instanz, auf der die Relation angelegt werden soll
-         */
-        public void onAddRelation(GraphViewComponent graph, CoraInstanceModel parent);
-
-        /**
-         * Wird aufgerufen, wenn der Nutzer eine Instanz löschen will.
-         * @param graph Der betreffende Graph
-         * @param model Die Instanz, die gelöscht werden soll
-         */
-        public void onDeleteInstance(GraphViewComponent graph, CoraInstanceModel model);
-
-        public void onChangeSelection(GraphViewComponent graph,
-                                      CoraInstanceModel oldSelection,
-                                      CoraInstanceModel newSelection);
-    }
+    private SimpleObjectProperty<CoraInstanceModel> selection = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<EventHandler<CreateRelationEvent>> onCreateRelation = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<EventHandler<DeleteInstanceEvent>> onDeleteInstance = new SimpleObjectProperty<>();
 
     private InstanceGraph scene;
     private Map<CoraInstanceModel, NodeModel> nodes = new HashMap<CoraInstanceModel, NodeModel>();
-
-    private GraphViewActionHandler actionHandler = null;
 
     private InstanceWidget currentSelection;
 
     public GraphViewComponent() {
         scene = new InstanceGraph();
         scene.setSelectProvider(this);
+
+        GraphViewComponent self = this;
         scene.getNodeMenu().setActionHandler(new NodeMenu.NodeActionHandler() {
             @Override
             public void onAddNode(InstanceWidget parentWidget) {
-                onAddNodeHandler(parentWidget);
+                if(onCreateRelation.getValue() != null) {
+                    Platform.runLater(() ->
+                            onCreateRelation.getValue().handle(new CreateRelationEvent(self, parentWidget.getModel().getModel())));
+                }
             }
 
             @Override
             public void onDeleteNode(InstanceWidget parentWidget) {
-                onDeleteNodeHandler(parentWidget);
+                if(onDeleteInstance.getValue() != null) {
+                    Platform.runLater(() ->
+                            onDeleteInstance.getValue().handle(new DeleteInstanceEvent(self, parentWidget.getModel().getModel())));
+                }
             }
         });
 
@@ -102,44 +93,6 @@ public class GraphViewComponent extends JPanel implements SelectProvider {
     }
 
     /**
-     * Setzt den Actionhandler
-     * @param handler
-     */
-    public void setActionHandler(GraphViewActionHandler handler) {
-        this.actionHandler = handler;
-    }
-
-    /**
-     * Wird aufgerufen, wenn der Nutzer auf "Relation hinzufügen..." klickt
-     * @param parentWidget Das Widget, auf das geklickt wurde
-     */
-    private void onAddNodeHandler(InstanceWidget parentWidget) {
-        if(actionHandler == null) {
-            return;
-        }
-
-        GraphViewComponent self = this;
-
-        //Run the event handler on the javafx-Thread
-        Platform.runLater(() -> actionHandler.onAddRelation(self, parentWidget.getModel().getModel()) );
-    }
-
-    /**
-     * Wird aufgerufen, wenn der Nutzer auf "Instanz löschen" klickt.
-     * @param parentWidget Das Widget, auf das geklickt wurde
-     */
-    private void onDeleteNodeHandler(InstanceWidget parentWidget) {
-        if(actionHandler == null) {
-            return;
-        }
-
-        GraphViewComponent self = this;
-
-        //Run the event handler on the javafx-Thread
-        Platform.runLater(() -> actionHandler.onDeleteInstance(self, parentWidget.getModel().getModel()));
-    }
-
-    /**
      * Erzeugt einen (neuen) Graphen ausgehend von einer Instanz (rekursiv)
      * @param instance Die Ausgangsinstanz
      */
@@ -161,8 +114,6 @@ public class GraphViewComponent extends JPanel implements SelectProvider {
         }
 
         NodeModel instanceModel = new NodeModel();
-        //instanceModel.setInstanceName(instance.toString());
-        //instanceModel.setInstanceType(instance.toString());
         instanceModel.setModel(instance);
 
         visited.put(instance, instanceModel);
@@ -265,21 +216,163 @@ public class GraphViewComponent extends JPanel implements SelectProvider {
                 currentSelection.setSelected(false);
             }
 
-            InstanceWidget oldSelection = currentSelection;
-
             currentSelection = (InstanceWidget) widget;
             currentSelection.setSelected(true);
 
-            if(actionHandler != null) {
-                InstanceWidget newSelection = currentSelection;
-
-                CoraInstanceModel oldInstance = (oldSelection == null)? null : oldSelection.getModel().getModel();
-                CoraInstanceModel newInstance = (newSelection == null)? null : newSelection.getModel().getModel();
-
-                actionHandler.onChangeSelection(this, oldInstance, newInstance);
-            }
+            selection.setValue(currentSelection.getModel().getModel());
         } else {
             System.out.println("Selectd: " + widget.getClass().getSimpleName());
+        }
+    }
+
+    /**
+     * Getter für die aktuell ausgewählte Instanz
+     * @return Der aktuelle Event-Handler
+     */
+    @SuppressWarnings("unused")
+    public CoraInstanceModel getSelection() {
+        return selection.get();
+    }
+
+    /**
+     * Property, das die aktuell ausgewählte Instanz enthält
+     * @return Property, das die aktuell ausgewählte Instanz enthält
+     */
+    @SuppressWarnings("unused")
+    public SimpleObjectProperty<CoraInstanceModel> selectionProperty() {
+        return selection;
+    }
+
+    /**
+     * Setter für die aktuell ausgewählte Instanz
+     * TODO: Änderungen durch diesen Setter werden in der Graph-Ansicht nicht reflektiert
+     * @param selection Die auszuwählende Instanz
+     */
+    @SuppressWarnings("unused")
+    public void setSelection(CoraInstanceModel selection) {
+        this.selection.set(selection);
+    }
+
+    /**
+     * Event-Handler getter
+     * @return Der aktuelle Event-Handler
+     */
+    @SuppressWarnings("unused")
+    public EventHandler<CreateRelationEvent> getOnCreateRelation() {
+        return onCreateRelation.get();
+    }
+
+    /**
+     * Getter für das Event-Handler Property
+     * @return Das Event-Handler Property
+     */
+    @SuppressWarnings("unused")
+    public SimpleObjectProperty<EventHandler<CreateRelationEvent>> onCreateRelationProperty() {
+        return onCreateRelation;
+    }
+
+    /**
+     * Event-Handler setter
+     * @param onCreateRelation Der neue Event-Handler
+     */
+    public void setOnCreateRelation(EventHandler<CreateRelationEvent> onCreateRelation) {
+        this.onCreateRelation.set(onCreateRelation);
+    }
+
+    /**
+     * Event-Handler getter
+     * @return Der aktuelle Event-Handler
+     */
+    @SuppressWarnings("unused")
+    public EventHandler<DeleteInstanceEvent> getOnDeleteInstance() {
+        return onDeleteInstance.get();
+    }
+
+    /**
+     * Getter für das Event-Handler Property
+     * @return Das Event-Handler Property
+     */
+    @SuppressWarnings("unused")
+    public SimpleObjectProperty<EventHandler<DeleteInstanceEvent>> onDeleteInstanceProperty() {
+        return onDeleteInstance;
+    }
+
+    /**
+     * Event-Handler setter
+     * @param onDeleteInstance Der neue Event-Handler
+     */
+    @SuppressWarnings("unused")
+    public void setOnDeleteInstance(EventHandler<DeleteInstanceEvent> onDeleteInstance) {
+        this.onDeleteInstance.set(onDeleteInstance);
+    }
+
+    /**
+     * Event-Klasse, die verwendet wird, wenn der Nutzer eine neue Relation erstellen möchte.
+     */
+    public class CreateRelationEvent extends ActionEvent {
+        private CoraInstanceModel parentInstance;
+
+        /**
+         *
+         * @param graphView Die Quelle des Events - üblicherweise die <code>GraphViewComponent</code>
+         * @param parentInstance Das Subjekt der zu erstellenden Relation
+         */
+        public CreateRelationEvent(GraphViewComponent graphView, CoraInstanceModel parentInstance) {
+            super(graphView, null);
+            this.parentInstance = parentInstance;
+        }
+
+        /**
+         * Das Subjekt der zu erstellenden Relation
+         * @return Das Subjekt
+         */
+        @SuppressWarnings("unused")
+        public CoraInstanceModel getParentInstance() {
+            return parentInstance;
+        }
+
+        /**
+         * Das Subjekt der zu erstellenden Relation
+         * @param parentInstance Das Subjekt
+         */
+        @SuppressWarnings("unused")
+        public void setParentInstance(CoraInstanceModel parentInstance) {
+            this.parentInstance = parentInstance;
+        }
+    }
+
+    /**
+     * Event-Klasse, die verwendet wird, wenn der Nutzer eine Instanz löschen will
+     */
+    public class DeleteInstanceEvent extends ActionEvent {
+        private CoraInstanceModel parentInstance;
+
+        /**
+         *
+         * @param graphView Die Quelle des Events - üblicherweise die <code>GraphViewComponent</code>
+         * @param parentInstance Die zu löschende Instanz
+         */
+        public DeleteInstanceEvent(GraphViewComponent graphView, CoraInstanceModel parentInstance) {
+            super(graphView, null);
+            this.parentInstance = parentInstance;
+        }
+
+        /**
+         * Die zu löschende Instanz
+         * @return Die zu löschende Instanz
+         */
+        @SuppressWarnings("unused")
+        public CoraInstanceModel getParentInstance() {
+            return parentInstance;
+        }
+
+        /**
+         * Die zu löschende Instanz
+         * @param parentInstance Die zu löschende Instanz
+         */
+        @SuppressWarnings("unused")
+        public void setParentInstance(CoraInstanceModel parentInstance) {
+            this.parentInstance = parentInstance;
         }
     }
 }

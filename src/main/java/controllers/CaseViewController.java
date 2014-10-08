@@ -33,8 +33,7 @@ import java.util.List;
 /**
  * Created by daniel on 24.08.14.
  */
-public class CaseViewController implements GraphViewComponent.GraphViewActionHandler,
-        CoraCaseModel.CaseChangeHandler {
+public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
     @FXML
     private SwingNode swingNode;
 
@@ -61,7 +60,11 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
     @FXML
     public void initialize() {
         createAndSetSwingContent(swingNode);
-        graph.setActionHandler(this);
+
+        //Setup Evenent-Handlers
+        graph.selectionProperty().addListener((ov, oldSelection, newSelection) ->
+                onChangeSelection(oldSelection, newSelection));
+        graph.setOnCreateRelation((ev) -> AddObjectPropertyViewController.showAddRelation(stage, ev.getParentInstance()));
 
         tblDataProperties.setPlaceholder(new Label("Keine Daten vorhanden"));
 
@@ -149,12 +152,10 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
 
     /**
      * Wenn eine Instanz ausgewählt wird, zeige deren Daten-Properties in der Tabelle an.
-     * @param graph
      * @param oldSelection
      * @param newSelection
      */
-    @Override
-    public void onChangeSelection(GraphViewComponent graph, CoraInstanceModel oldSelection, CoraInstanceModel newSelection) {
+    private void onChangeSelection(CoraInstanceModel oldSelection, CoraInstanceModel newSelection) {
         if(showDataPropertiesTask != null) {
             showDataPropertiesTask.cancel();
             showDataPropertiesTask = null;
@@ -181,16 +182,6 @@ public class CaseViewController implements GraphViewComponent.GraphViewActionHan
         });
 
         new Thread(showDataPropertiesTask).start();
-    }
-
-    @Override
-    public void onAddRelation(GraphViewComponent graph, CoraInstanceModel parent) {
-        AddObjectPropertyViewController.showAddRelation(stage, parent);
-    }
-
-    @Override
-    public void onDeleteInstance(GraphViewComponent graph, CoraInstanceModel model) {
-
     }
 
     @Override
