@@ -77,7 +77,7 @@
                   </Button>
               </items>
             </ToolBar>
-            <VBox prefHeight="200.0" prefWidth="100.0">
+            <VBox prefHeight="200.0" prefWidth="200.0">
                <children>
                   <TitledPane text="Navigation">
                      <content>

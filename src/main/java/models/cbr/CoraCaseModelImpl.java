@@ -31,6 +31,7 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
     private String caseId;
 
     private Set<CaseChangeHandler> onChangeHandlers = new HashSet<>();
+    private CoraOntologyModelFactory factory;
 
     private static Properties caseStructureMapping = null;
     private static final String CASE_STRUCTURE_MAPPING_FILE = "config/casestructure.properties";
@@ -90,7 +91,7 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
         this.caseModel = caseModel;
         this.caseModel.register(this);
 
-        CoraOntologyModelFactory factory = new CoraOntologyModelFactory(caseModel, this);
+        factory = new CoraOntologyModelFactory(caseModel, this);
         createCaseStructure(factory, ((CoraCaseBaseImpl) caseBase).getDomainModel(), caseModel, structure);
     }
 
@@ -182,6 +183,10 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
         Individual i = caseModel.createIndividual(fullIndvName, clazz);
 
         return factory.wrapInstance(i);
+    }
+
+    public CoraOntologyModelFactory getFactory() {
+        return factory;
     }
 
     /**

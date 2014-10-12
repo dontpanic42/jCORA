@@ -1,18 +1,30 @@
 package controllers.retrieval;
 
+import controllers.adaption.AdaptionStackController;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ProgressBarTableCell;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import mainapp.MainApplication;
+import models.cbr.CoraCaseModel;
+import models.cbr.CoraQueryModel;
 import models.cbr.CoraRetrievalResult;
+import services.adaption.AdaptionService;
+import services.adaption.rules.AdaptionRule;
 
+import javax.swing.plaf.nimbus.State;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -46,6 +58,8 @@ public class RetrievalResultsViewController {
 
     @FXML
     private Accordion accordionLeft;
+
+    private CoraQueryModel query;
 
     private ObservableList<CoraRetrievalResult> resultsItems;
 
@@ -85,9 +99,12 @@ public class RetrievalResultsViewController {
 
         columnAdapt.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CoraRetrievalResult, Button>, ObservableValue<Button>>() {
             @Override
-            public ObservableValue<Button> call(TableColumn.CellDataFeatures<CoraRetrievalResult, Button> coraRetrievalResultButtonCellDataFeatures) {
+            public ObservableValue<Button> call(TableColumn.CellDataFeatures<CoraRetrievalResult, Button> cDataFeatures) {
                 Button b = new Button("Adaptieren");
-                b.setOnAction( (ActionEvent e ) -> System.out.println("Adaptieren..."));
+
+                String selectedCaseId = cDataFeatures.getValue().getCaseId();
+
+                b.setOnAction( (ActionEvent e ) -> onAdapt(selectedCaseId));
                 return new ReadOnlyObjectWrapper<>(b);
             }
         });
@@ -110,9 +127,64 @@ public class RetrievalResultsViewController {
         tblResults.setPlaceholder(new Label("Keine anzeigbaren Ergebnisse."));
     }
 
+    private void onAdapt(String selectedCaseId) {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(this.getClass().getClassLoader().getResource("views/adaption/adaptionStack.fxml"));
+
+        Parent parent;
+        AdaptionStackController controller;
+        try {
+            parent = loader.load();
+            controller = loader.getController();
+        } catch (Exception e) {
+            return;
+        }
+
+        Stage stage = new Stage();
+        Scene scene = new Scene(parent);
+        stage.setScene(scene);
+        stage.show();
+
+        controller.setStage(stage);
+        controller.setOnStartAdaption(new EventHandler<AdaptionStackController.StartAdaptionEvent>() {
+            @Override
+            public void handle(AdaptionStackController.StartAdaptionEvent startAdaptionEvent) {
+                List<AdaptionRule> ruleStack = startAdaptionEvent.getRuleStack();
+                startAdaptionFor(ruleStack, selectedCaseId);
+            }
+        });
+    }
+
     public void setRetrievalResults(List<CoraRetrievalResult> results) {
         resultsItems = FXCollections.observableArrayList(results);
         tblResults.setItems(resultsItems);
+    }
+
+    private void startAdaptionFor(List<AdaptionRule> ruleStack, String selectedCaseId) {
+        AdaptionService adaptionService = new AdaptionService();
+        try {
+            CoraCaseModel selectedCase = MainApplication.getInstance().getCaseBase().loadCase(selectedCaseId);
+            AdaptionService.AdaptionTask task = adaptionService.createAdaptionTask(ruleStack,
+                    getQuery(), selectedCase, tblResults.getItems());
+
+            System.out.println("Starting adaption");
+
+            task.stateProperty().addListener((ov, oldState, newState) -> {
+                if(newState == Worker.State.SUCCEEDED) {
+                    System.out.println("Adaption: Success!");
+                    MainApplication.getInstance().getMainAppView().showCase(task.getValue(), "Adaptiert: " + selectedCaseId);
+                }
+
+                if(newState == Worker.State.FAILED) {
+                    System.err.println("Adaption: Failed!");
+                    task.getException().printStackTrace();
+                }
+            });
+
+            new Thread(task).start();
+        } catch (Exception e) {
+            System.err.println("Konnte ausgewählten Fall nicht laden: " + selectedCaseId);
+        }
     }
 
     @FXML
@@ -135,5 +207,13 @@ public class RetrievalResultsViewController {
                 tblResults.setItems(resultsItems);
             }
         }
+    }
+
+    public CoraQueryModel getQuery() {
+        return query;
+    }
+
+    public void setQuery(CoraQueryModel query) {
+        this.query = query;
     }
 }

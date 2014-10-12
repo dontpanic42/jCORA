@@ -163,11 +163,11 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      * @throws Throwable
      */
     @Override
-    public CoraCaseModel createTemporaryCase() throws Throwable {
+    public CoraCaseModel createTemporaryCase() throws Exception {
         Model m = ModelFactory.createDefaultModel();
         m.setNsPrefix("", CASE_NS);
 
-        Reasoner r = PelletReasonerFactory.theInstance().create();
+        //Reasoner r = PelletReasonerFactory.theInstance().create();
 
 
         OntModel model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, m);

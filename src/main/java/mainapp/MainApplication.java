@@ -1,12 +1,14 @@
 package mainapp;
 
 import controllers.MainAppViewController;
+import controllers.adaption.AdaptionStackController;
 import javafx.application.Application;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -68,6 +70,7 @@ public class MainApplication extends Application {
 
         installShutdownHooks();
         initCaseBase();
+
     }
 
     /**
@@ -86,6 +89,7 @@ public class MainApplication extends Application {
             }
         });
     }
+
 
     /**
      * Beendet die Anwendung.

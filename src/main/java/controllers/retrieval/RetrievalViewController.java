@@ -160,7 +160,7 @@ public class RetrievalViewController implements RetrievalProgressHandler {
                         getStage().close();
                     }
 
-                    MainApplication.getInstance().getMainAppView().showRetrievalResults(results);
+                    MainApplication.getInstance().getMainAppView().showRetrievalResults(query, results);
                     MainApplication.getInstance().getMainStage().requestFocus();
                 } catch (IOException ex) {
                     ex.printStackTrace();

@@ -16,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -88,6 +90,14 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         this.caseBase.set(caseBase);
     }
 
+    /**
+     * Zeigt einen Fall anhand dessen FallId. Die Methode merkt sich die derzeit geöffneten Fälle. Ist ein
+     * Fall bereits geöffnet, so wird dem entsprechenden Tab der Fokus gegeben. Es wird jedoch verhindert,
+     * das ein Fall mehrfach geöffnet wird, da es sonst zu synchronisationsproblemen kommen kann.
+     * @see controllers.MainAppViewController#showCase(models.cbr.CoraCaseModel, String)
+     * @param caseID Die Fall-Id
+     * @throws IOException
+     */
     public void showCase(final String caseID) throws IOException {
         if(openCases.containsKey(caseID)) {
             tabPane.getSelectionModel().select(openCases.get(caseID));
@@ -120,8 +130,46 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         }
     }
 
+    /**
+     * Zeigt einen In-Memory Fall an.
+     * Achtung: Im Gegensatz zu <code>showCase(String)</code> überprüft diese Methode nicht, ob der Fall bereits
+     * geöffnet ist! Synchronisation ist also Aufgabe der aufrufenden Methode!
+     * @see controllers.MainAppViewController#showCase(String)
+     * @param caseModel Das Fallmodell
+     * @param tabName Label des zu öffnenden Strings
+     */
+    public void showCase(final CoraCaseModel caseModel, String tabName) {
+        try {
+            Tab caseTab = new Tab();
+            caseTab.setText(tabName);
+            AnchorPane casePane = new AnchorPane();
+            caseTab.setContent(casePane);
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(this.getClass().getClassLoader().getResource("views/caseView.fxml"));
+            AnchorPane viewPane = loader.load();
+
+            casePane.getChildren().add(viewPane);
+            tabPane.getTabs().add(caseTab);
+            tabPane.getSelectionModel().select(caseTab);
+
+            CaseViewController c = loader.getController();
+            c.showInstance(caseModel.getCaseRoot());
+
+            final Stage parentStage = MainApplication.getInstance().getMainStage();
+            c.setStage(parentStage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private CaseViewController createCaseView(String caseID) throws IOException {
         Tab caseTab = new Tab();
+        ImageView caseIcon = new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream("icons/case.png")));
+        caseIcon.setFitWidth(24.0);
+        caseIcon.setFitHeight(24.0);
+        caseTab.setGraphic(caseIcon);
+
         caseTab.setText(caseID);
         AnchorPane casePane = new AnchorPane();
         caseTab.setContent(casePane);
@@ -160,12 +208,18 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         }
     }
 
-    public void showRetrievalResults(List<CoraRetrievalResult> results) throws IOException {
+    public void showRetrievalResults(CoraQueryModel query, List<CoraRetrievalResult> results) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(this.getClass().getClassLoader().getResource("views/retrieval/retrievalResultsView.fxml"));
         AnchorPane pane = loader.load();
 
         Tab caseTab = new Tab();
+
+        ImageView caseIcon = new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream("icons/retrieval-result.png")));
+        caseIcon.setFitWidth(24.0);
+        caseIcon.setFitHeight(24.0);
+        caseTab.setGraphic(caseIcon);
+
         caseTab.setText("Anfrageergebnisse");
         AnchorPane casePane = new AnchorPane();
         caseTab.setContent(casePane);
@@ -176,6 +230,7 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
 
         RetrievalResultsViewController controller = loader.getController();
         controller.setRetrievalResults(results);
+        controller.setQuery(query);
     }
 
     @SuppressWarnings("unused")

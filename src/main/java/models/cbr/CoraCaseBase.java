@@ -87,7 +87,7 @@ public interface CoraCaseBase {
      * @return Ein nicht in der Datenbank gesicherten Fall
      * @throws Throwable
      */
-    public CoraCaseModel createTemporaryCase() throws Throwable;
+    public CoraCaseModel createTemporaryCase() throws Exception;
 
     public void save(CoraCaseModel model);
 
