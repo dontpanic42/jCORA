@@ -121,7 +121,7 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
 
                         waitView.close();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Commons.showException(e);
                     }
                 }
             });

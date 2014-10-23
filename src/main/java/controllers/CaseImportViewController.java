@@ -9,10 +9,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
+import view.Commons;
 import view.viewbuilder.StageInject;
 import view.viewbuilder.ViewBuilder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -81,18 +83,18 @@ public class CaseImportViewController {
         CoraCaseBase caseBase = MainApplication.getInstance().getCaseBase();
 
         if(file == null || !file.exists()) {
-            System.err.println("Datei existiert nicht");
+            Commons.showException(new FileNotFoundException("File does not exist"));
             return;
         }
 
         String caseID = txtCaseID.getText();
         if(caseID.equals("")) {
-            System.err.println("Keine CaseID");
+            Commons.showException(new IllegalArgumentException("Illegal filename"));
             return;
         }
 
         if(caseBase.caseExists(caseID)) {
-            System.err.println("CaseID existiert schon");
+            Commons.showException(new IllegalArgumentException("Case already exists"));
             return;
         }
 
@@ -102,7 +104,7 @@ public class CaseImportViewController {
             caseBase.importCase(caseID, comboFileFormat.getSelectionModel().getSelectedItem(), file);
             stage.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Commons.showException(e);
         }
     }
 }

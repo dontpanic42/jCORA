@@ -23,6 +23,7 @@ import models.cbr.CoraQueryModel;
 import models.cbr.CoraRetrievalResult;
 import services.adaption.AdaptionService;
 import services.adaption.rules.AdaptionRule;
+import view.Commons;
 import view.viewbuilder.ViewBuilder;
 
 import javax.swing.plaf.nimbus.State;
@@ -165,8 +166,7 @@ public class RetrievalResultsViewController {
                 }
 
                 if(newState == Worker.State.FAILED) {
-                    System.err.println("Adaption: Failed!");
-                    task.getException().printStackTrace();
+                    Commons.showException(task.getException());
                 }
             });
 

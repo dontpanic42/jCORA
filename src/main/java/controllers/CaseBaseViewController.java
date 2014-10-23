@@ -179,7 +179,7 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
                 try {
                     mainAppView.showCase(caseId);
                 } catch (IOException e1) {
-                    e1.printStackTrace();
+                    Commons.showException(e1);
                 }
             });
         }

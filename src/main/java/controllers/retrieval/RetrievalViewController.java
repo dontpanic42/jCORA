@@ -21,6 +21,7 @@ import models.cbr.CoraQueryModel;
 import models.cbr.CoraRetrievalResult;
 import services.retrieval.KNNRetrievalService;
 import services.retrieval.RetrievalProgressHandler;
+import view.Commons;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -177,7 +178,7 @@ public class RetrievalViewController implements RetrievalProgressHandler {
     public void onError(CoraQueryModel query, Throwable error) {
         Application.invokeLater(() -> {
             lblStatus.setText("Fehler: " + error.getMessage());
-            error.printStackTrace();
+            Commons.showException(error);
         });
     }
 }

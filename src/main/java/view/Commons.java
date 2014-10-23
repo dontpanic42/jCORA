@@ -1,5 +1,6 @@
 package view;
 
+import controllers.commons.ThrowableErrorViewController;
 import controllers.commons.WaitViewController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -41,5 +42,13 @@ public class Commons {
         stage.show();
 
         return c;
+    }
+
+    public static void showFatalException(Throwable throwable) {
+        ThrowableErrorViewController.showError(throwable, false);
+    }
+
+    public static void showException(Throwable throwable) {
+        ThrowableErrorViewController.showError(throwable, true);
     }
 }
