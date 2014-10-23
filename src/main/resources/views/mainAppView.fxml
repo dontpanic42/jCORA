@@ -15,10 +15,12 @@
          <children>
             <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS">
               <tabs>
-                <Tab closable="false" text="Fallbasis">
+                <Tab closable="false" text="%ui.common.case_base">
                   <content>
                     <AnchorPane fx:id="caseBaseTabPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <fx:include fx:id="caseBaseView" source="caseBaseView.fxml"/>
+                       <children>
+                           <fx:include fx:id="caseBaseView" source="caseBaseView.fxml" />
+                       </children>
                     </AnchorPane>
                   </content>
                     <graphic>
@@ -35,21 +37,21 @@
       </VBox>
       <MenuBar fx:id="menuBar" layoutY="-29.0">
         <menus>
-          <Menu mnemonicParsing="false" text="Datei">
+          <Menu mnemonicParsing="false" text="%ui.menu.file">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#onExit" text="jCORA beenden" />
+              <MenuItem mnemonicParsing="false" onAction="#onExit" text="%ui.menu.file_exit" />
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="CBR">
+            <Menu mnemonicParsing="false" text="%ui.menu.cbr">
               <items>
-                <MenuItem mnemonicParsing="false" onAction="#onNewQuery" text="Neue CBR-Anfrage..." />
+                <MenuItem mnemonicParsing="false" onAction="#onNewQuery" text="%ui.menu.cbr_start_cycle" />
               </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Hilfe">
+            <Menu mnemonicParsing="false" text="%ui.menu.help">
               <items>
-                <MenuItem mnemonicParsing="false" text="Onlinehilfe..." />
+                <MenuItem mnemonicParsing="false" text="%ui.menu.help_online_help" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Über jCORA..." />
+                  <MenuItem mnemonicParsing="false" text="%ui.menu.help_about" />
               </items>
             </Menu>
         </menus>

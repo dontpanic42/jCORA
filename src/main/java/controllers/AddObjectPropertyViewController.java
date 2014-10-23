@@ -1,7 +1,5 @@
 package controllers;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -14,21 +12,22 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import mainapp.MainApplication;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
+import view.viewbuilder.StageInject;
+import view.viewbuilder.ViewBuilder;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 
 /**
  * Created by daniel on 25.08.14.
  */
 public class AddObjectPropertyViewController {
+
+    private static final String ADD_OBJECT_PROPERTY_VIEW_FILE = "views/addObjectPropertyView.fxml";
 
     @FXML
     private ListView<CoraObjectPropertyModel> listProperties;
@@ -54,39 +53,22 @@ public class AddObjectPropertyViewController {
 
     @FXML
     public void initialize() {
-        listProperties.setPlaceholder(new Label("Nicht initialisiert."));
+        String txtNotInitialized = ViewBuilder.getInstance().getText("ui.add_object_property.not_initialized");
+
+        listProperties.setPlaceholder(new Label(txtNotInitialized));
 
         listProperties.getSelectionModel().selectedItemProperty().addListener((ov, oldProperty, newProperty) ->
             onSelectProperty(oldProperty, newProperty));
 
-        listInstances.setPlaceholder(new Label("Nicht initialisiert."));
+        listInstances.setPlaceholder(new Label(txtNotInitialized));
     }
 
     public static void showAddRelation(Stage parent, CoraInstanceModel model) {
-        try{
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(AddObjectPropertyViewController.class
-                    .getClassLoader().getResource("views/addObjectPropertyView.fxml"));
-            AnchorPane pane = loader.load();
-
-            Stage stage = new Stage();
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(parent);
-
-            Scene scene = new Scene(pane);
-            stage.setScene(scene);
-            stage.show();
-
-            AddObjectPropertyViewController c = loader.getController();
-            c.setModel(model);
-            c.setStage(stage);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        AddObjectPropertyViewController c = ViewBuilder.getInstance().createModal(ADD_OBJECT_PROPERTY_VIEW_FILE, parent);
+        c.setModel(model);
     }
 
+    @StageInject
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -204,7 +186,8 @@ public class AddObjectPropertyViewController {
             if(newState == Worker.State.SUCCEEDED) {
                 itemsInstances = listInstancesTask.getValue();
                 listInstances.setItems(itemsInstances);
-                listInstances.setPlaceholder(new Label("Keine Instanzen vorhanden"));
+                String txtNoInstances = ViewBuilder.getInstance().getText("ui.add_object_property.label_no_instances");
+                listInstances.setPlaceholder(new Label(txtNoInstances));
             }
         });
 
@@ -241,7 +224,8 @@ public class AddObjectPropertyViewController {
                     listProperties.getSelectionModel().selectFirst();
                 }
 
-                listProperties.setPlaceholder(new Label("Keine Relationen vorhanden"));
+                String txtNoRelations = ViewBuilder.getInstance().getText("ui.add_object_property.label_no_relations");
+                listProperties.setPlaceholder(new Label(txtNoRelations));
             }
         });
 

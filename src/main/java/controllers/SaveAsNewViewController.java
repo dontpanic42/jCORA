@@ -1,16 +1,13 @@
 package controllers;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseModel;
-import models.ontology.CoraInstanceModel;
+import view.viewbuilder.StageInject;
+import view.viewbuilder.ViewBuilder;
 
 import java.io.IOException;
 
@@ -19,6 +16,8 @@ import java.io.IOException;
  */
 public class SaveAsNewViewController {
 
+    private static final String SAVE_AS_NEW_VIEW_FILE = "views/saveAsNewView.fxml";
+
     private CoraCaseModel caseModel;
     private Stage stage;
 
@@ -26,30 +25,11 @@ public class SaveAsNewViewController {
     private TextField txtCaseID;
 
     public static void showSaveAsNew(Stage parent, CoraCaseModel model) {
-        try{
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(AddObjectPropertyViewController.class
-                    .getClassLoader().getResource("views/saveAsNewView.fxml"));
-            AnchorPane pane = loader.load();
-
-            Stage stage = new Stage();
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(parent);
-
-            Scene scene = new Scene(pane);
-            stage.setScene(scene);
-            stage.show();
-
-            SaveAsNewViewController c = loader.getController();
-            c.setModel(model);
-            c.setStage(stage);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        SaveAsNewViewController c = ViewBuilder.getInstance().createModal(SAVE_AS_NEW_VIEW_FILE, parent);
+        c.setModel(model);
     }
 
+    @StageInject
     public void setStage(Stage stage) {
         this.stage = stage;
     }

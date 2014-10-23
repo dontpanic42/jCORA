@@ -26,7 +26,7 @@
                         <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                      </padding>
                      <tooltip>
-                        <Tooltip text="Diesen Fall speichern" />
+                        <Tooltip text="%ui.case_view.tooltip_save_case" />
                      </tooltip>
                   </Button>
                   <Button mnemonicParsing="false" onAction="#onSaveAsNew">
@@ -41,7 +41,7 @@
                         <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                      </padding>
                      <tooltip>
-                        <Tooltip text="Diesen Fall duplizieren und als neuen Fall speichern" />
+                        <Tooltip text="%ui.case_view.tooltip_save_case_as_new" />
                      </tooltip>
                   </Button>
                   <Separator />
@@ -57,7 +57,7 @@
                         <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                      </padding>
                      <tooltip>
-                        <Tooltip text="Diesen Fall im RDF/XML-Format speichern" />
+                        <Tooltip text="%ui.case_view.tooltip_export_as_xml" />
                      </tooltip>
                   </Button>
                   <Button mnemonicParsing="false" onAction="#onExportAsImage">
@@ -72,19 +72,19 @@
                         <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                      </padding>
                      <tooltip>
-                        <Tooltip text="Den Fall-Graphen als PNG-Bild speichern" />
+                        <Tooltip text="%ui.case_view.tooltip_export_as_image" />
                      </tooltip>
                   </Button>
               </items>
             </ToolBar>
             <VBox prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TitledPane text="Navigation">
+                  <TitledPane text="%ui.case_view.navigation_panel_title">
                      <content>
                         <SwingNode fx:id="navNode" />
                      </content>
                   </TitledPane>
-                  <TitledPane text="Legende">
+                  <TitledPane text="%ui.case_view.help_panel_title">
                      <content>
                         <ImageView fitHeight="200.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -108,7 +108,7 @@
                            <children>
                               <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="5.0">
                                  <children>
-                                    <Label maxWidth="1000.0" prefWidth="1000.0" text="Daten" />
+                                    <Label maxWidth="1000.0" prefWidth="1000.0" text="%ui.case_view.label_datatype_property" />
                                     <Button mnemonicParsing="false" onAction="#onAddDataProperty">
                                        <graphic>
                                           <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
@@ -121,7 +121,7 @@
                                           <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                                        </padding>
                                        <tooltip>
-                                          <Tooltip text="Daten hinzufügen" />
+                                          <Tooltip text="%ui.case_view.tooltip_add_datatype_property" />
                                        </tooltip>
                                     </Button>
                                     <Button mnemonicParsing="false" onAction="#onRemoveDataProperty">
@@ -136,7 +136,7 @@
                                           <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                                        </padding>
                                        <tooltip>
-                                          <Tooltip text="Ausgewählte Zeile löschen" />
+                                          <Tooltip text="%ui.case_view.tooltip_delete_datatype_property" />
                                        </tooltip>
                                     </Button>
                                  </children>
@@ -146,9 +146,9 @@
                               </HBox>
                               <TableView fx:id="tblDataProperties" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                 <columns>
-                                  <TableColumn fx:id="columnPropertyName" prefWidth="115.0" text="Eigenschaft" />
-                                  <TableColumn fx:id="columnPropertyValue" prefWidth="111.0" text="Wert" />
-                                    <TableColumn fx:id="columnPropertyUnit" prefWidth="75.0" text="Einheit" />
+                                  <TableColumn fx:id="columnPropertyName" prefWidth="115.0" text="%ui.case_view.column_data_property_name" />
+                                  <TableColumn fx:id="columnPropertyValue" prefWidth="111.0" text="%ui.case_view.column_data_property_value" />
+                                    <TableColumn fx:id="columnPropertyUnit" prefWidth="75.0" text="%ui.case_view.column_data_property_unit" />
                                 </columns>
                               </TableView>
                            </children>

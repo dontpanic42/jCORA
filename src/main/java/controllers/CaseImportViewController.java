@@ -2,17 +2,15 @@ package controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
+import view.viewbuilder.StageInject;
+import view.viewbuilder.ViewBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +19,8 @@ import java.io.IOException;
  * Created by daniel on 24.08.14.
  */
 public class CaseImportViewController {
+
+    private static final String CASE_IMPORT_VIEW_FILE = "views/caseImportView.fxml";
 
     @FXML
     private Button btnImport;
@@ -55,30 +55,12 @@ public class CaseImportViewController {
     }
 
     public static void showCaseImport(Stage parent) {
-        try{
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(CaseImportViewController.class.getClassLoader().getResource("views/caseImportView.fxml"));
-            AnchorPane pane = loader.load();
-
-            Stage stage = new Stage();
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(parent);
-
-            Scene scene = new Scene(pane);
-            stage.setScene(scene);
-            stage.show();
-
-            CaseImportViewController c = loader.getController();
-            c.setStage(stage);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+       ViewBuilder.getInstance().createModal(CASE_IMPORT_VIEW_FILE, parent);
 
     }
 
-    private void setStage(Stage stage) {
+    @StageInject
+    public void setStage(Stage stage) {
         this.stage = stage;
     }
 

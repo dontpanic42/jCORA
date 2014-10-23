@@ -22,15 +22,15 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
         </rowConstraints>
          <children>
-            <Label text="Relation" />
-            <Label text="Instanz" GridPane.columnIndex="2" />
+            <Label text="%ui.add_object_property.label_object_property" />
+            <Label text="%ui.add_object_property.label_instance" GridPane.columnIndex="2" />
             <ListView fx:id="listProperties" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" />
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <children>
                   <ListView fx:id="listInstances" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                   <HBox alignment="CENTER_RIGHT" prefWidth="200.0" VBox.vgrow="NEVER">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#onCreateInstance" text="Neue Instanz..." />
+                        <Button mnemonicParsing="false" onAction="#onCreateInstance" text="%ui.add_object_property.btn_add_instance" />
                      </children>
                      <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -41,8 +41,8 @@
             <Separator prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="3" />
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnSpan="3" GridPane.rowIndex="4">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onCancel" text="Abbrechen" />
-                  <Button mnemonicParsing="false" onAction="#onCreateProperty" text="Hinzufügen" />
+                  <Button mnemonicParsing="false" onAction="#onCancel" text="%ui.add_object_property.btn_cancel" />
+                  <Button mnemonicParsing="false" onAction="#onCreateProperty" text="%ui.add_object_property.btn_create" />
                </children>
                <GridPane.margin>
                   <Insets />
@@ -53,8 +53,8 @@
                   <Image url="@../icons/arrow-right.png" />
                </image>
             </ImageView>
-            <TextField fx:id="txtSearchRelation" onKeyTyped="#onSearchRelation" promptText="Suche Relation..." GridPane.rowIndex="1" />
-            <TextField fx:id="txtSearchInstance" onKeyTyped="#onSearchInstance" promptText="Suche Instanz..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <TextField fx:id="txtSearchRelation" onKeyTyped="#onSearchRelation" promptText="%ui.add_object_property.placeholder_search_object_property" GridPane.rowIndex="1" />
+            <TextField fx:id="txtSearchInstance" onKeyTyped="#onSearchInstance" promptText="%ui.add_object_property.placeholder_search_instance" GridPane.columnIndex="2" GridPane.rowIndex="1" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

@@ -21,22 +21,22 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Datei" />
-            <Label text="Dateiformat" GridPane.rowIndex="1" />
+            <Label text="%ui.case_import.label_file" />
+            <Label text="%ui.case_import.label_file_format" GridPane.rowIndex="1" />
             <ComboBox fx:id="comboFileFormat" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-            <Label text="Fall-ID" GridPane.rowIndex="2" />
-            <TextField fx:id="txtCaseID" promptText="Fall-ID..." GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <Label text="%ui.case_import.label_case_id" GridPane.rowIndex="2" />
+            <TextField fx:id="txtCaseID" promptText="%ui.case_import.placeholder_case_id" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnSpan="3" GridPane.rowIndex="4">
                <children>
-                  <Button fx:id="btnCancel" mnemonicParsing="false" text="Abbrechen" />
-                  <Button fx:id="btnImport" mnemonicParsing="false" text="Importieren" />
+                  <Button fx:id="btnCancel" mnemonicParsing="false" text="%ui.case_import.btn_cancel" />
+                  <Button fx:id="btnImport" mnemonicParsing="false" text="%ui.case_import.btn_import" />
                </children>
             </HBox>
             <Separator prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="3" />
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2">
                <children>
-                  <TextField fx:id="txtFile" editable="false" promptText="Dateiname..." HBox.hgrow="ALWAYS" />
-                  <Button fx:id="btnSelectFile" mnemonicParsing="false" text="Auswählen" />
+                  <TextField fx:id="txtFile" editable="false" promptText="%ui.case_import.placeholder_file_name" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="btnSelectFile" mnemonicParsing="false" text="%ui.case_import.btn_choose_file" />
                </children>
             </HBox>
          </children>

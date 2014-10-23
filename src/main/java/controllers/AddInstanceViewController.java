@@ -16,7 +16,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
-import models.ontology.CoraObjectPropertyModel;
+import view.viewbuilder.StageInject;
+import view.viewbuilder.ViewBuilder;
 
 import java.io.IOException;
 import java.util.Set;
@@ -25,6 +26,8 @@ import java.util.Set;
  * Created by daniel on 25.08.14.
  */
 public class AddInstanceViewController {
+
+    private static final String ADD_INSTANCE_VIEW_FILE = "views/addInstanceView.fxml";
 
     @FXML
     private TreeView<CoraClassModel> classTree;
@@ -38,9 +41,7 @@ public class AddInstanceViewController {
     private Stage stage;
 
     public static CoraInstanceModel showCreateInstance(Stage parent, Set<CoraClassModel> superClasses) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(AddInstanceViewController.class
-                .getClassLoader().getResource("views/addInstanceView.fxml"));
+        FXMLLoader loader = ViewBuilder.getInstance().createLoader(ADD_INSTANCE_VIEW_FILE);
         AnchorPane pane = loader.load();
 
         Stage stage = new Stage();

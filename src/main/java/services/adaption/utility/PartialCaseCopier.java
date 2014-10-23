@@ -223,6 +223,8 @@ public class PartialCaseCopier {
             //Der neue Instanzname = ns des neuen Falles + name der alten Instanz
             String instanceName = newCase.getCaseDescription().getNs() + instanceToCopy.toString();
 
+            //TODO: Überprüfen ob eine Instanz dieses Namens schon besteht. In dem Fall müsste der Name der neuen Instanz geändert werden
+            //i.g. Instanz2 oder so. ???
             //Erzeuge die Instanz auf dem neuen Modell
             Individual i = ontModel.createIndividual(instanceName, iter.next());
 

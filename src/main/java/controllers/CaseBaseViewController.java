@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
+import java.util.ResourceBundle;
 
 
 /**
@@ -167,8 +168,10 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
             this.caseId = new SimpleStringProperty();
             this.caseId.set(caseId);
 
-            btnView = new SimpleObjectProperty<>(new Button("Anzeigen"));
-            btnDelete = new SimpleObjectProperty<>(new Button("Löschen"));
+            ResourceBundle texts = MainApplication.getInstance().getTexts();
+
+            btnView = new SimpleObjectProperty<>(new Button(texts.getString("ui.case_base_view.btn_show_case")));
+            btnDelete = new SimpleObjectProperty<>(new Button(texts.getString("ui.case_base_view.btn_delete_case")));
 
             btnView.getValue().setOnAction( (ActionEvent e) -> {
                 MainAppViewController mainAppView = MainApplication.getInstance().getMainAppView();

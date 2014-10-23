@@ -3,13 +3,10 @@ package controllers;
 import controllers.commons.WaitViewController;
 import controllers.queryeditor.QueryViewController;
 import controllers.retrieval.RetrievalResultsViewController;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,11 +16,11 @@ import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mainapp.MainApplication;
 import models.cbr.*;
 import view.Commons;
+import view.viewbuilder.ViewBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -33,6 +30,9 @@ import java.util.List;
  * Created by daniel on 24.08.14.
  */
 public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler {
+
+    private static final String CASE_VIEW_VIEW_FILE = "views/caseView.fxml";
+    private static final String QUERY_VIEW_VIEW_FILE = "views/queryeditor/queryView.fxml";
 
     @FXML
     private TabPane tabPane;
@@ -62,14 +62,13 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
     @SuppressWarnings("unused")
     @FXML
     private void onNewQuery() throws Throwable {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(this.getClass().getClassLoader().getResource("views/queryeditor/queryView.fxml"));
+        FXMLLoader loader = ViewBuilder.getInstance().createLoader(QUERY_VIEW_VIEW_FILE);
         AnchorPane pane = loader.load();
 
         Stage stage = new Stage();
         Scene scene = new Scene(pane);
         stage.setScene(scene);
-        stage.setTitle("Anfrageeditor: Neue Anfrage");
+        stage.setTitle(ViewBuilder.getInstance().getText("ui.query_view.title"));
         stage.show();
 
         QueryViewController controller = loader.getController();
@@ -145,8 +144,7 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
             AnchorPane casePane = new AnchorPane();
             caseTab.setContent(casePane);
 
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(this.getClass().getClassLoader().getResource("views/caseView.fxml"));
+            FXMLLoader loader = ViewBuilder.getInstance().createLoader(CASE_VIEW_VIEW_FILE);
             AnchorPane viewPane = loader.load();
 
             casePane.getChildren().add(viewPane);
@@ -174,8 +172,7 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         AnchorPane casePane = new AnchorPane();
         caseTab.setContent(casePane);
 
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(this.getClass().getClassLoader().getResource("views/caseView.fxml"));
+        FXMLLoader loader = ViewBuilder.getInstance().createLoader(CASE_VIEW_VIEW_FILE);
         AnchorPane viewPane = loader.load();
 
         casePane.getChildren().add(viewPane);
