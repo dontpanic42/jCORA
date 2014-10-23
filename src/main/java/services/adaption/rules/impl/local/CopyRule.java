@@ -4,6 +4,7 @@ import models.cbr.CoraCaseModel;
 import models.cbr.CoraQueryModel;
 import services.adaption.rules.LocalAdaptionRule;
 import services.adaption.utility.PartialCaseCopier;
+import view.viewbuilder.ViewBuilder;
 
 /**
  * Created by daniel on 11.10.14.
@@ -16,11 +17,11 @@ public class CopyRule extends LocalAdaptionRule {
 
     @Override
     public String getRuleName() {
-        return "Kopiere Lösung";
+        return ViewBuilder.getInstance().getText("rule.copy_rule.name");
     }
 
     @Override
     public String getRuleDescription() {
-        return "Kopiert die Lösung des ausgewählten Falles.";
+        return ViewBuilder.getInstance().getText("rule.copy_rule.description");
     }
 }

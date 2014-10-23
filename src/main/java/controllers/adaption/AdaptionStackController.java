@@ -21,6 +21,8 @@ import services.adaption.rules.AdaptionRule;
 import services.adaption.rules.GlobalAdaptionRule;
 import services.adaption.rules.LocalAdaptionRule;
 import services.adaption.rules.impl.local.CopyRule;
+import view.viewbuilder.StageInject;
+import view.viewbuilder.ViewBuilder;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,8 +47,11 @@ public class AdaptionStackController {
     @SuppressWarnings("unused")
     @FXML
     private void initialize() {
-        listAvailable.setPlaceholder(new Label("Keine Regeln vorhanden."));
-        listSelected.setPlaceholder(new Label("Keine Regeln ausgewählt"));
+        String txtNoRulesAvailable = ViewBuilder.getInstance().getText("ui.adaption_stack.label_no_rules_available");
+        String txtNoRulesSelected = ViewBuilder.getInstance().getText("ui.adaption_stack.label_no_rules_selected");
+
+        listAvailable.setPlaceholder(new Label(txtNoRulesAvailable));
+        listSelected.setPlaceholder(new Label(txtNoRulesSelected));
 
 
         Callback<ListView<AdaptionRule>, ListCell<AdaptionRule>> cellFactory = new Callback<ListView<AdaptionRule>, ListCell<AdaptionRule>>() {
@@ -220,6 +225,7 @@ public class AdaptionStackController {
         return stage;
     }
 
+    @StageInject
     public void setStage(Stage stage) {
         this.stage = stage;
     }

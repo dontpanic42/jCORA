@@ -27,6 +27,7 @@ public class MainApplication extends Application {
     public static final String APPLICATION_NAME = "jCora";
     public static final String VERSION_STRING = "Alpha 1";
 
+    private static final String DEFAULT_LANGUAGE_FILE = "i18n/i18n_en.properties";
     private static final String MAINAPP_VIEW_FILE = "views/mainAppView.fxml";
 
     private static MainApplication instance;
@@ -46,7 +47,7 @@ public class MainApplication extends Application {
     public ResourceBundle getTexts() {
         if(texts == null) {
             try {
-                InputStream is = this.getClass().getClassLoader().getResourceAsStream("i18n/i18n_de.properties");
+                InputStream is = this.getClass().getClassLoader().getResourceAsStream(DEFAULT_LANGUAGE_FILE);
                 InputStreamReader reader = new InputStreamReader(is, "UTF-8");
                 texts = new PropertyResourceBundle(reader);
                 is.close();

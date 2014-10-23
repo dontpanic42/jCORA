@@ -6,7 +6,6 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.adaption.AdaptionStackController">
    <children>
       <GridPane hgap="5.0" layoutX="150.0" layoutY="155.0" prefHeight="400.0" prefWidth="600.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -22,8 +21,8 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
         </rowConstraints>
          <children>
-            <Label text="Vorhandene Regeln" />
-            <Label text="Ausgewählte Regeln" GridPane.columnIndex="2" />
+            <Label text="%ui.adaption_stack.label_available_rules" />
+            <Label text="%ui.adaption_stack.label_selected_rules" GridPane.columnIndex="2" />
             <VBox alignment="CENTER" prefHeight="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
                   <Button mnemonicParsing="false" onAction="#onMoveRight">
@@ -83,8 +82,8 @@
             <ListView fx:id="listSelected" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnSpan="3" GridPane.rowIndex="3">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onCancel" text="Abbrechen" />
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#onApply" text="Anwenden" />
+                  <Button mnemonicParsing="false" onAction="#onCancel" text="%ui.adaption_stack.btn_cancel" />
+                  <Button mnemonicParsing="false" onAction="#onApply" text="%ui.adaption_stack.btn_apply" />
                </children>
             </HBox>
             <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />

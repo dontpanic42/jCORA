@@ -23,6 +23,7 @@ import models.cbr.CoraQueryModel;
 import models.cbr.CoraRetrievalResult;
 import services.adaption.AdaptionService;
 import services.adaption.rules.AdaptionRule;
+import view.viewbuilder.ViewBuilder;
 
 import javax.swing.plaf.nimbus.State;
 import java.io.IOException;
@@ -34,6 +35,8 @@ import java.util.List;
  * Created by daniel on 02.09.14.
  */
 public class RetrievalResultsViewController {
+
+    private static final String ADAPTION_STACK_VIEW_FILE = "views/adaption/adaptionStack.fxml";
 
     @FXML
     private TableView<CoraRetrievalResult> tblResults;
@@ -63,8 +66,13 @@ public class RetrievalResultsViewController {
 
     private ObservableList<CoraRetrievalResult> resultsItems;
 
+    @SuppressWarnings("unused")
     @FXML
     private void initialize() {
+        final String txtAdapt = ViewBuilder.getInstance().getText("ui.retrieval_results.btn_adapt");
+        final String txtShow = ViewBuilder.getInstance().getText("ui.retrieval_results.btn_show");
+        final String txtNoResults = ViewBuilder.getInstance().getText("ui.retrieval_results.results_placeholder");
+
         if(accordionLeft.getPanes().size() > 0) {
             accordionLeft.setExpandedPane(accordionLeft.getPanes().get(0));
         }
@@ -100,7 +108,7 @@ public class RetrievalResultsViewController {
         columnAdapt.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CoraRetrievalResult, Button>, ObservableValue<Button>>() {
             @Override
             public ObservableValue<Button> call(TableColumn.CellDataFeatures<CoraRetrievalResult, Button> cDataFeatures) {
-                Button b = new Button("Adaptieren");
+                Button b = new Button(txtAdapt);
 
                 String selectedCaseId = cDataFeatures.getValue().getCaseId();
 
@@ -112,7 +120,7 @@ public class RetrievalResultsViewController {
         columnView.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CoraRetrievalResult, Button>, ObservableValue<Button>>() {
             @Override
             public ObservableValue<Button> call(TableColumn.CellDataFeatures<CoraRetrievalResult, Button> c) {
-                Button b = new Button("Anzeigen");
+                Button b = new Button(txtShow);
                 b.setOnAction((ActionEvent e) -> {
                     try {
                         MainApplication.getInstance().getMainAppView().showCase(c.getValue().getCaseId());
@@ -124,34 +132,15 @@ public class RetrievalResultsViewController {
             }
         });
 
-        tblResults.setPlaceholder(new Label("Keine anzeigbaren Ergebnisse."));
+        tblResults.setPlaceholder(new Label(txtNoResults));
     }
 
     private void onAdapt(String selectedCaseId) {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(this.getClass().getClassLoader().getResource("views/adaption/adaptionStack.fxml"));
+        AdaptionStackController controller = ViewBuilder.getInstance().createDialog(ADAPTION_STACK_VIEW_FILE);
 
-        Parent parent;
-        AdaptionStackController controller;
-        try {
-            parent = loader.load();
-            controller = loader.getController();
-        } catch (Exception e) {
-            return;
-        }
-
-        Stage stage = new Stage();
-        Scene scene = new Scene(parent);
-        stage.setScene(scene);
-        stage.show();
-
-        controller.setStage(stage);
-        controller.setOnStartAdaption(new EventHandler<AdaptionStackController.StartAdaptionEvent>() {
-            @Override
-            public void handle(AdaptionStackController.StartAdaptionEvent startAdaptionEvent) {
+        controller.setOnStartAdaption((startAdaptionEvent) -> {
                 List<AdaptionRule> ruleStack = startAdaptionEvent.getRuleStack();
                 startAdaptionFor(ruleStack, selectedCaseId);
-            }
         });
     }
 

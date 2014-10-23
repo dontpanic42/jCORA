@@ -33,6 +33,7 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
 
     private static final String CASE_VIEW_VIEW_FILE = "views/caseView.fxml";
     private static final String QUERY_VIEW_VIEW_FILE = "views/queryeditor/queryView.fxml";
+    private static final String RETRIEVAL_RESULTS_VIEW_FILE = "views/retrieval/retrievalResultsView.fxml";
 
     @FXML
     private TabPane tabPane;
@@ -206,8 +207,7 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
     }
 
     public void showRetrievalResults(CoraQueryModel query, List<CoraRetrievalResult> results) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(this.getClass().getClassLoader().getResource("views/retrieval/retrievalResultsView.fxml"));
+        FXMLLoader loader = ViewBuilder.getInstance().createLoader(RETRIEVAL_RESULTS_VIEW_FILE);
         AnchorPane pane = loader.load();
 
         Tab caseTab = new Tab();
@@ -217,7 +217,7 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         caseIcon.setFitHeight(24.0);
         caseTab.setGraphic(caseIcon);
 
-        caseTab.setText("Anfrageergebnisse");
+        caseTab.setText(ViewBuilder.getInstance().getText("ui.retrieval_results.tab_title"));
         AnchorPane casePane = new AnchorPane();
         caseTab.setContent(casePane);
 

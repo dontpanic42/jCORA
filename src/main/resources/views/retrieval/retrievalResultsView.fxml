@@ -11,14 +11,14 @@
          <children>
             <Accordion fx:id="accordionLeft">
               <panes>
-                <TitledPane text="Filter">
+                <TitledPane text="%ui.retrieval_results.filter">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <children>
-                                    <TextField fx:id="txtFilter" maxWidth="1.7976931348623157E308" onKeyTyped="#onChangeFilter" prefWidth="1000.0" promptText="Zeige &gt;= %" />
-                                    <Label text="\%" />
+                                    <TextField fx:id="txtFilter" maxWidth="1.7976931348623157E308" onKeyTyped="#onChangeFilter" prefWidth="1000.0" promptText="%ui.retrieval_results.filter_placeholder" />
+                                    <Label text="%ui.retrieval_results.filter_label" />
                                  </children>
                                  <padding>
                                     <Insets bottom="5.0" top="10.0" />
@@ -32,11 +32,11 @@
             </Accordion>
             <TableView fx:id="tblResults" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
               <columns>
-                <TableColumn fx:id="columnCaseId" prefWidth="233.0" text="Fall-ID" />
-                <TableColumn fx:id="columnSimilarity" minWidth="0.0" prefWidth="102.0" text="Ähnlichkeit" />
+                <TableColumn fx:id="columnCaseId" prefWidth="233.0" text="%ui.retrieval_results.column_case_id" />
+                <TableColumn fx:id="columnSimilarity" minWidth="0.0" prefWidth="102.0" text="%ui.retrieval_results.column_similarity" />
                   <TableColumn fx:id="columnSimilarityBar" prefWidth="159.0" />
-                  <TableColumn fx:id="columnAdapt" editable="false" prefWidth="144.0" sortable="false" text="Adaptieren" />
-                  <TableColumn fx:id="columnView" editable="false" prefWidth="142.0" sortable="false" text="Anzeigen" />
+                  <TableColumn fx:id="columnAdapt" editable="false" prefWidth="144.0" sortable="false" text="%ui.retrieval_results.column_adapt" />
+                  <TableColumn fx:id="columnView" editable="false" prefWidth="142.0" sortable="false" text="%ui.retrieval_results.column_show" />
               </columns>
             </TableView>
          </children>
