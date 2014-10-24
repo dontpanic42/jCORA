@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import models.Language;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseBaseImpl;
 import view.viewbuilder.ViewBuilder;
@@ -16,6 +17,7 @@ import view.viewbuilder.ViewBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
@@ -27,8 +29,8 @@ public class MainApplication extends Application {
     public static final String APPLICATION_NAME = "jCora";
     public static final String VERSION_STRING = "Alpha 1";
 
-    private static final String DEFAULT_LANGUAGE_FILE = "i18n/i18n_en.properties";
-    private static final String DEFAULT_LANGUAGE_STRING = "en";
+    private Language currentLanguage = Language.GERMAN;
+    private static final Language DEFAULT_LANGUAGE = Language.ENGLISH;
 
     private static final String MAINAPP_VIEW_FILE = "views/mainAppView.fxml";
 
@@ -48,7 +50,8 @@ public class MainApplication extends Application {
     public ResourceBundle getTexts() {
         if(texts == null) {
             try {
-                InputStream is = this.getClass().getClassLoader().getResourceAsStream(DEFAULT_LANGUAGE_FILE);
+                final String bundle = currentLanguage.getResourceBundleFileName();
+                InputStream is = this.getClass().getClassLoader().getResourceAsStream(bundle);
                 InputStreamReader reader = new InputStreamReader(is, "UTF-8");
                 texts = new PropertyResourceBundle(reader);
                 is.close();
@@ -62,11 +65,13 @@ public class MainApplication extends Application {
     }
 
     public String getLanguage() {
-        return DEFAULT_LANGUAGE_STRING;
+        return currentLanguage.getTag();
     }
 
     @Override
     public void start(Stage stage) throws Exception {
+        setLanguage();
+
         //Singleton-Instanz
         instance = this;
         //Hauptfenster zugänglich machen
@@ -83,6 +88,23 @@ public class MainApplication extends Application {
         installShutdownHooks();
         initCaseBase();
 
+    }
+
+    /**
+     * Setzt die Anwendungssprache auf die Systemsprache, falls möglich.
+     * Ist die Systemsprache nicht als Anwendungssprach verfügbar, setze
+     * <code>DEFAULT_LANGUAGE</code> als aktuelle Anwendungssprache.
+     */
+    private void setLanguage() {
+        final String lang = Locale.getDefault().getLanguage();
+        Language l = Language.getLanguageByTag(lang);
+        if(l == null) {
+            currentLanguage = DEFAULT_LANGUAGE;
+            System.out.println("i18n: System language '" + Locale.getDefault().getDisplayLanguage() + "' not available.");
+            System.out.println("i18n: Setting '" + DEFAULT_LANGUAGE.getName() + "' as default language.");
+        } else {
+            currentLanguage = l;
+        }
     }
 
     /**

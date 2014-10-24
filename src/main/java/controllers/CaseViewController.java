@@ -10,6 +10,7 @@ import javafx.concurrent.Worker;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
@@ -74,11 +75,31 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         columnPropertyName.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<DataPropertyAssertion, CoraDataPropertyModel>,
                         ObservableValue<CoraDataPropertyModel>>() {
+                    //TODO: i18n
                     @Override
                     public ObservableValue<CoraDataPropertyModel> call(TableColumn.CellDataFeatures<DataPropertyAssertion, CoraDataPropertyModel> p) {
                         return new ReadOnlyObjectWrapper<>(p.getValue().getPredicat());
                     }
                 });
+
+        columnPropertyName.setCellFactory(new Callback<TableColumn<DataPropertyAssertion, CoraDataPropertyModel>, TableCell<DataPropertyAssertion, CoraDataPropertyModel>>() {
+            @Override
+            public TableCell<DataPropertyAssertion, CoraDataPropertyModel> call(TableColumn<DataPropertyAssertion, CoraDataPropertyModel> dataPropertyAssertionCoraDataPropertyModelTableColumn) {
+                return new TableCell<DataPropertyAssertion, CoraDataPropertyModel>() {
+                    @Override
+                    protected void updateItem(CoraDataPropertyModel coraDataPropertyModel, boolean empty) {
+                        super.updateItem(coraDataPropertyModel, empty);
+
+                        if(empty) {
+                            setText("");
+                        } else {
+                            final String lang = MainApplication.getInstance().getLanguage();
+                            setText(coraDataPropertyModel.getDisplayName(lang));
+                        }
+                    }
+                };
+            }
+        });
 
         columnPropertyValue.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<DataPropertyAssertion,
