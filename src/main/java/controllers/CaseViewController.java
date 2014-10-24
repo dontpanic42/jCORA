@@ -205,11 +205,9 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
                                        CoraInstanceModel subject,
                                        CoraInstanceModel object) {
         System.out.println("Erzeuge graph relation");
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                graph.addInstance(subject, object, objectProperty.toString());
-            }
+        SwingUtilities.invokeLater(() -> {
+            final String lang = MainApplication.getInstance().getLanguage();
+            graph.addInstance(subject, object, objectProperty.getDisplayName(lang));
         });
     }
 

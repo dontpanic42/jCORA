@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.scene.layout.Border;
+import mainapp.MainApplication;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
 import org.netbeans.api.visual.action.SelectProvider;
@@ -134,6 +135,8 @@ public class GraphViewComponent extends JPanel {
         visited.put(instance, instanceModel);
         scene.addNode(instanceModel);
 
+        final String lang = MainApplication.getInstance().getLanguage();
+
         Map<CoraObjectPropertyModel, Set<CoraInstanceModel>> objectProperties = instance.getObjectProperties();
         for(Map.Entry<CoraObjectPropertyModel, Set<CoraInstanceModel>> e : objectProperties.entrySet()) {
             Set<CoraInstanceModel> set = e.getValue();
@@ -141,7 +144,8 @@ public class GraphViewComponent extends JPanel {
                 NodeModel source = instanceModel;
                 NodeModel target = addInstanceRec(i, visited);
 
-                EdgeModel edge = new EdgeModel(e.getKey().toString());
+//                EdgeModel edge = new EdgeModel(e.getKey().toString());
+                EdgeModel edge = new EdgeModel(e.getKey().getDisplayName(lang));
                 edge.setSource(source);
                 edge.setTarget(target);
 

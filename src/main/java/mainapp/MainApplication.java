@@ -28,6 +28,8 @@ public class MainApplication extends Application {
     public static final String VERSION_STRING = "Alpha 1";
 
     private static final String DEFAULT_LANGUAGE_FILE = "i18n/i18n_en.properties";
+    private static final String DEFAULT_LANGUAGE_STRING = "en";
+
     private static final String MAINAPP_VIEW_FILE = "views/mainAppView.fxml";
 
     private static MainApplication instance;
@@ -39,7 +41,6 @@ public class MainApplication extends Application {
 
     private Stage mainStage;
 
-    ///private CoraCaseBase caseBase;
     private SimpleObjectProperty<CoraCaseBase> caseBase = new SimpleObjectProperty<>();
     private Task<CoraCaseBase> initCaseBaseTask;
     private ResourceBundle texts;
@@ -58,6 +59,10 @@ public class MainApplication extends Application {
         }
 
         return texts;
+    }
+
+    public String getLanguage() {
+        return DEFAULT_LANGUAGE_STRING;
     }
 
     @Override

@@ -14,24 +14,27 @@
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="%ui.add_instance.label_class" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-            <TreeView fx:id="classTree" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <Label text="%ui.add_instance.label_class" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <TreeView fx:id="classTree" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
             <Label text="%ui.add_instance.label_name" />
             <TextField fx:id="txtInstanceName" promptText="%ui.add_instance.placeholder_name" GridPane.columnIndex="1" />
-            <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+            <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnSpan="2" GridPane.rowIndex="5">
                <children>
                   <Button mnemonicParsing="false" onAction="#onCancel" text="%ui.add_instance.btn_cancel" />
                   <Button mnemonicParsing="false" onAction="#onCreateInstance" text="%ui.add_instance.btn_create" />
                </children>
             </HBox>
-            <TextField fx:id="txtClassName" editable="false" promptText="%ui.add_instance.placeholder_class" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="txtClassName" editable="false" promptText="%ui.add_instance.placeholder_class" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="%ui.add_instance.label_label" GridPane.rowIndex="1" />
+            <TextField fx:id="txtInstanceLabel" promptText="%ui.add_instance.placeholder_label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

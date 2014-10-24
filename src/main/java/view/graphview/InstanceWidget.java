@@ -101,7 +101,9 @@ public class InstanceWidget extends Widget {
 
         model.addListener( (ov, oldModel, newModel ) -> {
             if(newModel != null) {
-                instanceName.setLabel(newModel.getModel().toString());
+//                instanceName.setLabel(newModel.getModel().toString());
+                final String lang = MainApplication.getInstance().getLanguage();
+                instanceName.setLabel(newModel.getModel().getDisplayName(lang));
                 setTypeList(newModel.getModel());
 
                 String instanceNs = newModel.getModel().getNs();
@@ -146,7 +148,9 @@ public class InstanceWidget extends Widget {
 
         Set<CoraClassModel> s = instance.getFlattenedTypes();
         for(CoraClassModel c : s) {
-            addType(c.toString());
+            final String lang = MainApplication.getInstance().getLanguage();
+            addType(c.getDisplayName(lang));
+//            addType(c.toString());
             //TODO: Das Widget kann derzeit nur _einen_ typ anzeigen (layout).
             //Use-Case für mehrere Klassen?
             return;

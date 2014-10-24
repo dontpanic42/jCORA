@@ -1,6 +1,8 @@
 package models.ontology;
 
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -128,5 +130,23 @@ public class CoraOntologyModel<T extends OntResource> {
             //Ist etwas anderes...
             throw new NotImplementedException();
         }
+    }
+
+    /**
+     * Gibt den Anzeigenamen des Objekts zurück, d.h. ein definiertes Label in der aktuellen Sprache, oder,
+     * falls ein solches nicht existiert, den <code>localName</code> des objekts.
+     * @param lang Die Sprache (en, de, fr,...)
+     * @return Der Anzeigename oder der <code>localName</code>
+     */
+    public String getDisplayName(String lang) {
+        ExtendedIterator<RDFNode> labels = getBaseObject().listLabels(lang);
+
+        while(labels.hasNext()) {
+            final RDFNode node = labels.next();
+            final Literal literal = node.asLiteral();
+            return literal.getString();
+        }
+
+        return getBaseObject().getLocalName();
     }
 }

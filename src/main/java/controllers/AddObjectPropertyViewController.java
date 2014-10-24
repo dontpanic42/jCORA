@@ -12,6 +12,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import mainapp.MainApplication;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
@@ -61,6 +63,44 @@ public class AddObjectPropertyViewController {
             onSelectProperty(oldProperty, newProperty));
 
         listInstances.setPlaceholder(new Label(txtNotInitialized));
+
+        listProperties.setCellFactory(new Callback<ListView<CoraObjectPropertyModel>, ListCell<CoraObjectPropertyModel>>() {
+            @Override
+            public ListCell<CoraObjectPropertyModel> call(ListView<CoraObjectPropertyModel> coraObjectPropertyModelListView) {
+                return new ListCell<CoraObjectPropertyModel>() {
+                    @Override
+                    protected void updateItem(CoraObjectPropertyModel coraObjectPropertyModel, boolean empty) {
+                        super.updateItem(coraObjectPropertyModel, empty);
+
+                        if(empty) {
+                            setText("");
+                        } else {
+                            final String lang = MainApplication.getInstance().getLanguage();
+                            setText(coraObjectPropertyModel.getDisplayName(lang));
+                        }
+                    }
+                };
+            }
+        });
+
+        listInstances.setCellFactory(new Callback<ListView<CoraInstanceModel>, ListCell<CoraInstanceModel>>() {
+            @Override
+            public ListCell<CoraInstanceModel> call(ListView<CoraInstanceModel> coraInstanceModelListView) {
+                return new ListCell<CoraInstanceModel>() {
+                    @Override
+                    protected void updateItem(CoraInstanceModel coraInstanceModel, boolean empty) {
+                        super.updateItem(coraInstanceModel, empty);
+
+                        if(empty) {
+                            setText("");
+                        } else {
+                            final String lang = MainApplication.getInstance().getLanguage();
+                            setText(coraInstanceModel.getDisplayName(lang));
+                        }
+                    }
+                };
+            }
+        });
     }
 
     public static void showAddRelation(Stage parent, CoraInstanceModel model) {
@@ -121,9 +161,11 @@ public class AddObjectPropertyViewController {
         if(txtSearchInstance.getText().equals("")) {
             listInstances.setItems(itemsInstances);
         } else {
+            final String lang = MainApplication.getInstance().getLanguage();
             String toSearch = txtSearchInstance.getText().toLowerCase();
             FilteredList<CoraInstanceModel> filteredList;
-            filteredList = itemsInstances.filtered( instance -> instance.toString().toLowerCase().contains(toSearch));
+            //filteredList = itemsInstances.filtered( instance -> instance.toString().toLowerCase().contains(toSearch));
+            filteredList = itemsInstances.filtered( instance -> instance.getDisplayName(lang).toLowerCase().contains(toSearch));
             listInstances.setItems(filteredList);
 
             listInstances.getSelectionModel().selectFirst();
@@ -136,9 +178,11 @@ public class AddObjectPropertyViewController {
         if(txtSearchRelation.getText().equals("")) {
             listProperties.setItems(itemsProperties);
         } else {
+            final String lang = MainApplication.getInstance().getLanguage();
             String toSearch = txtSearchRelation.getText().toLowerCase();
             FilteredList<CoraObjectPropertyModel> filteredList;
-            filteredList = itemsProperties.filtered( prop -> prop.toString().toLowerCase().contains(toSearch));
+//            filteredList = itemsProperties.filtered( prop -> prop.toString().toLowerCase().contains(toSearch));
+            filteredList = itemsProperties.filtered( prop -> prop.getDisplayName(lang).toLowerCase().contains(toSearch));
             listProperties.setItems(filteredList);
 
             listProperties.getSelectionModel().selectFirst();

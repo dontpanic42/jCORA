@@ -9,11 +9,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import mainapp.MainApplication;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
 import view.viewbuilder.StageInject;
@@ -34,6 +37,9 @@ public class AddInstanceViewController {
 
     @FXML
     private TextField txtInstanceName;
+
+    @FXML
+    private TextField txtInstanceLabel;
 
     @FXML
     private TextField txtClassName;
@@ -99,7 +105,24 @@ public class AddInstanceViewController {
                 onTreeSelectionChange(mOld, mNew);
             }
         });
+        classTree.setCellFactory(new Callback<TreeView<CoraClassModel>, TreeCell<CoraClassModel>>() {
+            @Override
+            public TreeCell<CoraClassModel> call(TreeView<CoraClassModel> coraClassModelTreeView) {
+                return new TreeCell<CoraClassModel>() {
+                    @Override
+                    protected void updateItem(CoraClassModel coraClassModel, boolean empty) {
+                        super.updateItem(coraClassModel, empty);
 
+                        if(empty) {
+                            setText("");
+                        } else {
+                            final String lang = MainApplication.getInstance().getLanguage();
+                            setText(coraClassModel.getDisplayName(lang));
+                        }
+                    }
+                };
+            }
+        });
 
     }
 
@@ -140,7 +163,15 @@ public class AddInstanceViewController {
         }
 
         try {
-            CoraInstanceModel instance = clazz.getFactory().createInstance(clazz, instanceName);
+            CoraInstanceModel instance;
+            if(txtInstanceLabel.getText().equals("")) {
+                //Wenn kein Label angegeben wurde, erzeuge Instanz ohne Label
+                instance = clazz.getFactory().createInstance(clazz, instanceName);
+            } else {
+                //Wenn ein Label angegeben wurde, nehme an, das dies in der aktuellen Sprache ist
+                final String lang = MainApplication.getInstance().getLanguage();
+                instance = clazz.getFactory().createInstance(clazz, instanceName, txtInstanceLabel.getText(), lang);
+            }
             setReturnValue(instance);
             stage.close();
         } catch (ResourceAlreadyExistsException e) {

@@ -33,6 +33,21 @@ public class CoraOntologyModelFactory {
      */
     public CoraInstanceModel createInstance(CoraClassModel fromClass, String name)
             throws ResourceAlreadyExistsException {
+        return createInstance(fromClass, name, null, null);
+    }
+
+    /**
+     * Erzeugt eine neue Instanz vom typ <code>fromClass</code> mit dem Namen
+     * <code>(lokaler NS + )name</code>
+     * @param fromClass typ der Instanz
+     * @param name Name der Instanz ohne Namespace
+     * @param label Der Anzeigename (Label) der Instanz
+     * @param lang Sprache für den Anzeigenamen (de, en, ...)
+     * @return neue Instanz
+     * @throws ResourceAlreadyExistsException wenn eine Instanz mit dem Namen bereits existiert
+     */
+    public CoraInstanceModel createInstance(CoraClassModel fromClass, String name, String label, String lang)
+            throws ResourceAlreadyExistsException {
 
         System.out.println("Model NS: " + model.getNsPrefixURI(""));
 
@@ -47,6 +62,10 @@ public class CoraOntologyModelFactory {
         //Erzeuge die Instanz
         i = model.createIndividual(model.getNsPrefixURI("") + name,
                 fromClass.getBaseObject());
+
+        if(label != null && lang != null) {
+            i.setLabel(label, lang);
+        }
 
         CoraInstanceModel instance = wrapInstance(i);
 
