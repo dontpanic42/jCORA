@@ -75,7 +75,6 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         columnPropertyName.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<DataPropertyAssertion, CoraDataPropertyModel>,
                         ObservableValue<CoraDataPropertyModel>>() {
-                    //TODO: i18n
                     @Override
                     public ObservableValue<CoraDataPropertyModel> call(TableColumn.CellDataFeatures<DataPropertyAssertion, CoraDataPropertyModel> p) {
                         return new ReadOnlyObjectWrapper<>(p.getValue().getPredicat());

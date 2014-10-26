@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -10,8 +11,8 @@
       <GridPane hgap="5.0" layoutX="327.0" layoutY="93.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints hgrow="ALWAYS" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
-          <ColumnConstraints hgrow="ALWAYS" maxWidth="488.0" minWidth="10.0" prefWidth="158.0" />
-            <ColumnConstraints hgrow="NEVER" maxWidth="488.0" minWidth="10.0" prefWidth="72.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="488.0" minWidth="10.0" prefWidth="201.0" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="488.0" minWidth="10.0" prefWidth="29.0" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
@@ -38,7 +39,17 @@
             <TextField fx:id="txtInstanceLabel" editable="false" promptText="%ui.add_instance.placeholder_label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onTranslateString" text="%ui.add_instance.btn_change_label" />
+                  <Button mnemonicParsing="false" onAction="#onTranslateString">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/textbox.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
+                     </padding></Button>
                </children>
             </HBox>
          </children>
