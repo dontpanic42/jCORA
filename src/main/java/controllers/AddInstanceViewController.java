@@ -1,5 +1,6 @@
 package controllers;
 
+import controllers.commons.TranslateStringViewController;
 import exceptions.ResourceAlreadyExistsException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,6 +24,7 @@ import view.viewbuilder.StageInject;
 import view.viewbuilder.ViewBuilder;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,11 +48,14 @@ public class AddInstanceViewController {
     private CoraInstanceModel returnValue = null;
     private Stage stage;
 
+    private Map<String, String> translations;
+
     public static CoraInstanceModel showCreateInstance(Stage parent, Set<CoraClassModel> superClasses) throws IOException {
         FXMLLoader loader = ViewBuilder.getInstance().createLoader(ADD_INSTANCE_VIEW_FILE);
         AnchorPane pane = loader.load();
 
         Stage stage = new Stage();
+        stage.setTitle(ViewBuilder.getInstance().getText("ui.add_instance.title"));
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(parent);
 
@@ -164,13 +169,13 @@ public class AddInstanceViewController {
 
         try {
             CoraInstanceModel instance;
-            if(txtInstanceLabel.getText().equals("")) {
+
+            if(getTranslations() == null) {
                 //Wenn kein Label angegeben wurde, erzeuge Instanz ohne Label
                 instance = clazz.getFactory().createInstance(clazz, instanceName);
             } else {
                 //Wenn ein Label angegeben wurde, nehme an, das dies in der aktuellen Sprache ist
-                final String lang = MainApplication.getInstance().getLanguage();
-                instance = clazz.getFactory().createInstance(clazz, instanceName, txtInstanceLabel.getText(), lang);
+                instance = clazz.getFactory().createInstance(clazz, instanceName, getTranslations());
             }
             setReturnValue(instance);
             stage.close();
@@ -180,6 +185,24 @@ public class AddInstanceViewController {
         }
 
 
+    }
+
+    @SuppressWarnings("unused")
+    @FXML
+    private void onTranslateString() {
+        try {
+            setTranslations(TranslateStringViewController.getStringTranslation(txtInstanceLabel.textProperty(), getTranslations()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Map<String, String> getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(Map<String, String> translations) {
+        this.translations = translations;
     }
 
     public class ClassTreeItem extends TreeItem<CoraClassModel> {

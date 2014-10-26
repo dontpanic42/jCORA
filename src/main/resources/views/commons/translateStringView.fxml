@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.commons.TranslateStringViewController">
+   <children>
+      <GridPane hgap="10.0" layoutX="271.0" layoutY="170.0" prefHeight="400.0" prefWidth="600.0" vgap="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="10.0" prefWidth="74.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="10.0" prefWidth="90.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="467.0" minWidth="10.0" prefWidth="462.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+            <RowConstraints minHeight="10.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <Label text="%ui.translate.primary_language" GridPane.columnSpan="2147483647" />
+            <Label fx:id="lblPrimaryLanguage" text="Deutsch" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="txtPrimaryString" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <TableView fx:id="tblStrings" editable="true" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+              <columns>
+                  <TableColumn fx:id="columnLangIcon" prefWidth="64.0" />
+                <TableColumn fx:id="columnLanguage" editable="false" prefWidth="148.0" text="%ui.translate.language" />
+                <TableColumn fx:id="columnString" prefWidth="454.0" text="%ui.translate.string" />
+              </columns>
+            </TableView>
+            <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+            <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onCancel" text="%ui.translate.btn_cancel" />
+                  <Button mnemonicParsing="false" onAction="#onOk" text="%ui.translate.btn_ok" />
+               </children>
+            </HBox>
+            <ImageView fx:id="iconPrimaryLanguage" fitHeight="11.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </GridPane>
+   </children>
+</AnchorPane>

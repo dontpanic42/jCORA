@@ -6,6 +6,8 @@ import exceptions.ResourceAlreadyExistsException;
 import models.cbr.CoraCaseModel;
 import models.ontology.assertions.DataPropertyAssertion;
 
+import java.util.Map;
+
 /**
  * Created by daniel on 20.08.14.
  */
@@ -33,7 +35,7 @@ public class CoraOntologyModelFactory {
      */
     public CoraInstanceModel createInstance(CoraClassModel fromClass, String name)
             throws ResourceAlreadyExistsException {
-        return createInstance(fromClass, name, null, null);
+        return createInstance(fromClass, name, null);
     }
 
     /**
@@ -41,12 +43,11 @@ public class CoraOntologyModelFactory {
      * <code>(lokaler NS + )name</code>
      * @param fromClass typ der Instanz
      * @param name Name der Instanz ohne Namespace
-     * @param label Der Anzeigename (Label) der Instanz
-     * @param lang Sprache für den Anzeigenamen (de, en, ...)
+     * @param labels Die Anzeigenamen (Labels) der Instanz im Format (Language, String)
      * @return neue Instanz
      * @throws ResourceAlreadyExistsException wenn eine Instanz mit dem Namen bereits existiert
      */
-    public CoraInstanceModel createInstance(CoraClassModel fromClass, String name, String label, String lang)
+    public CoraInstanceModel createInstance(CoraClassModel fromClass, String name, Map<String, String> labels)
             throws ResourceAlreadyExistsException {
 
         System.out.println("Model NS: " + model.getNsPrefixURI(""));
@@ -63,8 +64,10 @@ public class CoraOntologyModelFactory {
         i = model.createIndividual(model.getNsPrefixURI("") + name,
                 fromClass.getBaseObject());
 
-        if(label != null && lang != null) {
-            i.setLabel(label, lang);
+        if(labels != null) {
+            for(Map.Entry<String, String> e : labels.entrySet()) {
+                i.addLabel(e.getValue(), e.getKey());
+            }
         }
 
         CoraInstanceModel instance = wrapInstance(i);
