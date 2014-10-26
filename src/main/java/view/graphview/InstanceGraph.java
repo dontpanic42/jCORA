@@ -67,7 +67,7 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
         addChild(mainLayer);
         addChild(connectionLayer);
 
-        TreeGraphLayout<NodeModel, EdgeModel> graphLayout = new TreeGraphLayout<NodeModel, EdgeModel>(this, 0, 0, 50, 150, false);
+        TreeGraphLayout<NodeModel, EdgeModel> graphLayout = new TreeGraphLayout<>(this, 0, 0, 50, 150, false);
         sceneGraphLayout = LayoutFactory.createSceneGraphLayout(this, graphLayout);
 
         getActions().addAction(ActionFactory.createPanAction());

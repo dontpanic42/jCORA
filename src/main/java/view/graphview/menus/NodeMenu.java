@@ -4,6 +4,7 @@ import org.netbeans.api.visual.action.PopupMenuProvider;
 import org.netbeans.api.visual.widget.Widget;
 import view.graphview.InstanceGraph;
 import view.graphview.InstanceWidget;
+import view.viewbuilder.ViewBuilder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,13 +35,13 @@ public class NodeMenu implements PopupMenuProvider, ActionListener {
     public NodeMenu(InstanceGraph scene) {
         this.scene = scene;
 
-        menu = new JPopupMenu("Instanz Menü");
+        menu = new JPopupMenu("");
 
-        JMenuItem addNodeItem = new JMenuItem("Relation hinzufügen...");
+        JMenuItem addNodeItem = new JMenuItem(ViewBuilder.getInstance().getText("ui.node_menu.item_add_instance"));
         addNodeItem.setActionCommand(COMMAND_ADD_NODE);
         addNodeItem.addActionListener(this);
 
-        JMenuItem delNodeItem = new JMenuItem("Instanz entfernen...");
+        JMenuItem delNodeItem = new JMenuItem(ViewBuilder.getInstance().getText("ui.node_menu.item_remove_instance"));
         delNodeItem.setActionCommand(COMMAND_DELETE_NODE);
         delNodeItem.addActionListener(this);
 
