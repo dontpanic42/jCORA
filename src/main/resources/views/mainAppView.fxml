@@ -13,6 +13,27 @@
    <children>
       <VBox layoutX="325.0" layoutY="63.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
+            <MenuBar fx:id="menuBar">
+              <menus>
+                <Menu mnemonicParsing="false" text="%ui.menu.file">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="%ui.menu.file_exit" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="%ui.menu.cbr">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#onNewQuery" text="%ui.menu.cbr_start_cycle" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="%ui.menu.help">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="%ui.menu.help_online_help" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="%ui.menu.help_about" />
+                    </items>
+                  </Menu>
+              </menus>
+            </MenuBar>
             <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS">
               <tabs>
                 <Tab closable="false" text="%ui.common.case_base">
@@ -35,26 +56,5 @@
             </TabPane>
          </children>
       </VBox>
-      <MenuBar fx:id="menuBar" layoutY="-29.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="%ui.menu.file">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#onExit" text="%ui.menu.file_exit" />
-            </items>
-          </Menu>
-            <Menu mnemonicParsing="false" text="%ui.menu.cbr">
-              <items>
-                <MenuItem mnemonicParsing="false" onAction="#onNewQuery" text="%ui.menu.cbr_start_cycle" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="%ui.menu.help">
-              <items>
-                <MenuItem mnemonicParsing="false" text="%ui.menu.help_online_help" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="%ui.menu.help_about" />
-              </items>
-            </Menu>
-        </menus>
-      </MenuBar>
    </children>
 </AnchorPane>
