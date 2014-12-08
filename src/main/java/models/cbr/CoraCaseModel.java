@@ -2,8 +2,10 @@ package models.cbr;
 
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
+import models.ontology.CoraPropertyModel;
 import models.ontology.assertions.DataPropertyAssertion;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -73,6 +75,13 @@ public interface CoraCaseModel {
      * @return
      */
     public CoraInstanceModel getCaseJustification();
+
+    /**
+     * Gibt eine Liste mit allen, im Fall (und der Domain-Ontologie) vorhandenen
+     * Object- und DataProperties zurück.
+     * @return
+     */
+    public List<CoraPropertyModel> listAllProperties();
 
     /**
      * Schließt die Verwendung dieses Modells ab.

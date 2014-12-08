@@ -7,15 +7,13 @@ import exceptions.MalformedOntologyException;
 import models.ontology.CoraOntologyModelFactory;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
+import models.ontology.CoraPropertyModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by daniel on 20.08.14.
@@ -254,6 +252,33 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
     @Override
     public void close() {
         this.caseModel.getBaseModel().close();
+    }
+
+    /**
+     * Gibt eine Liste mit allen, im Fall (und der Domain-Ontologie) vorhandenen
+     * Object- und DataProperties zurück.
+     * @return
+     */
+    public List<CoraPropertyModel> listAllProperties() {
+        List<CoraPropertyModel> results = new ArrayList<>();
+
+        ObjectProperty p;
+        ExtendedIterator<ObjectProperty> iterOP = this.caseModel.listObjectProperties();
+        while(iterOP.hasNext()) {
+            p = iterOP.next();
+            results.add(this.factory.wrapObjectProperty(p));
+        }
+        iterOP.close();
+
+        DatatypeProperty d;
+        ExtendedIterator<DatatypeProperty> iterDP = this.caseModel.listDatatypeProperties();
+        while(iterDP.hasNext()) {
+            d = iterDP.next();
+            results.add(this.factory.wrapDataProperty(d));
+        }
+        iterDP.close();
+
+        return results;
     }
 
     @Override

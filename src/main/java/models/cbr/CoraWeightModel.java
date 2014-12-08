@@ -25,7 +25,7 @@ public class CoraWeightModel {
      * Erzeugt eine leere Attribut-Gewicht Liste
      */
     public CoraWeightModel() {
-        properties = new HashMap<CoraPropertyModel, Float>();
+        properties = new HashMap<>();
     }
 
     /**
@@ -47,7 +47,7 @@ public class CoraWeightModel {
     }
 
     /**
-     * Gibt das gewicht für ein gegebenes Attribut zurück. Ist das Gewicht
+     * Gibt das Gewicht für ein gegebenes Attribut zurück. Ist das Gewicht
      * des Attributs vorher nicht explizit gesetzt worden, wird <code>DEFAULT_PROPERTY_WEIGHT</code>
      * zurückgegeben.
      * @param property Das Attribut, für das das Gewicht gesucht wird
@@ -59,6 +59,15 @@ public class CoraWeightModel {
         }
 
         return DEFAULT_PROPERTY_WEIGHT;
+    }
+
+    /**
+     * Setzt das Gewicht für ein gegebenes Attribut.
+     * @param property Das Attribut
+     * @param weight Das Gewicht für das Attribut
+     */
+    public void setWeight(CoraPropertyModel property, float weight) {
+        properties.put(property, weight);
     }
 
 

@@ -27,6 +27,9 @@ public class QueryViewController {
     private CoraCaseModel caseModel;
 
     @FXML
+    private WeightsViewController weightsViewController;
+
+    @FXML
     private CaseViewController caseViewController;
 
     private Stage stage;
@@ -54,7 +57,7 @@ public class QueryViewController {
     @FXML
     private void onStartRetrieval() throws IOException {
         CoraCaseModel c = this.caseModel;
-        CoraWeightModel weights = new CoraWeightModel();
+        CoraWeightModel weights = weightsViewController.getWeightModel();//new CoraWeightModel();
         CoraQueryModel queryModel = new CoraQueryModel(c, weights, 10);
 
         Stage stage = new Stage();
@@ -77,5 +80,6 @@ public class QueryViewController {
     public void setCase(CoraCaseModel caseModel) {
         this.caseModel = caseModel;
         caseViewController.showInstance(caseModel.getCaseDescription());
+        weightsViewController.setCaseModel(caseModel);
     }
 }

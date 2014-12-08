@@ -34,7 +34,11 @@
                 </Tab>
                 <Tab text="%ui.query_view.tab_weights">
                   <content>
-                    <AnchorPane fx:id="paneWeights" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    <AnchorPane fx:id="paneWeights" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" >
+                        <children>
+                            <fx:include fx:id="weightsView" source="weightsView.fxml" />
+                        </children>
+                    </AnchorPane>
                   </content>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
