@@ -1,6 +1,7 @@
 package controllers;
 
 import apple.laf.JRSUIUtils;
+import controllers.commons.ThrowableErrorViewController;
 import controllers.commons.WaitViewController;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -111,6 +112,7 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
                 tblCaseBase.setPlaceholder(new Label("Keine Fälle in der Fallbasis."));
             } else if(newState == Worker.State.FAILED) {
                 tblCaseBase.setPlaceholder(new Label("Fehler beim Laden der Fallbasis"));
+                ThrowableErrorViewController.showError(loadCaseBaseTask.getException(), false);
             }
         });
 

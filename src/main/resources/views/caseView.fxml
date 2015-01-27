@@ -44,6 +44,18 @@
                         <Tooltip text="%ui.case_view.tooltip_save_case_as_new" />
                      </tooltip>
                   </Button>
+                  <Button mnemonicParsing="false" onAction="#onCreateCBRRequest">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/cbr-from-case.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
+                     </padding>
+                  </Button>
                   <Separator />
                   <Button mnemonicParsing="false" onAction="#onSaveAsXML">
                      <graphic>

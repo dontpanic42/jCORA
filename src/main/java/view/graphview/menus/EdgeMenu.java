@@ -34,7 +34,7 @@ public class EdgeMenu implements PopupMenuProvider, ActionListener {
         this.scene = scene;
 
         this.menu = new JPopupMenu();
-        JMenuItem removeEdgeItem = new JMenuItem(ViewBuilder.getInstance().getText("ui.node_menu.item_add_instance"));
+        JMenuItem removeEdgeItem = new JMenuItem(ViewBuilder.getInstance().getText("ui.edge_menu.item_remove_relation"));
         removeEdgeItem.setActionCommand(COMMAND_REMOVE_EDGE);
         removeEdgeItem.addActionListener(this);
 

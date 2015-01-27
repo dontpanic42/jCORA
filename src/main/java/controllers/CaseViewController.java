@@ -2,6 +2,7 @@ package controllers;
 
 import com.sun.glass.ui.Application;
 import controllers.dataproperty.DataPropertyEditorFactory;
+import controllers.queryeditor.QueryViewController;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
@@ -11,10 +12,13 @@ import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -27,6 +31,7 @@ import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
 import models.ontology.assertions.DataPropertyAssertion;
 import models.ontology.assertions.ObjectPropertyAssertion;
+import services.adaption.utility.PartialCaseCopier;
 import view.viewbuilder.ViewBuilder;
 import view.graphview.GraphViewComponent;
 
@@ -38,6 +43,9 @@ import java.io.IOException;
  * Created by daniel on 24.08.14.
  */
 public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
+
+    private static final String QUERY_VIEW_VIEW_FILE = "views/queryeditor/queryView.fxml";
+
     @FXML
     private SwingNode swingNode;
 
@@ -139,11 +147,6 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
     }
 
     public void removeObjectRelation(CoraInstanceModel subject, CoraObjectPropertyModel predicat, CoraInstanceModel object) {
-        System.out.println("Deleting relation: " + predicat.toString());
-        System.out.println("Subject: " + subject.toString());
-        System.out.println("Object: " + object.toString());
-
-        // Die Relation aus der ontologie entfernen...
         subject.removeObjectProperty(predicat, object);
     }
 
@@ -188,6 +191,33 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
 
         System.out.println("Saving!");
         caseBase.save(caseModel);
+    }
+
+    /**
+     * Erzeugt eine neue CBR-Fallbeschreibung aus dem aktuellen Fall.
+     * @throws Exception
+     */
+    @SuppressWarnings("unused")
+    @FXML
+    private void onCreateCBRRequest() throws Exception {
+        CoraCaseBase caseBase = MainApplication.getInstance().getCaseBase();
+        CoraCaseModel newcase = caseBase.createTemporaryCase();
+        CoraCaseModel oldcase = model.getFactory().getCase();
+
+        PartialCaseCopier.copyCaseDescription(oldcase, newcase);
+
+        FXMLLoader loader = ViewBuilder.getInstance().createLoader(QUERY_VIEW_VIEW_FILE);
+        AnchorPane pane = loader.load();
+
+        Stage stage = new Stage();
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.setTitle(ViewBuilder.getInstance().getText("ui.query_view.title"));
+        stage.show();
+
+        QueryViewController controller = loader.getController();
+        controller.setStage(stage);
+        controller.setCase(newcase);
     }
 
     @SuppressWarnings("unused")

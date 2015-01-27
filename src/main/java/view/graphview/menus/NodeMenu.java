@@ -22,7 +22,6 @@ public class NodeMenu implements PopupMenuProvider, ActionListener {
         public void onDeleteNode(InstanceWidget parentWidget);
     }
 
-    public static final String COMMAND_DELETE_NODE = "deleteNode";
     public static final String COMMAND_ADD_NODE = "addNode";
 
     private JPopupMenu menu;
@@ -41,12 +40,7 @@ public class NodeMenu implements PopupMenuProvider, ActionListener {
         addNodeItem.setActionCommand(COMMAND_ADD_NODE);
         addNodeItem.addActionListener(this);
 
-        JMenuItem delNodeItem = new JMenuItem(ViewBuilder.getInstance().getText("ui.node_menu.item_remove_instance"));
-        delNodeItem.setActionCommand(COMMAND_DELETE_NODE);
-        delNodeItem.addActionListener(this);
-
         menu.add(addNodeItem);
-        menu.add(delNodeItem);
     }
 
     public void setActionHandler(NodeActionHandler handler) {
@@ -60,11 +54,6 @@ public class NodeMenu implements PopupMenuProvider, ActionListener {
         }
 
         if(e.getActionCommand().equals(COMMAND_ADD_NODE)) {
-            actionHandler.onAddNode( (InstanceWidget) this.widget);
-            return;
-        }
-
-        if(e.getActionCommand().equals(COMMAND_DELETE_NODE)) {
             actionHandler.onAddNode( (InstanceWidget) this.widget);
             return;
         }
