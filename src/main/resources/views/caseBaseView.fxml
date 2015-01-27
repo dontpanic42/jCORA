@@ -27,6 +27,18 @@
                         <Tooltip text="%ui.case_base_view.tooltip_import_case" />
                      </tooltip>
                   </Button>
+                  <Button mnemonicParsing="false" onAction="#onCreateNewCase">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
+                     </padding>
+                  </Button>
               </items>
             </ToolBar>
             <Accordion fx:id="accordionLeft">

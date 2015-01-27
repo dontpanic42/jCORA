@@ -358,6 +358,25 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     }
 
     /**
+     * Löscht den Fall mit der Id <code>caseId</code> aus der
+     * Fallbasis.
+     * @param caseId Die Id des zu löschenden Falls.
+     */
+    @Override
+    public void removeCase(String caseId) {
+        dataset.begin(ReadWrite.WRITE);
+
+        dataset.removeNamedModel(caseId);
+
+        dataset.commit();
+        dataset.end();
+
+        for(CaseBaseChangeHandler h : caseBaseChangeHandlers) {
+            h.onRemoveCase(caseId);
+        }
+    }
+
+    /**
      * Initialisiert die TDB-Datenbank, wie in der Konfiguration (<code>caseBaseProperties</code>)
      * spezifziert
      * @return Das Dataset, das die Datenbank repräsentiert

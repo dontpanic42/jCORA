@@ -81,6 +81,13 @@ public interface CoraCaseBase {
     public void close();
 
     /**
+     * Löscht den Fall mit der Id <code>caseId</code> aus der
+     * Fallbasis.
+     * @param caseId Die Id des zu löschenden Falls.
+     */
+    public void removeCase(String caseId);
+
+    /**
      * Erzeugt einen Fall, der nicht in der Datenbank gesichert ist, sonst jedoch
      * alle eigenschaften eines normalen Falls aufweist. Soll zur erstellung der
      * Falleingabe dienen. Ein so erzeugte Fall ist nicht in der Fallbasis vorhanden.

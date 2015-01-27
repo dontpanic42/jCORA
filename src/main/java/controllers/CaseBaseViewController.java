@@ -20,6 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
+import models.cbr.CoraCaseModel;
 import view.Commons;
 
 import java.io.IOException;
@@ -133,6 +134,15 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
         }
     }
 
+    @SuppressWarnings("unused")
+    @FXML
+    private void onCreateNewCase() throws Exception {
+        CoraCaseModel caseModel = MainApplication.getInstance()
+                .getCaseBase().createTemporaryCase();
+        SaveAsNewViewController.showSaveAsNew(MainApplication.getInstance()
+                .getMainStage(), caseModel);
+    }
+
     @Override
     public void onAddCase(String caseId) {
         TableModel t = new TableModel(caseId);
@@ -143,8 +153,13 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
 
     @Override
     public void onRemoveCase(String caseId) {
+        System.out.println("On Case Remove..." + caseId);
         TableModel t = new TableModel(caseId);
+
+        System.out.println("Does contain?" + itemsCases.contains(t));
+
         if(itemsCases != null && itemsCases.contains(t)) {
+            System.out.println("Removing");
             itemsCases.remove(t);
         }
     }
@@ -183,6 +198,11 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
                 } catch (IOException e1) {
                     Commons.showException(e1);
                 }
+            });
+
+            btnDelete.getValue().setOnAction((ActionEvent e) -> {
+                CoraCaseBase caseBase = MainApplication.getInstance().getCaseBase();
+                caseBase.removeCase(caseId);
             });
         }
 
@@ -224,7 +244,19 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
 
         @Override
         public int hashCode() {
-            return caseId.hashCode();
+            return caseId.getValue().hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof TableModel)) return false;
+
+            TableModel that = (TableModel) o;
+
+            if (!caseId.getValue().equals(that.caseId.getValue())) return false;
+
+            return true;
         }
     }
 }
