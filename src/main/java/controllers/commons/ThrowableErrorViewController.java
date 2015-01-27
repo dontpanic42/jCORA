@@ -37,6 +37,7 @@ public class ThrowableErrorViewController {
 
     private BooleanProperty canIgnore = new SimpleBooleanProperty(true);
     private ObjectProperty<Throwable> throwable = new SimpleObjectProperty<>();
+    private Stage stage;
 
     public static void showError(Throwable t, boolean canIgnore) {
         FXMLLoader loader = ViewBuilder.getInstance().createLoader(THROWABLE_ERROR_VIEW_FILE);
@@ -50,6 +51,7 @@ public class ThrowableErrorViewController {
             ThrowableErrorViewController c = loader.getController();
             c.setCanIgnore(canIgnore);
             c.setThrowable(t);
+            c.setStage(stage);
 
             stage.showAndWait();
 
@@ -57,6 +59,10 @@ public class ThrowableErrorViewController {
             System.err.println("Errorview not available: " + THROWABLE_ERROR_VIEW_FILE);
             System.exit(-1);
         }
+    }
+
+    private void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     @SuppressWarnings("unused")
@@ -101,7 +107,7 @@ public class ThrowableErrorViewController {
     @SuppressWarnings("unused")
     @FXML
     private void onIgnore() {
-
+        stage.close();
     }
 
     @SuppressWarnings("unused")

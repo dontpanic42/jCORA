@@ -1,5 +1,6 @@
 package controllers;
 
+import controllers.commons.ThrowableErrorViewController;
 import controllers.commons.WaitViewController;
 import controllers.queryeditor.QueryViewController;
 import controllers.retrieval.RetrievalResultsViewController;
@@ -123,7 +124,12 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
                     } catch (Exception e) {
                         Commons.showException(e);
                     }
+                } else if(newState == Worker.State.FAILED) {
+                    waitView.close();
+                    loadCaseTask.getException().printStackTrace();
+                    ThrowableErrorViewController.showError(loadCaseTask.getException(), true);
                 }
+
             });
 
             new Thread(loadCaseTask).start();

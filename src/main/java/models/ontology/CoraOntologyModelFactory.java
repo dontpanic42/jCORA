@@ -5,6 +5,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import exceptions.ResourceAlreadyExistsException;
 import models.cbr.CoraCaseModel;
 import models.ontology.assertions.DataPropertyAssertion;
+import models.ontology.assertions.ObjectPropertyAssertion;
 
 import java.util.Map;
 
@@ -130,6 +131,12 @@ public class CoraOntologyModelFactory {
 
     public DataPropertyAssertion wrapDataPropertyStatement(Statement s) {
         DataPropertyAssertion assertion = new DataPropertyAssertion(s);
+        assertion.setFactory(this);
+        return assertion;
+    }
+
+    public ObjectPropertyAssertion wrapObjectPropertyStatement(Statement s) {
+        ObjectPropertyAssertion assertion = new ObjectPropertyAssertion(s);
         assertion.setFactory(this);
         return assertion;
     }

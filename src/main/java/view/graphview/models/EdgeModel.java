@@ -1,5 +1,7 @@
 package view.graphview.models;
 
+import models.ontology.CoraObjectPropertyModel;
+
 /**
  * Created by daniel on 23.08.14.
  */
@@ -8,9 +10,11 @@ public class EdgeModel {
     private NodeModel target;
 
     private String label;
+    private CoraObjectPropertyModel property;
 
-    public EdgeModel(String label) {
+    public EdgeModel(CoraObjectPropertyModel objectProperty, String label) {
         this.label = label;
+        this.property = objectProperty;
     }
 
     public NodeModel getSource() {
@@ -35,5 +39,13 @@ public class EdgeModel {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public CoraObjectPropertyModel getProperty() {
+        return property;
+    }
+
+    public void setProperty(CoraObjectPropertyModel property) {
+        this.property = property;
     }
 }

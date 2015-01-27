@@ -5,6 +5,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import models.cbr.CoraCaseModel;
 import models.datatypes.TypedValue;
+import models.ontology.assertions.ObjectPropertyAssertion;
 import models.ontology.datatypes.DatatypeMapper;
 import models.ontology.assertions.DataPropertyAssertion;
 import models.util.Pair;
@@ -160,6 +161,34 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
             for(CoraCaseModel.CaseChangeHandler handler : caseModel.getOnChangeHandlers()) {
                 handler.onDeleteDataRelation(assertion);
             }
+        }
+    }
+
+    public void removePropertyAssertion(ObjectPropertyAssertion assertion) {
+        getModel().remove(assertion.getBaseObject());
+        getModel().prepare();
+
+        // Lade das Pellet-Inferenz-Modell komplett neu, da sonst die
+        // 'remove' änderungen erst bei neu Laden des Falles übernommen werden...
+        if(getModel().getGraph() instanceof PelletInfGraph) {
+            PelletInfGraph pg = (PelletInfGraph) getModel().getGraph();
+            pg.reload();
+        }
+
+        CoraCaseModel caseModel = getFactory().getCase();
+        if(caseModel != null) {
+            for(CoraCaseModel.CaseChangeHandler handler : caseModel.getOnChangeHandlers()) {
+                handler.onDeleteObjectRelation(assertion);
+            }
+        }
+    }
+
+    public void removeObjectProperty(CoraObjectPropertyModel property, CoraInstanceModel object) {
+        Model m = getModel();
+        List<Statement> statements = m.listStatements(getBaseObject(), property.getBaseObject(), object.getBaseObject()).toList();
+        for(Statement s : statements) {
+            ObjectPropertyAssertion assertion = getFactory().wrapObjectPropertyStatement(s);
+            this.removePropertyAssertion(assertion);
         }
     }
 

@@ -17,11 +17,14 @@ import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Widget;
 import org.netbeans.modules.visual.action.SelectAction;
+import view.graphview.menus.EdgeMenu;
 import view.graphview.menus.NodeMenu;
 import view.graphview.models.EdgeModel;
+import view.graphview.models.EdgeWidget;
 import view.graphview.models.NodeModel;
 
 import java.awt.*;
+import java.util.Collection;
 
 /**
  * Created by daniel on 23.08.14.
@@ -47,6 +50,7 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
      * Das Instanz-Rechtsklick-Popupmenü
      */
     private NodeMenu nodeMenu;
+    private EdgeMenu edgeMenu;
 
     private SimpleObjectProperty<InstanceWidget> currentSelection = new SimpleObjectProperty<>();
 
@@ -57,6 +61,7 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
         super();
 
         nodeMenu = new NodeMenu(this);
+        edgeMenu = new EdgeMenu(this);
 
         connectionLayer = new LayerWidget(this);
 
@@ -92,6 +97,13 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
         setEdgeTarget(edge, edge.getTarget());
     }
 
+    public void removeConnection(EdgeModel model) {
+        Collection<EdgeModel> edges = getEdges();
+        for(EdgeModel edge : edges) {
+
+        }
+    }
+
     /**
      * Gibt das Popupmenü zurück, das angezeigt wird, wenn der Nutzer mit der rechten Maustaste auf eine
      * Instanz klickt.
@@ -99,6 +111,10 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
      */
     public NodeMenu getNodeMenu() {
         return nodeMenu;
+    }
+
+    public EdgeMenu getEdgeMenu() {
+        return edgeMenu;
     }
 
     /**
@@ -126,8 +142,9 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
      */
     @Override
     protected Widget attachEdgeWidget(EdgeModel edgeModel) {
-        ConnectionWidget connectionWidget = new ConnectionWidget(this);
+        EdgeWidget connectionWidget = new EdgeWidget(edgeModel, this);
 
+        connectionWidget.getActions().addAction(ActionFactory.createPopupMenuAction(edgeMenu));
         connectionWidget.setTargetAnchorShape(AnchorShape.TRIANGLE_FILLED);
 
         LabelWidget edgeLabel = new LabelWidget(this);

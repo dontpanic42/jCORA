@@ -11,19 +11,20 @@ import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
 import org.netbeans.api.visual.action.SelectProvider;
 import org.netbeans.api.visual.export.SceneExporter;
+import org.netbeans.api.visual.widget.ConnectionWidget;
 import org.netbeans.api.visual.widget.Widget;
+import view.graphview.menus.EdgeMenu;
 import view.graphview.menus.NodeMenu;
 import view.graphview.models.EdgeModel;
+import view.graphview.models.EdgeWidget;
 import view.graphview.models.NodeModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashMap;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by daniel on 23.08.14.
@@ -35,6 +36,8 @@ public class GraphViewComponent extends JPanel {
     private SimpleObjectProperty<CoraInstanceModel> selection = new SimpleObjectProperty<>();
     private SimpleObjectProperty<EventHandler<CreateRelationEvent>> onCreateRelation = new SimpleObjectProperty<>();
     private SimpleObjectProperty<EventHandler<DeleteInstanceEvent>> onDeleteInstance = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<EventHandler<DeleteRelationEvent>> onDeleteRelation = new SimpleObjectProperty<>();
+
 
     private InstanceGraph scene;
     private Map<CoraInstanceModel, NodeModel> nodes = new HashMap<CoraInstanceModel, NodeModel>();
@@ -66,6 +69,20 @@ public class GraphViewComponent extends JPanel {
                 if(onDeleteInstance.getValue() != null) {
                     Platform.runLater(() ->
                             onDeleteInstance.getValue().handle(new DeleteInstanceEvent(self, parentWidget.getModel().getModel())));
+                }
+            }
+        });
+
+        scene.getEdgeMenu().setActionHandler(new EdgeMenu.EdgeActionHandler() {
+            @Override
+            public void onDeleteEdge(ConnectionWidget edgeWidget) {
+                if(onDeleteRelation.getValue() != null) {
+                    Platform.runLater(() -> {
+                        EdgeWidget w = (EdgeWidget) edgeWidget;
+                        EdgeModel model = w.getModel();
+
+                        onDeleteRelation.getValue().handle(new DeleteRelationEvent(self, model.getSource().getModel(), model.getProperty(), model.getTarget().getModel()));
+                    });
                 }
             }
         });
@@ -145,7 +162,7 @@ public class GraphViewComponent extends JPanel {
                 NodeModel target = addInstanceRec(i, visited);
 
 //                EdgeModel edge = new EdgeModel(e.getKey().toString());
-                EdgeModel edge = new EdgeModel(e.getKey().getDisplayName(lang));
+                EdgeModel edge = new EdgeModel(e.getKey(), e.getKey().getDisplayName(lang));
                 edge.setSource(source);
                 edge.setTarget(target);
 
@@ -175,11 +192,11 @@ public class GraphViewComponent extends JPanel {
      * @param child Die Relation (Prädikat)
      * @param relation Die Kind-Instanz (Objekt)
      */
-    public void addInstance(CoraInstanceModel parent, CoraInstanceModel child, String relation) {
+    public void addInstance(CoraInstanceModel parent, CoraInstanceModel child, CoraObjectPropertyModel property, String relation) {
         NodeModel source = addInstanceRec(parent, nodes);
         NodeModel target = addInstanceRec(child, nodes);
 
-        EdgeModel edge = new EdgeModel(relation);
+        EdgeModel edge = new EdgeModel(property, relation);
         edge.setSource(source);
         edge.setTarget(target);
 
@@ -187,6 +204,74 @@ public class GraphViewComponent extends JPanel {
 
         scene.forceLayout();
         scene.validate();
+    }
+
+    public void removeRelation(CoraInstanceModel subject, CoraObjectPropertyModel property, CoraInstanceModel object) {
+        Collection<EdgeModel> models = scene.getEdges();
+        for(EdgeModel m : models) {
+            if(m.getSource().getModel().equals(subject) &&
+               m.getTarget().getModel().equals(object) &&
+               m.getProperty().equals(property)) {
+                System.out.println("Found edge model.");
+                removeEdgeRec(m);
+            }
+        }
+
+        System.out.println("Edge model removing...");
+    }
+
+    /**
+     * Entfernt eine Kante und alle daran hängenden Instanzen aus der
+     * Graph-Ansicht.
+     * @param model Die zu entfernende Kante
+     */
+    private void removeEdgeRec(EdgeModel model) {
+        NodeModel target = model.getTarget();
+        // Wenn diese Kante die einzige ist, die auf diesen
+        // Knoten verweist, entferne den Knoten aus der Ansicht
+        if(countIncommingConnections(target) == 1) {
+            for(EdgeModel e : listNodeConnections(target)) {
+                removeEdgeRec(e);
+            }
+
+            scene.removeNode(target);
+            nodes.remove(target.getModel());
+        }
+
+        scene.removeEdge(model);
+    }
+
+    /**
+     * Gibt alle Kanten zurück, die von node ausgehen.
+     * @param node
+     * @return
+     */
+    private List<EdgeModel> listNodeConnections(NodeModel node) {
+        ArrayList<EdgeModel> edges = new ArrayList<>();
+        for(EdgeModel e : scene.getEdges()) {
+            if(e.getSource().getModel().equals(node.getModel())) {
+                edges.add(e);
+            }
+        }
+
+        return edges;
+    }
+
+    /**
+     * Gibt die Anzahl der Kanten zurück, die diesen Knoten als Ziel
+     * haben.
+     * @param node
+     * @return
+     */
+    private int countIncommingConnections(NodeModel node) {
+        int counter = 0;
+        for(EdgeModel e : scene.getEdges()) {
+            if(e.getTarget().getModel().equals(node.getModel())) {
+                counter++;
+            }
+        }
+
+        return counter;
     }
 
     /**
@@ -270,6 +355,18 @@ public class GraphViewComponent extends JPanel {
         this.onDeleteInstance.set(onDeleteInstance);
     }
 
+    public EventHandler<DeleteRelationEvent> getOnDeleteRelation() {
+        return onDeleteRelation.get();
+    }
+
+    public SimpleObjectProperty<EventHandler<DeleteRelationEvent>> onDeleteRelationProperty() {
+        return onDeleteRelation;
+    }
+
+    public void setOnDeleteRelation(EventHandler<DeleteRelationEvent> onDeleteRelation) {
+        this.onDeleteRelation.set(onDeleteRelation);
+    }
+
     /**
      * Event-Klasse, die verwendet wird, wenn der Nutzer eine neue Relation erstellen möchte.
      */
@@ -339,4 +436,45 @@ public class GraphViewComponent extends JPanel {
             this.parentInstance = parentInstance;
         }
     }
+
+    public class DeleteRelationEvent extends ActionEvent {
+
+        private CoraInstanceModel subject;
+        private CoraInstanceModel object;
+        private CoraObjectPropertyModel predicat;
+
+        public DeleteRelationEvent(GraphViewComponent graphView, CoraInstanceModel subject,
+                                   CoraObjectPropertyModel predicat,
+                                   CoraInstanceModel object) {
+            super(graphView, null);
+            this.subject = subject;
+            this.object = object;
+            this.predicat = predicat;
+        }
+
+        public CoraInstanceModel getSubject() {
+            return subject;
+        }
+
+        public void setSubject(CoraInstanceModel subject) {
+            this.subject = subject;
+        }
+
+        public CoraInstanceModel getObject() {
+            return object;
+        }
+
+        public void setObject(CoraInstanceModel object) {
+            this.object = object;
+        }
+
+        public CoraObjectPropertyModel getPredicat() {
+            return predicat;
+        }
+
+        public void setPredicat(CoraObjectPropertyModel predicat) {
+            this.predicat = predicat;
+        }
+    }
 }
+

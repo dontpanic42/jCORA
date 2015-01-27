@@ -4,6 +4,7 @@ import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
 import models.ontology.CoraPropertyModel;
 import models.ontology.assertions.DataPropertyAssertion;
+import models.ontology.assertions.ObjectPropertyAssertion;
 
 import java.util.List;
 import java.util.Set;
@@ -42,10 +43,17 @@ public interface CoraCaseModel {
 
         /**
          * Wird aufgerufen, wenn auf diesem Fall eine Daten-Relation entfernt wurde.
-         * @see models.ontology.CoraInstanceModel#removeAssertion(models.ontology.assertions.Assertion)
+         * @see models.ontology.CoraInstanceModel#removePropertyAssertion(models.ontology.assertions.DataPropertyAssertion) (models.ontology.assertions.Assertion)
          * @param assertion Das Statement
          */
         public void onDeleteDataRelation(DataPropertyAssertion assertion);
+
+        /**
+         * Wird aufgerufen, wenn auf diesem Fall eine Daten-Relation entfernt wurde.
+         * @see models.ontology.CoraInstanceModel#removePropertyAssertion(models.ontology.assertions.ObjectPropertyAssertion) (models.ontology.assertions.Assertion)
+         * @param assertion Das Statement
+         */
+        public void onDeleteObjectRelation(ObjectPropertyAssertion assertion);
     }
 
     public String getCaseId();

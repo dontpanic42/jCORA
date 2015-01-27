@@ -1,6 +1,8 @@
 package controllers;
 
+import com.sun.glass.ui.Application;
 import controllers.dataproperty.DataPropertyEditorFactory;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -24,6 +26,7 @@ import models.ontology.CoraDataPropertyModel;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
 import models.ontology.assertions.DataPropertyAssertion;
+import models.ontology.assertions.ObjectPropertyAssertion;
 import view.viewbuilder.ViewBuilder;
 import view.graphview.GraphViewComponent;
 
@@ -69,6 +72,13 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         graph.selectionProperty().addListener((ov, oldSelection, newSelection) ->
                 onChangeSelection(oldSelection, newSelection));
         graph.setOnCreateRelation((ev) -> AddObjectPropertyViewController.showAddRelation(stage, ev.getParentInstance()));
+
+        graph.setOnDeleteRelation((GraphViewComponent.DeleteRelationEvent ev) -> {
+            // Das Event wird im Swing-Thread ausgelöst...
+            Application.invokeLater(() -> {
+                removeObjectRelation(ev.getSubject(), ev.getPredicat(), ev.getObject());
+            });
+        });
 
         tblDataProperties.setPlaceholder(new Label(ViewBuilder.getInstance().getText("ui.case_view.label_no_data_properties")));
 
@@ -126,6 +136,15 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public void removeObjectRelation(CoraInstanceModel subject, CoraObjectPropertyModel predicat, CoraInstanceModel object) {
+        System.out.println("Deleting relation: " + predicat.toString());
+        System.out.println("Subject: " + subject.toString());
+        System.out.println("Object: " + object.toString());
+
+        // Die Relation aus der ontologie entfernen...
+        subject.removeObjectProperty(predicat, object);
     }
 
     public void showInstance(CoraInstanceModel model) {
@@ -227,7 +246,7 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         System.out.println("Erzeuge graph relation");
         SwingUtilities.invokeLater(() -> {
             final String lang = MainApplication.getInstance().getLanguage();
-            graph.addInstance(subject, object, objectProperty.getDisplayName(lang));
+            graph.addInstance(subject, object, objectProperty, objectProperty.getDisplayName(lang));
         });
     }
 
@@ -244,6 +263,17 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         if(tblDataProperties.getItems().contains(assertion)) {
             tblDataProperties.getItems().remove(assertion);
         }
+    }
+
+    @Override
+    public void onDeleteObjectRelation(ObjectPropertyAssertion assertion) {
+        CoraInstanceModel subject = assertion.getSubject();
+        CoraInstanceModel object = assertion.getObject();
+        CoraObjectPropertyModel property = assertion.getPredicat();
+
+        Platform.runLater(() -> {
+            graph.removeRelation(subject, property, object);
+        });
     }
 
     @SuppressWarnings("unused")
