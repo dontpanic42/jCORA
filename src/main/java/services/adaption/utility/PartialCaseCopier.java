@@ -87,6 +87,7 @@ public class PartialCaseCopier {
 
         Map<CoraInstanceModel, CoraInstanceModel> visited = new HashMap<>();
 
+        copyDataProperties(newCase, oldCase, oldInstance, newInstance);
         copyObjectProperties(newCase, oldCase, oldInstance, newInstance, visited);
     }
 

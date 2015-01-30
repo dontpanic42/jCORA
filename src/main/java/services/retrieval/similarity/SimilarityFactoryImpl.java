@@ -2,17 +2,14 @@ package services.retrieval.similarity;
 
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraQueryModel;
-import models.datatypes.custom.EuroValue;
+import models.datatypes.custom.*;
 import models.datatypes.xsd.FloatValue;
 import models.datatypes.xsd.IntegerValue;
 import models.datatypes.xsd.LongValue;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
 import services.retrieval.similarity.functions.SimilarityFunction;
-import services.retrieval.similarity.functions.numeric.SimilarityEuro;
-import services.retrieval.similarity.functions.numeric.SimilarityFloat;
-import services.retrieval.similarity.functions.numeric.SimilarityInteger;
-import services.retrieval.similarity.functions.numeric.SimilarityLong;
+import services.retrieval.similarity.functions.numeric.*;
 import services.retrieval.similarity.functions.ontological.SimilarityClass;
 import services.retrieval.similarity.functions.ontological.SimilarityInstance;
 
@@ -40,6 +37,10 @@ public class SimilarityFactoryImpl implements SimilarityFactory {
             put(LongValue.class, new SimilarityLong());
             put(IntegerValue.class, new SimilarityInteger());
             put(EuroValue.class, new SimilarityEuro());
+            put(MeterValue.class, new SimilarityMeter());
+            put(PersonenmonateValue.class, new SimilarityPersonenmonate());
+            put(StueckValue.class, new SimilarityStueck());
+            put(MonateValue.class, new SimilarityMonate());
 
             /*
              * Für Ontologie-Objekte

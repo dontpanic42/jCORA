@@ -58,6 +58,7 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
         System.out.println("ksim: " + classSimilarity);
         System.out.println("obj-sim: " + ((oSim == null)? 0.0 : oSim.getFirst() + " (weight: " + oSim.getSecond() + ")"));
         System.out.println("dat-sim: " + ((dSim == null)? 0.0 : dSim.getFirst() + " (weight: " + dSim.getSecond() + ")"));
+        System.out.println("combined: " + (classSimilarity * weightedPSim));
 
         return classSimilarity * weightedPSim;
     }
@@ -250,7 +251,7 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
         SimilarityFunction<?> simFunc = getFactory().getFunction(valuesA.get(0).getClass());
         if(simFunc == null) {
             System.err.println("--> Ignoriere DataProperty " + prop + ": Keine Ähnlichkeitsfunktion für" + valuesA.get(0).getClass().getSimpleName());
-            return new Pair(1.f, 1.f);
+            return new Pair(0.f, 0.f);
         } else {
             System.err.println("Berechne Ähnlichkeit für dataproperty: " + prop);
         }

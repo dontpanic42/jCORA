@@ -29,6 +29,9 @@ public class KNNRetrievalService extends RetrievalService {
         Float simLast = null;
         List<String> cases = getCaseBase().getCaseIDs();
         for(String caseId : cases) {
+            System.out.println("***************************************************************");
+            System.out.println("Ähnlichkeitsberechnung Query/" + caseId);
+            System.out.println("***************************************************************");
             try {
                 SimilarityFactory simFac = new SimilarityFactoryImpl(getQuery(), getCaseBase());
                 next = getCaseBase().loadCase(caseId);
