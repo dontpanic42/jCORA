@@ -125,33 +125,67 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
     @Override
     public void importCase(String asId, String fileFormat, File file) throws IOException {
-        dataset.begin(ReadWrite.WRITE);
+//        dataset.begin(ReadWrite.WRITE);
+//
+//        //TODO: Strip existing domain-ontology imports from model!
+//        Model m = dataset.getNamedModel(asId);
+//
+//        try {
+//            InputStream is = new FileInputStream(file);
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF8"));
+//
+//            m.read(is, fileFormat);
+//
+//            reader.close();
+//            is.close();
+//
+//            dataset.commit();
+//
+//            m.close();
+//            dataset.end();
+//
+//            System.out.println("Imported " + asId + " file: " + file.getAbsolutePath() + " format: " + fileFormat);
+//            for(CaseBaseChangeHandler h : caseBaseChangeHandlers) {
+//                h.onAddCase(asId);
+//            }
+//        } catch (FileNotFoundException e) {
+//            dataset.end();
+//            e.printStackTrace();
+//            throw e;
+//        }
 
-        //TODO: Strip existing domain-ontology imports from model!
-        Model m = dataset.getNamedModel(asId);
-
+        Model tdbModel = ModelFactory.createDefaultModel();
         try {
             InputStream is = new FileInputStream(file);
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF8"));
-
-            m.read(is, fileFormat);
+            tdbModel.read(is, fileFormat);
 
             reader.close();
             is.close();
-
-            dataset.commit();
-
-            m.close();
-            dataset.end();
-
-            System.out.println("Imported " + asId + " file: " + file.getAbsolutePath() + " format: " + fileFormat);
-            for(CaseBaseChangeHandler h : caseBaseChangeHandlers) {
-                h.onAddCase(asId);
-            }
         } catch (FileNotFoundException e) {
-            dataset.end();
             e.printStackTrace();
             throw e;
+        }
+
+        Model m = ModelFactory.createDefaultModel();
+        m.add(tdbModel);
+        //TODO: Prefixes?
+        if(tdbModel.getNsPrefixURI("") == null) {
+            m.setNsPrefix("", CASE_NS);
+            System.out.println("Prefix ist null");
+        } else {
+            m.setNsPrefix("", tdbModel.getNsPrefixURI(""));
+        }
+
+
+        OntModel model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, m);
+        model.addSubModel(domainModel);
+
+        try {
+            CoraCaseModelImpl caseModel = new CoraCaseModelImpl(null, model, this);
+            saveAsNewCase(caseModel, asId);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

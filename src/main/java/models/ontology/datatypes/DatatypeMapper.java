@@ -34,7 +34,9 @@ public class DatatypeMapper {
             mapping = new Properties();
             try {
                 InputStream is = DatatypeMapper.class.getClassLoader().getResourceAsStream(MAPPING_PROPERTIES_FILE);
-                mapping.load(is);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF8"));
+                mapping.load(reader);
+                reader.close();
                 is.close();
             } catch (IOException e) {
                 System.err.println("Keine Mapping-Datei: " + MAPPING_PROPERTIES_FILE);

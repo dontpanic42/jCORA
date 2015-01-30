@@ -16,9 +16,6 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
 
     @Override
     public Float calculateItemSim(CoraPropertyModel property, CoraClassModel a, CoraClassModel b) {
-
-        System.out.println("Vergleiche Klassen: " + a + " und " + b + " (" + property + ")");
-
         float propSim = getPropertySimilarity(a, b);
         if(propSim == 0.f) {
             return 0.f;
@@ -26,8 +23,6 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
 
         float taxnSim = getTaxonomicSimilarity(a, b);
 
-
-        System.out.println("Vergleiche Klassen: " + a + " und " + b + " (" + property + "): " + (taxnSim * propSim));
         return taxnSim * propSim;
     }
 
