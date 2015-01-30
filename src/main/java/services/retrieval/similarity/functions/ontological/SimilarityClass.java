@@ -25,6 +25,9 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
         }
 
         float taxnSim = getTaxonomicSimilarity(a, b);
+
+
+        System.out.println("Vergleiche Klassen: " + a + " und " + b + " (" + property + "): " + (taxnSim * propSim));
         return taxnSim * propSim;
     }
 

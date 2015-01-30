@@ -14,7 +14,6 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
     @Override
     public Float calculateItemSim(CoraPropertyModel property, CoraInstanceModel a, CoraInstanceModel b) {
 
-        System.out.println("Vergleiche Instanzen " + a + " und " + b + " (" + property + ")");
 
         //Berechne die Klassenähnlichkeit ------------------------------------------------------------------------------
         SimilarityFunction<CoraClassModel> classSimilarityFunction =
@@ -24,6 +23,8 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
                 null, a.getFlattenedTypes(), b.getFlattenedTypes());
 
         if(classSimilarity == 0.f) {
+
+            System.out.println("Vergleiche Instanzen " + a + " und " + b + " (" + property + "): 0.0");
             return 0.f;
         }
 
@@ -50,6 +51,13 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
 
         float weightedPSim = (pSim.getFirst() != 0.f && pSim.getSecond() != 0.f)?
                 pSim.getFirst() / pSim.getSecond() : pSim.getFirst();
+
+
+        //System.out.println("Vergleiche Instanzen " + a + " und " + b + " (" + property + "): " + (classSimilarity * weightedPSim));
+        System.out.println("Vergleiche Instanzen " + a + " und " + b + "( + " + property + ")");
+        System.out.println("ksim: " + classSimilarity);
+        System.out.println("obj-sim: " + ((oSim == null)? 0.0 : oSim.getFirst() + " (weight: " + oSim.getSecond() + ")"));
+        System.out.println("dat-sim: " + ((dSim == null)? 0.0 : dSim.getFirst() + " (weight: " + dSim.getSecond() + ")"));
 
         return classSimilarity * weightedPSim;
     }
@@ -140,6 +148,12 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
         return new Pair(sim, weight);
     }
 
+    /**
+     * Berechnet die Ähnlichkeit aller DataProperties zweier Instanzen
+     * @param a Die eine Instanz
+     * @param b Die andere Instanz
+     * @return die Ähnlichkeit
+     */
     private Pair<Float, Float> getDataPropertySimilarity(CoraInstanceModel a, CoraInstanceModel b) {
         Map<CoraDataPropertyModel, List<TypedValue>> propsA = getDataPropertyMap(a);
         Map<CoraDataPropertyModel, List<TypedValue>> propsB = getDataPropertyMap(b);
@@ -221,6 +235,13 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
         return props;
     }
 
+    /**
+     * Berechnet die Ähnlichkeit für alle Werte EINES DataProperties.
+     * @param prop Das DataProperty
+     * @param valuesA Die erste Wertemenge
+     * @param valuesB Die zweite Wertemenge
+     * @return
+     */
     private Pair<Float, Float> getDataPropertySimilarity(CoraDataPropertyModel prop,
                                                          List<TypedValue> valuesA,
                                                          List<TypedValue> valuesB) {

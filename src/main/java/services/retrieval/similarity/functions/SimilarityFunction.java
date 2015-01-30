@@ -49,22 +49,33 @@ public abstract class SimilarityFunction<T> {
      */
     public Float calculate(CoraPropertyModel property, List<T> a, List<T> b) {
         float result = 0.f;
-        float tmp;
-        int counter = 0;
+
+        //Für jedes Element aus der ersten Wertemenge (a), finde das Ähnlichste Element
+        //aus der zweiten Wertemenge.
 
         for(T itemA : a) {
+            float max = 0.f;
             for(T itemB : b) {
-                result += calculate(property, itemA, itemB);
+                max = Math.max(max, calculate(property, itemA, itemB));
             }
+
+            result += max;
         }
 
-        for(T itemA : b) {
-            for(T itemB : a) {
-                result += calculate(property, itemA, itemB);
+        //Für jedes Element aus der zweiten Wertemenge (b), finde das Ähnlichste Element
+        //aus der ersten Wertemenge.
+
+        for(T itemB : b) {
+            float max = 0.f;
+            for(T itemA : a) {
+                max = Math.max(max, calculate(property, itemB, itemA));
             }
+
+            result += max;
         }
 
-        if(result != 0.f) {
+        //Teile das Ergebnis durch die Anzahl der Elemente in a und b.
+        if(result >= 0.f) {
             result = result / (a.size() + b.size());
         }
 
