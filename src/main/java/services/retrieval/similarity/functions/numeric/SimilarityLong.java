@@ -1,23 +1,46 @@
 package services.retrieval.similarity.functions.numeric;
 
+import models.datatypes.xsd.FloatValue;
 import models.datatypes.xsd.LongValue;
 import models.ontology.CoraPropertyModel;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by daniel on 03.09.14.
  */
 public class SimilarityLong extends NumericSimilarityFunction<LongValue> {
+    private Map<CoraPropertyModel, Long> globalMaxMap = new HashMap<>();
+    private Map<CoraPropertyModel, Long> globalMinMap = new HashMap<>();
 
-    private Long globalMax = null;
-    private Long globalMin = null;
+    private Long getCachedMin(CoraPropertyModel property) {
+        if(globalMinMap.containsKey(property)) {
+            return globalMinMap.get(property);
+        }
+
+        Long tmp = getGlobalMinValue(property, LongValue.class).getValue();
+        globalMinMap.put(property, tmp);
+        return tmp;
+    }
+
+    private Long getCachedMax(CoraPropertyModel property) {
+        if(globalMaxMap.containsKey(property)) {
+            return globalMaxMap.get(property);
+        }
+
+        Long tmp = getGlobalMaxValue(property, LongValue.class).getValue();
+        globalMaxMap.put(property, tmp);
+        return tmp;
+    }
 
     @Override
     public Float calculateItemSim(CoraPropertyModel property, LongValue a, LongValue b) {
         //Globale min/max Werte
-        globalMax = (globalMax == null)? getGlobalMaxValue(property, LongValue.class).getValue() : globalMax;
-        globalMin = (globalMin == null)? getGlobalMinValue(property, LongValue.class).getValue() : globalMin;
+
+        long globalMax = getCachedMax(property);
+        long globalMin = getCachedMin(property);
 
         //Globale min/max Werte inkl. der Werte aus der Anfrage
         //globalMax/globalMin könnten an dieser stelle Long.minValue/Long.maxValue enthalten, wenn keine
@@ -31,7 +54,7 @@ public class SimilarityLong extends NumericSimilarityFunction<LongValue> {
 
         float sim = getMetricSimilarity(aVal, bVal, maxVal, minVal);
 
-        System.out.println("Sim " + property + " (" + aVal + ", " + bVal + "): " + sim);
+        //System.out.println("Sim " + property + " (" + aVal + ", " + bVal + ", min: " + globalMin + ", max: " + globalMax + "): " + sim);
 
         return sim;
     }

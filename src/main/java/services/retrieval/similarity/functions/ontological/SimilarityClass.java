@@ -22,7 +22,7 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
         }
 
         float taxnSim = getTaxonomicSimilarity(a, b);
-
+        //System.out.println("ksim tax: " + taxnSim + " prop: " + propSim);
         return taxnSim * propSim;
     }
 
@@ -49,6 +49,8 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
         Set<CoraPropertyModel<?>> propsA = a.getProperties();
         Set<CoraPropertyModel<?>> propsB = b.getProperties();
 
+        //System.out.println("ksim " + a.toString() + " " + b.toString());
+
         //Wenn BEIDE Klassen KEINE eigenschaften haben, gebe 1.f zurück.
         if(propsA.size() == 0 && propsB.size() == 0) {
             return 1.f;
@@ -60,20 +62,57 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
             return 0.f;
         }
 
-        Set<CoraPropertyModel<?>> commonProps = new HashSet<>(propsA);
-        commonProps.retainAll(propsB);
+        Set<CoraPropertyModel<?>> commonProps = getCommonProperties(propsA, propsB);
+
+//        System.out.print("ksim-props gemeinsam: ");
+//        for(CoraPropertyModel<?> p : commonProps) {
+//            System.out.print(p.toString() + " ");
+//        }
+//        System.out.print("\n");
+//        System.out.print("ksim-props insgesamt: ");
+//        for(CoraPropertyModel<?> p : getUniqueProperties(propsA, propsB)) {
+//            System.out.print(p.toString() + " ");
+//        }
+//        System.out.print("\n");
 
         //Wenn keine gemeinsamen Eigenschaften vorhanden sind, gebe 0.f zurück.
         if(commonProps.size() == 0) {
             return 0.f;
         }
 
-        float numA = propsA.size();
-        float numB = propsB.size();
         float numC = commonProps.size();
+        float numU = getUniqueProperties(propsA, propsB).size();
 
         //Keine variable kann == 0 sein, daher keine division durch 0 möglich...
-        return (numC * 2.f) / (numA + numB);
+        return numC / numU;
+    }
+
+    /**
+     * Gibt ein Set mit den Properties zurück, die sowohl im <code>setA</code> als auch im
+     * <code>setB</code> vorkommen.
+     * @param setA
+     * @param setB
+     * @return
+     */
+    private Set<CoraPropertyModel<?>> getCommonProperties(Set<CoraPropertyModel<?>> setA,
+                                                          Set<CoraPropertyModel<?>> setB) {
+        Set<CoraPropertyModel<?>> commonProps = new HashSet<>(setA);
+        commonProps.retainAll(setB);
+        return commonProps;
+    }
+
+    /**
+     * Gibt ein Set mit allen in <code>setA</code> und <code>setB</code> vorkommenden Properties
+     * zurück, ohne doppelungen.
+     * @param setA
+     * @param setB
+     * @return
+     */
+    private Set<CoraPropertyModel<?>> getUniqueProperties(Set<CoraPropertyModel<?>> setA,
+                                                          Set<CoraPropertyModel<?>> setB) {
+        Set<CoraPropertyModel<?>> uniqueProps = new HashSet<>(setA);
+        uniqueProps.addAll(setB);
+        return uniqueProps;
     }
 
     /*******************************************************************************************************************

@@ -1,6 +1,6 @@
 package services.retrieval.similarity.functions.numeric;
 
-import models.datatypes.xsd.IntegerValue;
+import models.datatypes.custom.TonnenValue;
 import models.ontology.CoraPropertyModel;
 
 import java.math.BigDecimal;
@@ -8,37 +8,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by daniel on 03.09.14.
+ * Created by daniel on 30.01.15.
  */
-public class SimilarityInteger extends NumericSimilarityFunction<IntegerValue> {
-    private Map<CoraPropertyModel, Integer> globalMaxMap = new HashMap<>();
-    private Map<CoraPropertyModel, Integer> globalMinMap = new HashMap<>();
+public class SimilarityTonnen extends NumericSimilarityFunction<TonnenValue> {
+    private Map<CoraPropertyModel, Float> globalMaxMap = new HashMap<>();
+    private Map<CoraPropertyModel, Float> globalMinMap = new HashMap<>();
 
-    private Integer getCachedMin(CoraPropertyModel property) {
+    private Float getCachedMin(CoraPropertyModel property) {
         if(globalMinMap.containsKey(property)) {
             return globalMinMap.get(property);
         }
 
-        Integer tmp = getGlobalMinValue(property, IntegerValue.class).getValue();
+        Float tmp = getGlobalMinValue(property, TonnenValue.class).getValue();
         globalMinMap.put(property, tmp);
         return tmp;
     }
 
-    private Integer getCachedMax(CoraPropertyModel property) {
+    private Float getCachedMax(CoraPropertyModel property) {
         if(globalMaxMap.containsKey(property)) {
             return globalMaxMap.get(property);
         }
 
-        Integer tmp = getGlobalMaxValue(property, IntegerValue.class).getValue();
+        Float tmp = getGlobalMaxValue(property, TonnenValue.class).getValue();
         globalMaxMap.put(property, tmp);
         return tmp;
     }
-
     @Override
-    public Float calculateItemSim(CoraPropertyModel property, IntegerValue a, IntegerValue b) {
+    public Float calculateItemSim(CoraPropertyModel property, TonnenValue a, TonnenValue b) {
         //Globale min/max Werte
-        Integer globalMax = getCachedMax(property);
-        Integer globalMin = getCachedMin(property);
+        float globalMax = getCachedMax(property);
+        float globalMin = getCachedMin(property);
 
         //Globale min/max Werte inkl. der Werte aus der Anfrage
         //globalMax/globalMin könnten an dieser stelle Long.minValue/Long.maxValue enthalten, wenn keine
@@ -52,7 +51,7 @@ public class SimilarityInteger extends NumericSimilarityFunction<IntegerValue> {
 
         float sim = getMetricSimilarity(aVal, bVal, maxVal, minVal);
 
-//        System.out.println("Sim " + property + " (" + aVal + ", " + bVal + "): " + sim);
+        //System.out.println("Sim " + property + " (" + aVal + ", " + bVal + "): " + sim);
 
         return sim;
     }

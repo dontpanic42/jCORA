@@ -1,23 +1,45 @@
 package services.retrieval.similarity.functions.numeric;
 
+import models.datatypes.custom.MeterValue;
 import models.datatypes.custom.StueckValue;
 import models.ontology.CoraPropertyModel;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by daniel on 30.01.15.
  */
 public class SimilarityStueck extends NumericSimilarityFunction<StueckValue> {
+    private Map<CoraPropertyModel, Integer> globalMaxMap = new HashMap<>();
+    private Map<CoraPropertyModel, Integer> globalMinMap = new HashMap<>();
 
-    private Integer globalMax = null;
-    private Integer globalMin = null;
+    private Integer getCachedMin(CoraPropertyModel property) {
+        if(globalMinMap.containsKey(property)) {
+            return globalMinMap.get(property);
+        }
+
+        Integer tmp = getGlobalMinValue(property, StueckValue.class).getValue();
+        globalMinMap.put(property, tmp);
+        return tmp;
+    }
+
+    private Integer getCachedMax(CoraPropertyModel property) {
+        if(globalMaxMap.containsKey(property)) {
+            return globalMaxMap.get(property);
+        }
+
+        Integer tmp = getGlobalMaxValue(property, StueckValue.class).getValue();
+        globalMaxMap.put(property, tmp);
+        return tmp;
+    }
 
     @Override
     public Float calculateItemSim(CoraPropertyModel property, StueckValue a, StueckValue b) {
         //Globale min/max Werte
-        globalMax = (globalMax == null)? getGlobalMaxValue(property, StueckValue.class).getValue() : globalMax;
-        globalMin = (globalMin == null)? getGlobalMinValue(property, StueckValue.class).getValue() : globalMin;
+        Integer globalMax = getCachedMax(property);
+        Integer globalMin = getCachedMin(property);
 
         //Globale min/max Werte inkl. der Werte aus der Anfrage
         //globalMax/globalMin könnten an dieser stelle Long.minValue/Long.maxValue enthalten, wenn keine
@@ -31,7 +53,7 @@ public class SimilarityStueck extends NumericSimilarityFunction<StueckValue> {
 
         float sim = getMetricSimilarity(aVal, bVal, maxVal, minVal);
 
-        System.out.println("Sim " + property + " (" + aVal + ", " + bVal + "): " + sim);
+        //System.out.println("Sim " + property + " (" + aVal + ", " + bVal + "): " + sim);
 
         return sim;
     }

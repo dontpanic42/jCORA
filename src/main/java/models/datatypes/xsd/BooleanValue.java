@@ -65,6 +65,6 @@ public class BooleanValue extends TypedValue<Boolean> {
 
     @Override
     public String getUnitName() {
-        return "(Bool'scher Wert)";
+        return "(Boole'scher Wert)";
     }
 }

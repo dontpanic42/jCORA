@@ -3,12 +3,15 @@ package services.retrieval.similarity;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraQueryModel;
 import models.datatypes.custom.*;
+import models.datatypes.xsd.BooleanValue;
 import models.datatypes.xsd.FloatValue;
 import models.datatypes.xsd.IntegerValue;
 import models.datatypes.xsd.LongValue;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
+import services.retrieval.similarity.functions.nonnumeric.SimilarityBool;
 import services.retrieval.similarity.functions.SimilarityFunction;
+import services.retrieval.similarity.functions.nonnumeric.SimilarityTaric;
 import services.retrieval.similarity.functions.numeric.*;
 import services.retrieval.similarity.functions.ontological.SimilarityClass;
 import services.retrieval.similarity.functions.ontological.SimilarityInstance;
@@ -41,6 +44,10 @@ public class SimilarityFactoryImpl implements SimilarityFactory {
             put(PersonenmonateValue.class, new SimilarityPersonenmonate());
             put(StueckValue.class, new SimilarityStueck());
             put(MonateValue.class, new SimilarityMonate());
+            put(KgValue.class, new SimilarityKg());
+            put(TonnenValue.class, new SimilarityTonnen());
+            put(BooleanValue.class, new SimilarityBool());
+            put(TaricValue.class, new SimilarityTaric());
 
             /*
              * Für Ontologie-Objekte
