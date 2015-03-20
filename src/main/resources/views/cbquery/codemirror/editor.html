@@ -1,0 +1,53 @@
+            <!doctype html>
+                    <html>
+                    <head>
+                        <meta charset="utf-8">
+                        <link rel="stylesheet" href="codemirror.css">
+                      <script src="codemirror.js"></script>
+                      <script src="sparql.js"></script>
+                      <style>
+                          * { padding: 0px; margin: 0px; }
+                          body, html {
+                            height: 100%;
+                          background-color: blue;
+                          }
+                          .wrap {
+                          position: relative;
+                          height: 100%;
+                          background: #eee;
+                          padding: 20px;
+                          box-sizing: border-box;
+                          }
+                          .CodeMirror {
+                            height: 100% !important;
+                          }
+                      </style>
+                    </head>
+                    <body>
+                    <textarea id="code" name="code">
+PREFIX domain: <http://www.semanticweb.org/martin.kowalski/ontologies/2013/11/untitled-ontology-17#>
+PREFIX case: <http://example.com/case#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xs: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT DISTINCT ?FallID ?Vorname ?Name ?Kompetenz ?Instanz
+WHERE
+{
+    GRAPH ?FallID {
+        ?k domain:hatMitglied ?Instanz.
+      	OPTIONAL { ?Instanz domain:Vorname ?Vorname . }
+        OPTIONAL { ?Instanz domain:Name ?Name . }
+        OPTIONAL { ?Instanz domain:hatKompetenz ?Kompetenz }
+    }
+}
+                    </textarea>
+                    <script>
+                      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+                        lineNumbers: true,
+                        lineWrapping: true,
+                        matchBrackets: true,
+                        mode: "application/sparql-query"
+                      });
+                    </script>
+                    </body>
+                    </html>
