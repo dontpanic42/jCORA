@@ -1,6 +1,7 @@
 package mainapp;
 
 import controllers.MainAppViewController;
+import controllers.commons.ThrowableErrorViewController;
 import javafx.application.Application;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
@@ -14,9 +15,8 @@ import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseBaseImpl;
 import view.viewbuilder.ViewBuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URLDecoder;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 public class MainApplication extends Application {
 
     public static final String APPLICATION_NAME = "jCora";
-    public static final String VERSION_STRING = "Alpha 1";
+    public static final String VERSION_STRING = "v1.0";
 
     private Language currentLanguage = Language.GERMAN;
     private static final Language DEFAULT_LANGUAGE = Language.ENGLISH;
@@ -134,6 +134,29 @@ public class MainApplication extends Application {
     }
 
     /**
+     * Gibt den Pfad als String zurück, in dem sich die aktuelle *.jar Datei befindet.
+     * Gibt null zurück, wenn nicht als *.jar ausgeführt oder anderweitig nicht verfügbar.
+     * @return Pfad als String MIT folgendem "/"
+     */
+    public static String getApplicationPath() {
+        String basePath = "";
+        try {
+            String path = MainApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            basePath = URLDecoder.decode(path, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            ThrowableErrorViewController.showError(e, false);
+            return null;
+        }
+
+        if(!(new File(basePath).exists())) {
+            return null;
+        } else {
+            basePath = new File(basePath).getParent();
+            return basePath + File.separator;
+        }
+    }
+
+    /**
      * Läd die Fallbasis asynchron.
      */
     private void initCaseBase() {
@@ -151,6 +174,8 @@ public class MainApplication extends Application {
         initCaseBaseTask.stateProperty().addListener((ov, oldState, newState) -> {
             if(newState == Worker.State.SUCCEEDED) {
                 caseBase.setValue(initCaseBaseTask.getValue());
+            } else if(newState == Worker.State.FAILED) {
+                ThrowableErrorViewController.showError(initCaseBaseTask.getException(), false);
             }
         });
 

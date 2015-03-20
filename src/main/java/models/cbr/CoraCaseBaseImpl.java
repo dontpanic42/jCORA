@@ -9,6 +9,8 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.util.FileManager;
+import controllers.commons.ThrowableErrorViewController;
+import mainapp.MainApplication;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.mindswap.pellet.jena.PelletReasonerFactory;
@@ -17,6 +19,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.naming.ConfigurationException;
 import java.io.*;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -214,6 +217,26 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     }
 
     /**
+     * Erzeugt einen Fall auf Grundlage eines Modells, der nicht in der Datenbank gesichert ist.
+     * @return Ein nicht in der Datenbank gesicherten Fall
+     * @throws Throwable
+     */
+    public CoraCaseModel createTemporaryCase(Model m) throws Exception {
+        m.setNsPrefix("", CASE_NS);
+
+        //Reasoner r = PelletReasonerFactory.theInstance().create();
+
+
+        OntModel model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, m);
+
+        model.setNsPrefix("", CASE_NS);
+        model.addSubModel(domainModel);
+
+        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(null, model, this);
+        return caseModel;
+    }
+
+    /**
      * Gibt zurück, ob ein Fall mit dem Namen <code>name</code> in der Case-Base existiert.
      * @param name Name des zu suchenden Falles
      * @return <code>true</code>, wenn der Fall existiert
@@ -261,6 +284,21 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         return dataset.listNames();
     }
 
+    private String getDomainModelPath() {
+
+        String appPath = MainApplication.getApplicationPath();
+        String relativePath = caseBaseProperties.getProperty("domainModelFileDefault");
+
+        if(appPath == null || !(new File(appPath + relativePath).exists())) {
+            String fallback = caseBaseProperties.getProperty("domainModelFileFallback");
+            System.out.println("Using Domain-Model: " + fallback);
+            return fallback;
+        } else {
+            System.out.println("Using Domain-Model: " + appPath + relativePath);
+            return appPath + relativePath;
+        }
+    }
+
     /**
      * Läd die in der Konfiguration (<code>casBaseProperties</code>) hinterlegte Domain-Ontologie
      * @return
@@ -271,7 +309,9 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     private Model loadDomainModel()
             throws ConfigurationException, FileNotFoundException {
 
-        String domainModelFile = caseBaseProperties.getProperty("domainModelFile");
+        //String domainModelFile = caseBaseProperties.getProperty("domainModelFile");
+
+        String domainModelFile = getDomainModelPath();
 
         if(domainModelFile == null) {
             throw new ConfigurationException();
@@ -410,6 +450,21 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         }
     }
 
+    private String getTDBDatasetPath() {
+
+        String appPath = MainApplication.getApplicationPath();
+        String relativePath = caseBaseProperties.getProperty("tdbCaseBaseDefault");
+
+        if(appPath == null || !(new File(appPath + relativePath).exists())) {
+            String fallback = caseBaseProperties.getProperty("tdbCaseBaseFallback");
+            System.out.println("Using TDB-Dataset-Model: " + fallback);
+            return fallback;
+        } else {
+            System.out.println("Using TDB-Dataset-Model: " + appPath + relativePath);
+            return appPath + relativePath;
+        }
+    }
+
     /**
      * Initialisiert die TDB-Datenbank, wie in der Konfiguration (<code>caseBaseProperties</code>)
      * spezifziert
@@ -419,7 +474,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     private Dataset createTDBDataset()
             throws ConfigurationException {
 
-        String tdbPath = caseBaseProperties.getProperty("tdbCaseBase");
+        String tdbPath = getTDBDatasetPath();// caseBaseProperties.getProperty("tdbCaseBase");
         if(tdbPath == null) {
             throw new ConfigurationException("TDB-CaseBase nicht spezifiziert");
         }

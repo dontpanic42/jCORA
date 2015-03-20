@@ -1,28 +1,32 @@
 package controllers;
 
 import com.sun.glass.ui.Application;
+import controllers.commons.ThrowableErrorViewController;
+import controllers.commons.WaitViewController;
 import controllers.dataproperty.DataPropertyEditorFactory;
 import controllers.queryeditor.QueryViewController;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.embed.swing.SwingNode;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import mainapp.MainApplication;
+import models.Language;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseModel;
 import models.datatypes.TypedValue;
@@ -32,12 +36,15 @@ import models.ontology.CoraObjectPropertyModel;
 import models.ontology.assertions.DataPropertyAssertion;
 import models.ontology.assertions.ObjectPropertyAssertion;
 import services.adaption.utility.PartialCaseCopier;
+import services.rules.jenarules.JenaRulesEngine;
+import view.Commons;
 import view.viewbuilder.ViewBuilder;
 import view.graphview.GraphViewComponent;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by daniel on 24.08.14.
@@ -63,6 +70,15 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
 
     @FXML
     private TableView<DataPropertyAssertion> tblDataProperties;
+
+    @FXML
+    private Button btnSave;
+
+    @FXML
+    private TextField searchTextField;
+
+    @FXML
+    private ListView<CoraInstanceModel> searchListView;
 
     private final GraphViewComponent graph = new GraphViewComponent();
 
@@ -140,6 +156,97 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
                 return new ReadOnlyObjectWrapper<>(object.getUnitName());
             }
         });
+
+        btnSave.setDisable(true);
+
+        setupSearch();
+    }
+
+    /**
+     * Installiert die Event-Handler für die Instanz-Suche
+     */
+    private void setupSearch() {
+        /*
+         * Wenn eine Instanz ausgewählt wird, zeige diese an
+         */
+        searchListView.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
+            if (newValue != null) {
+                String lang = MainApplication.getInstance().getLanguage();
+                searchTextField.setText(newValue.getDisplayName(lang));
+                graph.showInstanceInView(newValue);
+            }
+        });
+
+        /*
+         * Wenn im Textfeld Enter gedrückt wird, zeige die erste passende Instanz
+         */
+        searchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent ke) {
+                if (ke.getCode() == KeyCode.ENTER) {
+                    onSearchInput();
+
+                    if (searchListView.getItems().size() > 0) {
+                        searchListView.getSelectionModel().selectFirst();
+                    }
+                }
+            }
+        });
+
+        /**
+         * Manuelles setzten des Placeholders für die Listview
+         */
+        String searchListPlaceholderText = ViewBuilder.getInstance().getText("ui.case_view.search_list_view_placeholder");
+        searchListView.setPlaceholder(new Label(searchListPlaceholderText));
+    }
+
+    @FXML
+    private void onSearchInput() {
+        ArrayList<CoraInstanceModel> searchResults = graph.findDisplayedInstances(searchTextField.getText());
+        searchListView.getItems().setAll(searchResults);
+    }
+
+    /**
+     * Läd Jena-Rules aus einer Text-Datei und wendet diese auf den aktuellen Fallgraphen an. Das
+     * Ergebnis wird in einem neuen Reiter geöffnet.
+     * @throws IOException
+     */
+    @FXML
+    private void onApplyRuleset() throws IOException {
+        String fileName;
+        File file = (new FileChooser()).showOpenDialog(stage);
+        if(file == null) {
+            return;
+        } else {
+           fileName = file.getAbsolutePath();
+        }
+
+        final WaitViewController waitView = Commons.createWaitScreen(stage);
+        waitView.setText("Regeln werden angewendet...");
+
+        final CoraCaseModel oldcase = model.getFactory().getCase();
+        Task<CoraCaseModel> loadCaseTask = new Task<CoraCaseModel>() {
+            @Override
+            protected CoraCaseModel call() throws Exception {
+                JenaRulesEngine jre = new JenaRulesEngine();
+                return jre.applyRuleset(oldcase, fileName);
+            }
+        };
+
+        loadCaseTask.stateProperty().addListener((ov, oldState, newState) -> {
+            if(newState == Worker.State.SUCCEEDED) {
+                waitView.close();
+                try {
+                    MainApplication.getInstance().getMainAppView().showCase(loadCaseTask.getValue(), "(Generated)");
+                } catch (Exception e) {
+                    ThrowableErrorViewController.showError(e, true);
+                }
+            } else if(newState == Worker.State.FAILED) {
+                waitView.close();
+                ThrowableErrorViewController.showError(loadCaseTask.getException(), true);
+            }
+        });
+
+        new Thread(loadCaseTask).start();
     }
 
     public void setStage(Stage stage) {
@@ -157,10 +264,14 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         }
 
         this.model = model;
+
+        /* Aktiviere den Save-Button, wenn der Fall eine ID hat. */
+        if(model.getFactory().getCase().getCaseId() != null) {
+            btnSave.setDisable(false);
+        }
     }
 
     private void createAndSetSwingContent(final SwingNode swingNode, final SwingNode navNode) {
-
 
         //navNode.resize(400, 400);
         SwingUtilities.invokeLater(new Runnable() {

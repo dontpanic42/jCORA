@@ -14,7 +14,7 @@
          <children>
             <ToolBar orientation="VERTICAL" prefHeight="40.0" prefWidth="40.0">
               <items>
-                  <Button mnemonicParsing="false" onAction="#onSaveCase">
+                  <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onSaveCase">
                      <graphic>
                         <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -55,7 +55,21 @@
                      <padding>
                         <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
                      </padding>
+                     <tooltip>
+                        <Tooltip text="%ui.case_view.tooltip_open_as_cbr_request" />
+                     </tooltip>
                   </Button>
+                  <Button mnemonicParsing="false" onAction="#onApplyRuleset">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/apply-ruleset.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets bottom="-2.0" left="-2.0" right="-2.0" top="-2.0" />
+                     </padding></Button>
                   <Separator />
                   <Button mnemonicParsing="false" onAction="#onSaveAsXML">
                      <graphic>
@@ -95,6 +109,24 @@
                      <content>
                         <SwingNode fx:id="navNode" />
                      </content>
+                  </TitledPane>
+                  <TitledPane animated="false" text="%ui.case_view.search_panel_title">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <VBox prefHeight="180.0" prefWidth="223.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <TextField fx:id="searchTextField" onKeyTyped="#onSearchInput" promptText="%ui.case_view.search_text_field_placeholder" />
+                                    <ListView fx:id="searchListView" prefHeight="200.0" prefWidth="200.0">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </ListView>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
                   </TitledPane>
                   <TitledPane text="%ui.case_view.help_panel_title">
                      <content>

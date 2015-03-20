@@ -35,6 +35,7 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
     private static final String CASE_VIEW_VIEW_FILE = "views/caseView.fxml";
     private static final String QUERY_VIEW_VIEW_FILE = "views/queryeditor/queryView.fxml";
     private static final String RETRIEVAL_RESULTS_VIEW_FILE = "views/retrieval/retrievalResultsView.fxml";
+    private static final String SPARQL_EDITOR_VIEW_FILE = "views/cbquery/cbQueryEditor.fxml";
 
     @FXML
     private TabPane tabPane;
@@ -89,6 +90,18 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
 
     public void setCaseBase(CoraCaseBase caseBase) {
         this.caseBase.set(caseBase);
+    }
+
+    @FXML
+    public void showSPARQLEditor() throws IOException {
+        FXMLLoader loader = ViewBuilder.getInstance().createLoader(SPARQL_EDITOR_VIEW_FILE);
+        AnchorPane pane = loader.load();
+
+        Stage stage = new Stage();
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.setTitle(ViewBuilder.getInstance().getText("ui.cbquery.editor_title"));
+        stage.show();
     }
 
     /**

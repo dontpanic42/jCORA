@@ -108,7 +108,9 @@ public class InstanceWidget extends Widget {
 
                 String instanceNs = newModel.getModel().getNs();
                 String domainNs = MainApplication.getInstance().getCaseBase().getDomainNs();
-                if(instanceNs.equals(domainNs)) {
+
+                /* instanceNs kann null werden, wenn die instanz anonym ist... */
+                if(instanceNs != null && instanceNs.equals(domainNs)) {
                     setIsPartOfDomainOntology();
                 } else {
                     setIsPartOfTaskOntology();

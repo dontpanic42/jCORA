@@ -1,5 +1,7 @@
 package models.cbr;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -95,6 +97,13 @@ public interface CoraCaseBase {
      * @throws Throwable
      */
     public CoraCaseModel createTemporaryCase() throws Exception;
+
+    /**
+     * Erzeugt einen Fall auf Grundlage eines Modells, der nicht in der Datenbank gesichert ist.
+     * @return Ein nicht in der Datenbank gesicherten Fall
+     * @throws Throwable
+     */
+    public CoraCaseModel createTemporaryCase(Model m) throws Exception;
 
     public void save(CoraCaseModel model);
 

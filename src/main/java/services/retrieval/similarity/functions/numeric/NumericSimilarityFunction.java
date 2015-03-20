@@ -161,8 +161,6 @@ public abstract class NumericSimilarityFunction<T extends TypedValue> extends Si
                 "     GRAPH ?g {?y <" + propName + "> ?value}\n" +
                 "  }";
 
-        Query jquery = QueryFactory.create(query);
-
         CoraCaseBaseImpl cbi = (CoraCaseBaseImpl) getFactory().getCaseBase();
         Dataset d = cbi.getDataset();
 

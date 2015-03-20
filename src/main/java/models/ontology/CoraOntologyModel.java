@@ -147,6 +147,11 @@ public class CoraOntologyModel<T extends OntResource> {
             return literal.getString();
         }
 
+        /* Der lokale Name ist null, wenn die Resource anonym ist */
+        if(getBaseObject().getLocalName() == null) {
+            return "(anonym)";
+        }
+
         return getBaseObject().getLocalName();
     }
 }

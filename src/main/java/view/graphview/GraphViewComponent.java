@@ -10,6 +10,8 @@ import mainapp.MainApplication;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
 import org.netbeans.api.visual.action.SelectProvider;
+import org.netbeans.api.visual.border.*;
+import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.export.SceneExporter;
 import org.netbeans.api.visual.widget.ConnectionWidget;
 import org.netbeans.api.visual.widget.Widget;
@@ -37,7 +39,6 @@ public class GraphViewComponent extends JPanel {
     private SimpleObjectProperty<EventHandler<CreateRelationEvent>> onCreateRelation = new SimpleObjectProperty<>();
     private SimpleObjectProperty<EventHandler<DeleteInstanceEvent>> onDeleteInstance = new SimpleObjectProperty<>();
     private SimpleObjectProperty<EventHandler<DeleteRelationEvent>> onDeleteRelation = new SimpleObjectProperty<>();
-
 
     private InstanceGraph scene;
     private Map<CoraInstanceModel, NodeModel> nodes = new HashMap<CoraInstanceModel, NodeModel>();
@@ -99,6 +100,65 @@ public class GraphViewComponent extends JPanel {
         setSize(getPreferredSize());
     }
 
+    /**
+     * Sucht nach aktuell angezeigten Instanzen deren Name zumindest
+     * teilweise mit <code>partialInstanceName</code> übereinstimmt und gibt diese als <code>ArrayList</code>
+     * zurück. Gibt eine leere ArrayList zurück, wenn keine Instanz mit dem Namen gefunden wurde.
+     * @param partialInstanceName
+     * @return
+     */
+    public ArrayList<CoraInstanceModel> findDisplayedInstances(String partialInstanceName) {
+        partialInstanceName = partialInstanceName.toLowerCase();
+        String tmpName;
+        String lang = MainApplication.getInstance().getLanguage();
+        ArrayList<CoraInstanceModel> results = new ArrayList<>();
+
+        for(CoraInstanceModel instance : nodes.keySet()) {
+            tmpName = instance.getDisplayName(lang);
+            if(tmpName.toLowerCase().contains(partialInstanceName)) {
+                results.add(instance);
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * Zentriert die Ansicht des Fallgraphens auf die übergebene Instanz
+     * @param instance
+     */
+    public void showInstanceInView(CoraInstanceModel instance) {
+        if(!nodes.containsKey(instance)) {
+            System.err.println("Instanz " + instance + " existiert nicht im Fallgraphen.");
+            return;
+        }
+
+        NodeModel model = nodes.get(instance);
+        Object obj = scene.findWidget(model);
+
+        if(obj == null || !(obj instanceof InstanceWidget)) {
+            System.err.println("Konnte Widget nicht finden. (" + obj + ")");
+            return;
+        }
+
+        InstanceWidget widget = (InstanceWidget) obj;
+        Rectangle rect = widget.getBounds();
+        rect.x += widget.getLocation().x;
+        rect.y += widget.getLocation().y;
+
+        rect = scene.convertSceneToView(rect);
+        scene.getView().scrollRectToVisible(rect);
+
+        scene.setCurrentSelection(widget);
+        /* Update die Anzeige manuell (andernfalls wird die Instanz-Auswahl erst beim nächsten mouse-
+         * over angezeigt (?)) */
+        scene.getView().repaint();
+    }
+
+    /**
+     * Erzeugt die Minimap des Fallgraphen
+     * @return
+     */
     public JPanel createNavigationView() {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
