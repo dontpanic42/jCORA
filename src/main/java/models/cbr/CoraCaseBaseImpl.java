@@ -21,6 +21,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.prefs.Preferences;
 
 /**
  * Created by daniel on 22.08.14.
@@ -30,8 +31,10 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     /**
      * Pfad zur Standard-Konfiguration
      */
-    private static final String CASE_BASE_PROPERTIES_FILE = "config/casebase.properties";
+    //private static final String CASE_BASE_PROPERTIES_FILE = "config/casebase.properties";
     private static final String CASE_NS = "http://example.com/case#";
+
+    private final Preferences prefs = Preferences.userNodeForPackage(CoraCaseBase.class);
 
     //private LocalModelGetter localModelGetter;
     //private OntModel domainModel;
@@ -39,7 +42,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     private Dataset dataset;
     private OntDocumentManager documentManager;
 
-    private Properties caseBaseProperties;
+    //private Properties caseBaseProperties;
 
     private List<CaseBaseChangeHandler> caseBaseChangeHandlers = new ArrayList<CaseBaseChangeHandler>();
 
@@ -49,22 +52,23 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      * @throws FileNotFoundException Wenn die Domain-Ontologie oder die Standardkonfiguration nicht gefunden wird
      */
     public CoraCaseBaseImpl() throws ConfigurationException, FileNotFoundException {
-        Properties defaultProperties = new Properties();
-
-        try {
-            InputStream is = this.getClass().getClassLoader().getResourceAsStream(CASE_BASE_PROPERTIES_FILE);
-            //defaultProperties.load(is);
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF8"));
-            defaultProperties.load(reader);
-
-            reader.close();
-            is.close();
-        } catch (IOException e) {
-            throw new FileNotFoundException("Keine CaseBase-Konfiguration gefunden");
-        }
-
-        setupCaseBase(defaultProperties);
+//        Properties defaultProperties = new Properties();
+//
+//        try {
+//            InputStream is = this.getClass().getClassLoader().getResourceAsStream(CASE_BASE_PROPERTIES_FILE);
+//            //defaultProperties.load(is);
+//
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF8"));
+//            defaultProperties.load(reader);
+//
+//            reader.close();
+//            is.close();
+//        } catch (IOException e) {
+//            throw new FileNotFoundException("Keine CaseBase-Konfiguration gefunden");
+//        }
+//
+//        setupCaseBase(defaultProperties);
+        setupCaseBase();
     }
 
     /**
@@ -72,19 +76,21 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      * @param properties Die Case-Base Konfiguration
      * @throws ConfigurationException Wenn die Konfiguration fehlerhaft ist
      * @throws FileNotFoundException Wenn die Domain-Ontologie nicht gefunden wird
+     * @deprecated
      */
     public CoraCaseBaseImpl(Properties properties) throws ConfigurationException, FileNotFoundException {
-        setupCaseBase(properties);
+        //setupCaseBase(properties);
+        setupCaseBase();
     }
 
     /**
      * Initialisiert die Case-Base
-     * @param properties Die Case-Base Konfiguration
      * @throws ConfigurationException
      * @throws FileNotFoundException
      */
-    private void setupCaseBase(Properties properties) throws ConfigurationException, FileNotFoundException {
-        caseBaseProperties = properties;
+    //private void setupCaseBase(Properties properties) throws ConfigurationException, FileNotFoundException {
+    private void setupCaseBase() throws ConfigurationException, FileNotFoundException {
+        //caseBaseProperties = properties;
 
         domainModel = loadDomainModel();
 
@@ -284,20 +290,20 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         return dataset.listNames();
     }
 
-    private String getDomainModelPath() {
-
-        String appPath = MainApplication.getApplicationPath();
-        String relativePath = caseBaseProperties.getProperty("domainModelFileDefault");
-
-        if(appPath == null || !(new File(appPath + relativePath).exists())) {
-            String fallback = caseBaseProperties.getProperty("domainModelFileFallback");
-            System.out.println("Using Domain-Model: " + fallback);
-            return fallback;
-        } else {
-            System.out.println("Using Domain-Model: " + appPath + relativePath);
-            return appPath + relativePath;
-        }
-    }
+//    private String getDomainModelPath() {
+//
+//        String appPath = MainApplication.getApplicationPath();
+//        String relativePath =  caseBaseProperties.getProperty("domainModelFileDefault");
+//
+//        if(appPath == null || !(new File(appPath + relativePath).exists())) {
+//            String fallback = caseBaseProperties.getProperty("domainModelFileFallback");
+//            System.out.println("Using Domain-Model: " + fallback);
+//            return fallback;
+//        } else {
+//            System.out.println("Using Domain-Model: " + appPath + relativePath);
+//            return appPath + relativePath;
+//        }
+//    }
 
     /**
      * Läd die in der Konfiguration (<code>casBaseProperties</code>) hinterlegte Domain-Ontologie
@@ -310,8 +316,8 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
             throws ConfigurationException, FileNotFoundException {
 
         //String domainModelFile = caseBaseProperties.getProperty("domainModelFile");
-
-        String domainModelFile = getDomainModelPath();
+        //String domainModelFile = getDomainModelPath();
+        String domainModelFile = prefs.get("domainModelFile", MainApplication.getApplicationPath() + "domain.owl");
 
         if(domainModelFile == null) {
             throw new ConfigurationException();
@@ -336,8 +342,11 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
             e.printStackTrace();
         }
 
-        if(caseBaseProperties.getProperty("domainNsOverride", null) != null) {
-            m.setNsPrefix("", caseBaseProperties.getProperty("domainNsOverride"));
+//        if(caseBaseProperties.getProperty("domainNsOverride", null) != null) {
+//            m.setNsPrefix("", caseBaseProperties.getProperty("domainNsOverride"));
+//        }
+        if(prefs.get("domainNsOverride", "") != "") {
+            m.setNsPrefix("", prefs.get("domainNsOverride", ""));
         }
 
         return m;
@@ -450,20 +459,20 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         }
     }
 
-    private String getTDBDatasetPath() {
-
-        String appPath = MainApplication.getApplicationPath();
-        String relativePath = caseBaseProperties.getProperty("tdbCaseBaseDefault");
-
-        if(appPath == null || !(new File(appPath + relativePath).exists())) {
-            String fallback = caseBaseProperties.getProperty("tdbCaseBaseFallback");
-            System.out.println("Using TDB-Dataset-Model: " + fallback);
-            return fallback;
-        } else {
-            System.out.println("Using TDB-Dataset-Model: " + appPath + relativePath);
-            return appPath + relativePath;
-        }
-    }
+//    private String getTDBDatasetPath() {
+//
+//        String appPath = MainApplication.getApplicationPath();
+//        String relativePath = caseBaseProperties.getProperty("tdbCaseBaseDefault");
+//
+//        if(appPath == null || !(new File(appPath + relativePath).exists())) {
+//            String fallback = caseBaseProperties.getProperty("tdbCaseBaseFallback");
+//            System.out.println("Using TDB-Dataset-Model: " + fallback);
+//            return fallback;
+//        } else {
+//            System.out.println("Using TDB-Dataset-Model: " + appPath + relativePath);
+//            return appPath + relativePath;
+//        }
+//    }
 
     /**
      * Initialisiert die TDB-Datenbank, wie in der Konfiguration (<code>caseBaseProperties</code>)
@@ -474,7 +483,8 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
     private Dataset createTDBDataset()
             throws ConfigurationException {
 
-        String tdbPath = getTDBDatasetPath();// caseBaseProperties.getProperty("tdbCaseBase");
+        //String tdbPath = getTDBDatasetPath();// caseBaseProperties.getProperty("tdbCaseBase");
+        String tdbPath = prefs.get("tdbCaseBase", MainApplication.getApplicationPath() + "fallbasis");
         if(tdbPath == null) {
             throw new ConfigurationException("TDB-CaseBase nicht spezifiziert");
         }

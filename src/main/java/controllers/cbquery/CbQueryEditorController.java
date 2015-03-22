@@ -14,6 +14,7 @@ import javafx.scene.web.WebView;
 import javafx.util.Callback;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBaseImpl;
+import view.Commons;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -69,10 +70,10 @@ public class CbQueryEditorController {
             try {
                 showResultSet(resultSet);
             } catch (Exception e) {
-                ThrowableErrorViewController.showError(e, true);
+                Commons.showException(e);
             }
         } catch (Exception e) {
-            ThrowableErrorViewController.showError(e, true);
+            Commons.showException(e);
         } finally {
             d.end();
         }

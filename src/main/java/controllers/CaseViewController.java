@@ -35,6 +35,8 @@ import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
 import models.ontology.assertions.DataPropertyAssertion;
 import models.ontology.assertions.ObjectPropertyAssertion;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
+import org.controlsfx.control.textfield.TextFields;
 import services.adaption.utility.PartialCaseCopier;
 import services.rules.jenarules.JenaRulesEngine;
 import view.Commons;
@@ -45,6 +47,7 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Created by daniel on 24.08.14.
@@ -182,6 +185,7 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
          */
         searchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             public void handle(KeyEvent ke) {
+
                 if (ke.getCode() == KeyCode.ENTER) {
                     onSearchInput();
 
@@ -197,6 +201,7 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
          */
         String searchListPlaceholderText = ViewBuilder.getInstance().getText("ui.case_view.search_list_view_placeholder");
         searchListView.setPlaceholder(new Label(searchListPlaceholderText));
+
     }
 
     @FXML
@@ -210,14 +215,14 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
      * Ergebnis wird in einem neuen Reiter geöffnet.
      * @throws IOException
      */
+    @SuppressWarnings("unused")
     @FXML
     private void onApplyRuleset() throws IOException {
-        String fileName;
         File file = (new FileChooser()).showOpenDialog(stage);
-        if(file == null) {
+
+        final String fileName = (file == null)? null : file.getAbsolutePath();
+        if(fileName == null) {
             return;
-        } else {
-           fileName = file.getAbsolutePath();
         }
 
         final WaitViewController waitView = Commons.createWaitScreen(stage);
@@ -238,11 +243,11 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
                 try {
                     MainApplication.getInstance().getMainAppView().showCase(loadCaseTask.getValue(), "(Generated)");
                 } catch (Exception e) {
-                    ThrowableErrorViewController.showError(e, true);
+                    Commons.showException(e);
                 }
             } else if(newState == Worker.State.FAILED) {
                 waitView.close();
-                ThrowableErrorViewController.showError(loadCaseTask.getException(), true);
+                Commons.showException(loadCaseTask.getException());
             }
         });
 

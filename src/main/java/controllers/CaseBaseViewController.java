@@ -22,6 +22,7 @@ import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseModel;
 import view.Commons;
+import view.viewbuilder.ViewBuilder;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -110,10 +111,12 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
                 itemsCases = loadCaseBaseTask.getValue();
                 tblCaseBase.setItems(itemsCases);
 
-                tblCaseBase.setPlaceholder(new Label("Keine Fälle in der Fallbasis."));
+                String placeholderText = ViewBuilder.getInstance().getText("ui.case_base_placeholder_empty");
+                tblCaseBase.setPlaceholder(new Label(placeholderText));
             } else if(newState == Worker.State.FAILED) {
-                tblCaseBase.setPlaceholder(new Label("Fehler beim Laden der Fallbasis"));
-                ThrowableErrorViewController.showError(loadCaseBaseTask.getException(), false);
+                String placeholderText = ViewBuilder.getInstance().getText("ui.case_base_placeholder_error_loading");
+                tblCaseBase.setPlaceholder(new Label(placeholderText));
+                Commons.showFatalException(loadCaseBaseTask.getException());
             }
         });
 

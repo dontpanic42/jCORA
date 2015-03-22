@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.settings.panes.CaseStructureViewController">
+   <children>
+      <GridPane hgap="5.0" prefHeight="400.0" vgap="5.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.0" minWidth="10.0" prefWidth="206.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="394.0" minWidth="10.0" prefWidth="394.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <Label text="%ui.settings.case_struct.concept_case" />
+            <Label text="%ui.settings.case_struct.concept_description" GridPane.rowIndex="1" />
+            <Label text="%ui.settings.case_struct.concept_solution" GridPane.rowIndex="2" />
+            <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+            <Label text="%ui.settings.case_struct.property_description" GridPane.rowIndex="5" />
+            <Label text="%ui.settings.case_struct.property_solution" GridPane.rowIndex="6" />
+            <Label text="%ui.settings.case_struct.property_justification" GridPane.rowIndex="7" />
+            <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
+            <Label text="%ui.settings.case_struct.instance_case" GridPane.rowIndex="9" />
+            <Label text="%ui.settings.case_struct.instance_description" GridPane.rowIndex="10" />
+            <Label text="%ui.settings.case_struct.instance_solution" GridPane.rowIndex="11" />
+            <Label text="%ui.settings.case_struct.instance_justification" GridPane.rowIndex="12" />
+            <Label text="%ui.settings.case_struct.concept_justification" GridPane.rowIndex="3" />
+            <TextField fx:id="txtRootClass" GridPane.columnIndex="1" />
+            <TextField fx:id="txtDescriptionClass" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="txtSolutionClass" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="txtJustificationClass" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="txtHasDescription" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextField fx:id="txtHasSolution" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <TextField fx:id="txtHasJustification" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <TextField fx:id="txtRootIndv" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <TextField fx:id="txtDescriptionIndv" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <TextField fx:id="txtSolutionIndv" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+            <TextField fx:id="txtJustificationIndv" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </GridPane>
+   </children>
+</AnchorPane>

@@ -50,4 +50,9 @@ public enum Language {
     public Image getIcon() {
         return icon;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import view.viewbuilder.ViewBuilder;
 
 import java.io.IOException;
 
@@ -15,19 +17,21 @@ import java.io.IOException;
  */
 public class Commons {
 
+    private static final String WAIT_VIEW_FILE = "views/commons/waitView.fxml";
+
     public static WaitViewController createWaitScreen(Stage parent) throws IOException {
         return createWaitScreen(parent, null);
     }
 
     public static WaitViewController createWaitScreen(Stage parent, String text) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(WaitViewController.class
-                .getClassLoader().getResource("views/commons/waitView.fxml"));
+        FXMLLoader loader = ViewBuilder.getInstance().createLoader(WAIT_VIEW_FILE);
         AnchorPane pane = loader.load();
 
         Stage stage = new Stage();
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(parent);
+        stage.setResizable(false);
+        stage.initStyle(StageStyle.UNDECORATED);
 
         Scene scene = new Scene(pane);
         stage.setScene(scene);

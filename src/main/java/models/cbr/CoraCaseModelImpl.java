@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.prefs.Preferences;
 
 /**
  * Created by daniel on 20.08.14.
@@ -31,9 +32,7 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
     private Set<CaseChangeHandler> onChangeHandlers = new HashSet<>();
     private CoraOntologyModelFactory factory;
 
-    private static Properties caseStructureMapping = null;
-    private static final String CASE_STRUCTURE_MAPPING_FILE = "config/casestructure.properties";
-
+    private final Preferences prefs = Preferences.userNodeForPackage(CoraCaseModel.class);
     /**
      * Erzeugt einen Fall mit der standard-Fallstruktur
      * @param caseModel Das Fall-Modell
@@ -46,30 +45,19 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
 
         this.caseId = caseId;
 
-        if(caseStructureMapping == null) {
-            caseStructureMapping = new Properties();
-            InputStream is = this.getClass().getClassLoader().getResourceAsStream(CASE_STRUCTURE_MAPPING_FILE);
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF8"));
-            caseStructureMapping.load(reader);
-            reader.close();
-            is.close();
-        }
-
-        setupCaseModel(caseModel, caseBase, caseStructureMapping);
+        setupCaseModel(caseModel, caseBase);
     }
 
     /**
      * Erzeugt einen Fall
      * @param caseModel Das Fall-Modell
      * @param caseBase  Die zugehörige Case-Base
-     * @param structure Die Fallstruktur
      * @throws MalformedOntologyException Wenn die Ontologie nicht mit der vorgegebenen Fallstruktur übereinstimmt
      */
-    public CoraCaseModelImpl(OntModel caseModel, CoraCaseBaseImpl caseBase, Properties structure)
+    public CoraCaseModelImpl(OntModel caseModel, CoraCaseBaseImpl caseBase)
             throws MalformedOntologyException  {
 
-        setupCaseModel(caseModel, caseBase, structure);
+        setupCaseModel(caseModel, caseBase);
     }
 
     public OntModel getModel() {
@@ -80,17 +68,16 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
      * Initialisiert den Fall.
      * @param caseModel Das Case-Model
      * @param caseBase Die Fallbasis
-     * @param structure Die Fallstruktur-Konfiguration
      * @throws MalformedOntologyException Wenn die Ontologie nicht mit der vorgegebenen Fallstruktur übereinstimmt
      */
-    private void setupCaseModel(OntModel caseModel, CoraCaseBase caseBase, Properties structure)
+    private void setupCaseModel(OntModel caseModel, CoraCaseBase caseBase)
             throws MalformedOntologyException {
 
         this.caseModel = caseModel;
         this.caseModel.register(this);
 
         factory = new CoraOntologyModelFactory(caseModel, this);
-        createCaseStructure(factory, ((CoraCaseBaseImpl) caseBase).getDomainModel(), caseModel, structure);
+        createCaseStructure(factory, ((CoraCaseBaseImpl) caseBase).getDomainModel(), caseModel);
     }
 
     /**
@@ -98,36 +85,35 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
      * @param factory Die Modell-Factory
      * @param domainModel Die Domain-Ontologie
      * @param caseModel Die Fall-Ontollgie
-     * @param structure Die Fallstruktur
      * @throws MalformedOntologyException Wenn die Ontologie nicht mit der vorgegebenen Fallstruktur übereinstimmt
      */
-    private void createCaseStructure(CoraOntologyModelFactory factory, OntModel domainModel, OntModel caseModel, Properties structure)
+    private void createCaseStructure(CoraOntologyModelFactory factory, OntModel domainModel, OntModel caseModel)
             throws MalformedOntologyException {
         String domainNS = domainModel.getNsPrefixURI("");
         String localNS = caseModel.getNsPrefixURI("");
 
         caseRoot = getOrCreateIndividual(
                 factory,
-                localNS + structure.getProperty("rootIndv", "I_Case"),
-                domainNS + structure.getProperty("rootClass", "Case"),
+                localNS + prefs.get("rootIndv", "I_Case"),
+                domainNS + prefs.get("rootClass", "Case"),
                 caseModel);
 
         caseDescription = getOrCreateIndividual(
                 factory,
-                localNS + structure.getProperty("descriptionIndv", "I_CaseDescription"),
-                domainNS + structure.getProperty("descriptionClass", "CaseDescription"),
+                localNS + prefs.get("descriptionIndv", "I_CaseDescription"),
+                domainNS + prefs.get("descriptionClass", "CaseDescription"),
                 caseModel);
 
         caseSolution = getOrCreateIndividual(
                 factory,
-                localNS + structure.getProperty("solutionIndv", "I_CaseSolution"),
-                domainNS + structure.getProperty("solutionClass", "CaseSolution"),
+                localNS + prefs.get("solutionIndv", "I_CaseSolution"),
+                domainNS + prefs.get("solutionClass", "CaseSolution"),
                 caseModel);
 
         caseJustification = getOrCreateIndividual(
                 factory,
-                localNS + structure.getProperty("justificationIndv", "I_CaseJustification"),
-                domainNS + structure.getProperty("justificationClass", "CaseJustification"),
+                localNS + prefs.get("justificationIndv", "I_CaseJustification"),
+                domainNS + prefs.get("justificationClass", "CaseJustification"),
                 caseModel);
 
         //TODO: Create properties
@@ -135,19 +121,19 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
                 factory,
                 caseRoot,
                 caseDescription,
-                domainNS + structure.getProperty("hasDescription", "hasCaseDescription"));
+                domainNS + prefs.get("hasDescription", "hasCaseDescription"));
 
         checkOrCreateProperty(
                 factory,
                 caseRoot,
                 caseSolution,
-                domainNS + structure.getProperty("hasSolution", "hasCaseSolution"));
+                domainNS + prefs.get("hasSolution", "hasCaseSolution"));
 
         checkOrCreateProperty(
                 factory,
                 caseRoot,
                 caseJustification,
-                domainNS + structure.getProperty("hasJustification", "hasCaseJustification"));
+                domainNS + prefs.get("hasJustification", "hasCaseJustification"));
     }
 
     /**

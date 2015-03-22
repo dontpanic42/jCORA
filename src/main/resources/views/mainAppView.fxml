@@ -17,36 +17,15 @@
               <menus>
                 <Menu mnemonicParsing="false" text="%ui.menu.file">
                   <items>
-                        <MenuItem mnemonicParsing="false" onAction="#showSPARQLEditor" text="%ui.cbquery.menu_entry">
-                           <graphic>
-                              <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/sparql-query.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#showSPARQLEditor" text="%ui.menu.file_sparql" />
+                        <MenuItem mnemonicParsing="false" onAction="#onShowSettings" text="%ui.menu.file_settings" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="%ui.menu.file_exit">
-                           <graphic>
-                              <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/quit.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
+                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="%ui.menu.file_exit" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="%ui.menu.cbr">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#onNewQuery" text="%ui.menu.cbr_start_cycle">
-                           <graphic>
-                              <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/cbr.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
+                      <MenuItem mnemonicParsing="false" onAction="#onNewQuery" text="%ui.menu.cbr_start_cycle" />
                     </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="%ui.menu.help">

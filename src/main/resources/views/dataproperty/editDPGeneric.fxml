@@ -21,20 +21,20 @@
             <RowConstraints vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Instanz" />
+            <Label text="%ui.dataprop.instance_name" />
             <Label fx:id="lblInstanceName" text="Instanz Name" GridPane.columnIndex="1" />
-            <Label text="Datentyp" GridPane.rowIndex="2" />
+            <Label text="%ui.dataprop.datatype_name" GridPane.rowIndex="2" />
             <Label fx:id="lblDatatypeName" text="Datentyp Name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label text="Wert" GridPane.rowIndex="3" />
-            <TextField fx:id="txtValue" promptText="Wert..." GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="%ui.dataprop.value" GridPane.rowIndex="3" />
+            <TextField fx:id="txtValue" promptText="%ui.dataprop.value_placeholder" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Separator GridPane.columnSpan="2" GridPane.rowIndex="4" />
             <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnSpan="2" GridPane.rowIndex="5">
                <children>
-                  <Button cancelButton="true" mnemonicParsing="false" onAction="#onCancel" text="Abbrechen" />
-                  <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onSave" text="Übernehmen" />
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#onCancel" text="%ui.dataprop.cancel" />
+                  <Button fx:id="btnSave" defaultButton="true" mnemonicParsing="false" onAction="#onSave" text="%ui.dataprop.save" />
                </children>
             </HBox>
-            <Label text="Attribut" GridPane.rowIndex="1" />
+            <Label text="%ui.dataprop.attribut_name" GridPane.rowIndex="1" />
             <ComboBox fx:id="comboProperty" maxWidth="1.7976931348623157E308" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
          <padding>

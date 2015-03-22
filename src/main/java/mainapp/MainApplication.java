@@ -2,6 +2,7 @@ package mainapp;
 
 import controllers.MainAppViewController;
 import controllers.commons.ThrowableErrorViewController;
+import controllers.settings.SettingsViewController;
 import javafx.application.Application;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
@@ -13,6 +14,7 @@ import javafx.stage.Stage;
 import models.Language;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseBaseImpl;
+import view.Commons;
 import view.viewbuilder.ViewBuilder;
 
 import java.io.*;
@@ -20,6 +22,7 @@ import java.net.URLDecoder;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 /**
  * Created by daniel on 24.08.14.
@@ -30,9 +33,10 @@ public class MainApplication extends Application {
     public static final String VERSION_STRING = "v1.0";
 
     private Language currentLanguage = Language.GERMAN;
-    private static final Language DEFAULT_LANGUAGE = Language.ENGLISH;
+    public static final Language DEFAULT_LANGUAGE = Language.ENGLISH;
 
     private static final String MAINAPP_VIEW_FILE = "views/mainAppView.fxml";
+    private final Preferences prefs = Preferences.userNodeForPackage(MainApplication.class);
 
     private static MainApplication instance;
     public static MainApplication getInstance() {
@@ -70,10 +74,19 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        System.out.println("Java version: " + System.getProperty("java.version"));
+
         setLanguage();
 
         //Singleton-Instanz
         instance = this;
+
+        // Wenn die Anwendung zum ersten mal gestartet wird (oder ein Update eingespielt wurde), zeige den
+        // Einstellungsdialog an. (Benutze <code>while</code> damit der user nicht einfach "Abbrechen" klickt...)
+        while(!prefs.getBoolean("AppIsConfigured" + VERSION_STRING, false)) {
+            SettingsViewController.showSettings(true, false);
+        }
+
         //Hauptfenster zugänglich machen
         mainStage = stage;
         //Wenn das Hauptfenster geschlossen wird, schließe die Anwendung
@@ -96,6 +109,14 @@ public class MainApplication extends Application {
      * <code>DEFAULT_LANGUAGE</code> als aktuelle Anwendungssprache.
      */
     private void setLanguage() {
+        // Wenn vom nutzer über die Einstellungen eine Sprache vorgegeben wurde, nutze diese
+        if(prefs.get("language", null) != null) {
+            Language userLang = Language.getLanguageByTag(prefs.get("language", null));
+            currentLanguage = userLang;
+            return;
+        }
+
+        // Wenn keine Sprache vorgegeben wurde, benutze die Systemsprache (Falls möglich)
         final String lang = Locale.getDefault().getLanguage();
         Language l = Language.getLanguageByTag(lang);
         if(l == null) {
@@ -135,7 +156,7 @@ public class MainApplication extends Application {
 
     /**
      * Gibt den Pfad als String zurück, in dem sich die aktuelle *.jar Datei befindet.
-     * Gibt null zurück, wenn nicht als *.jar ausgeführt oder anderweitig nicht verfügbar.
+     * Gibt das Nutzerverzeichnis ("user.home") zurück, wenn nicht als *.jar ausgeführt oder anderweitig nicht verfügbar.
      * @return Pfad als String MIT folgendem "/"
      */
     public static String getApplicationPath() {
@@ -144,12 +165,17 @@ public class MainApplication extends Application {
             String path = MainApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath();
             basePath = URLDecoder.decode(path, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            ThrowableErrorViewController.showError(e, false);
+            Commons.showFatalException(e);
             return null;
         }
 
         if(!(new File(basePath).exists())) {
-            return null;
+            String homeDir = System.getProperty("user.home");
+            if(homeDir.endsWith("/") || homeDir.endsWith("\\")) {
+                homeDir = homeDir + File.separator;
+            }
+
+            return homeDir;
         } else {
             basePath = new File(basePath).getParent();
             return basePath + File.separator;
@@ -175,7 +201,7 @@ public class MainApplication extends Application {
             if(newState == Worker.State.SUCCEEDED) {
                 caseBase.setValue(initCaseBaseTask.getValue());
             } else if(newState == Worker.State.FAILED) {
-                ThrowableErrorViewController.showError(initCaseBaseTask.getException(), false);
+                Commons.showFatalException(initCaseBaseTask.getException());
             }
         });
 
