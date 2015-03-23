@@ -39,6 +39,7 @@ public class GraphViewComponent extends JPanel {
     private SimpleObjectProperty<EventHandler<CreateRelationEvent>> onCreateRelation = new SimpleObjectProperty<>();
     private SimpleObjectProperty<EventHandler<DeleteInstanceEvent>> onDeleteInstance = new SimpleObjectProperty<>();
     private SimpleObjectProperty<EventHandler<DeleteRelationEvent>> onDeleteRelation = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<EventHandler<DeleteRelationRecursiveEvent>> onDeleteRelationRecursive = new SimpleObjectProperty<>();
 
     private InstanceGraph scene;
     private Map<CoraInstanceModel, NodeModel> nodes = new HashMap<CoraInstanceModel, NodeModel>();
@@ -82,7 +83,22 @@ public class GraphViewComponent extends JPanel {
                         EdgeWidget w = (EdgeWidget) edgeWidget;
                         EdgeModel model = w.getModel();
 
-                        onDeleteRelation.getValue().handle(new DeleteRelationEvent(self, model.getSource().getModel(), model.getProperty(), model.getTarget().getModel()));
+                        onDeleteRelation.getValue().handle(new DeleteRelationEvent(self,
+                                model.getSource().getModel(), model.getProperty(), model.getTarget().getModel()));
+                    });
+                }
+            }
+
+
+            @Override
+            public void onDeleteEdgeRecursive(ConnectionWidget edgeWidget) {
+                if(onDeleteRelationRecursive.getValue() != null) {
+                    Platform.runLater(() -> {
+                        EdgeWidget w = (EdgeWidget) edgeWidget;
+                        EdgeModel model = w.getModel();
+
+                        onDeleteRelationRecursive.getValue().handle(new DeleteRelationRecursiveEvent(self,
+                                model.getSource().getModel(), model.getProperty(), model.getTarget().getModel()));
                     });
                 }
             }
@@ -267,7 +283,9 @@ public class GraphViewComponent extends JPanel {
     }
 
     public void removeRelation(CoraInstanceModel subject, CoraObjectPropertyModel property, CoraInstanceModel object) {
-        Collection<EdgeModel> models = scene.getEdges();
+        // Kopiere die Liste, damit Elemente entfernt werden können.
+        Collection<EdgeModel> models = new ArrayList<>(scene.getEdges());
+
         for(EdgeModel m : models) {
             if(m.getSource().getModel().equals(subject) &&
                m.getTarget().getModel().equals(object) &&
@@ -278,6 +296,9 @@ public class GraphViewComponent extends JPanel {
         }
 
         System.out.println("Edge model removing...");
+
+
+        scene.getView().repaint();
     }
 
     /**
@@ -427,6 +448,18 @@ public class GraphViewComponent extends JPanel {
         this.onDeleteRelation.set(onDeleteRelation);
     }
 
+    public EventHandler<DeleteRelationRecursiveEvent> getOnDeleteRelationRecursive() {
+        return onDeleteRelationRecursive.get();
+    }
+
+    public SimpleObjectProperty<EventHandler<DeleteRelationRecursiveEvent>> onDeleteRelationRecursiveProperty() {
+        return onDeleteRelationRecursive;
+    }
+
+    public void setOnDeleteRelationRecursive(EventHandler<DeleteRelationRecursiveEvent> onDeleteRelationRecursive) {
+        this.onDeleteRelationRecursive.set(onDeleteRelationRecursive);
+    }
+
     /**
      * Event-Klasse, die verwendet wird, wenn der Nutzer eine neue Relation erstellen möchte.
      */
@@ -506,6 +539,46 @@ public class GraphViewComponent extends JPanel {
         public DeleteRelationEvent(GraphViewComponent graphView, CoraInstanceModel subject,
                                    CoraObjectPropertyModel predicat,
                                    CoraInstanceModel object) {
+            super(graphView, null);
+            this.subject = subject;
+            this.object = object;
+            this.predicat = predicat;
+        }
+
+        public CoraInstanceModel getSubject() {
+            return subject;
+        }
+
+        public void setSubject(CoraInstanceModel subject) {
+            this.subject = subject;
+        }
+
+        public CoraInstanceModel getObject() {
+            return object;
+        }
+
+        public void setObject(CoraInstanceModel object) {
+            this.object = object;
+        }
+
+        public CoraObjectPropertyModel getPredicat() {
+            return predicat;
+        }
+
+        public void setPredicat(CoraObjectPropertyModel predicat) {
+            this.predicat = predicat;
+        }
+    }
+
+    public class DeleteRelationRecursiveEvent extends ActionEvent {
+
+        private CoraInstanceModel subject;
+        private CoraInstanceModel object;
+        private CoraObjectPropertyModel predicat;
+
+        public DeleteRelationRecursiveEvent(GraphViewComponent graphView, CoraInstanceModel subject,
+                                            CoraObjectPropertyModel predicat,
+                                            CoraInstanceModel object) {
             super(graphView, null);
             this.subject = subject;
             this.object = object;

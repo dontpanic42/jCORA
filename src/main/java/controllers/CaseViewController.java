@@ -107,6 +107,13 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
             });
         });
 
+        graph.setOnDeleteRelationRecursive((GraphViewComponent.DeleteRelationRecursiveEvent ev) -> {
+            // Das Event wird im Swing-Thread ausgelöst...
+            Application.invokeLater(() -> {
+                removeObjectRelationRecursive(ev.getSubject(), ev.getPredicat(), ev.getObject());
+            });
+        });
+
         tblDataProperties.setPlaceholder(new Label(ViewBuilder.getInstance().getText("ui.case_view.label_no_data_properties")));
 
         columnPropertyName.setCellValueFactory(
@@ -176,7 +183,7 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
             if (newValue != null) {
                 String lang = MainApplication.getInstance().getLanguage();
                 searchTextField.setText(newValue.getDisplayName(lang));
-                graph.showInstanceInView(newValue);
+                SwingUtilities.invokeLater(() -> graph.showInstanceInView(newValue));
             }
         });
 
@@ -258,12 +265,20 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         this.stage = stage;
     }
 
-    public void removeObjectRelation(CoraInstanceModel subject, CoraObjectPropertyModel predicat, CoraInstanceModel object) {
+    public void removeObjectRelation(CoraInstanceModel subject,
+                                     CoraObjectPropertyModel predicat,
+                                     CoraInstanceModel object) {
         subject.removeObjectProperty(predicat, object);
     }
 
+    public void removeObjectRelationRecursive(CoraInstanceModel subject,
+                                              CoraObjectPropertyModel predicat,
+                                              CoraInstanceModel object) {
+        subject.removeObjectPropertiesRecursive(predicat, object);
+    }
+
     public void showInstance(CoraInstanceModel model) {
-        graph.createGraphFromInstance(model);
+        SwingUtilities.invokeLater(() -> graph.createGraphFromInstance(model));
         if(model.getFactory().getCase() != null) {
             model.getFactory().getCase().addOnChangeHandler(this);
         }
@@ -417,9 +432,7 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         CoraInstanceModel object = assertion.getObject();
         CoraObjectPropertyModel property = assertion.getPredicat();
 
-        Platform.runLater(() -> {
-            graph.removeRelation(subject, property, object);
-        });
+        SwingUtilities.invokeLater(() -> graph.removeRelation(subject, property, object));
     }
 
     @SuppressWarnings("unused")

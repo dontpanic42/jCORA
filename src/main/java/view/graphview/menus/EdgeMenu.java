@@ -18,10 +18,13 @@ import java.awt.event.ActionListener;
 public class EdgeMenu implements PopupMenuProvider, ActionListener {
     public interface EdgeActionHandler {
         public void onDeleteEdge(ConnectionWidget edgeWidget);
+
+        public void onDeleteEdgeRecursive(ConnectionWidget edgeWidget);
     }
 
 
     public static final String COMMAND_REMOVE_EDGE = "removeEdge";
+    public static final String COMMAN_REMOVE_EDGE_RECURSIVE = "removeEdgeRecursive";
 
     private JPopupMenu menu;
     private Point point;
@@ -34,11 +37,18 @@ public class EdgeMenu implements PopupMenuProvider, ActionListener {
         this.scene = scene;
 
         this.menu = new JPopupMenu();
-        JMenuItem removeEdgeItem = new JMenuItem(ViewBuilder.getInstance().getText("ui.edge_menu.item_remove_relation"));
+        final String removeEdgeText = ViewBuilder.getInstance().getText("ui.edge_menu.item_remove_relation");
+        JMenuItem removeEdgeItem = new JMenuItem(removeEdgeText);
         removeEdgeItem.setActionCommand(COMMAND_REMOVE_EDGE);
         removeEdgeItem.addActionListener(this);
 
+        final String removeEdgeRecursiveText = ViewBuilder.getInstance().getText("ui.edge_menu.item_remove_relation_recursive");
+        JMenuItem removeEdgeItemRecursive = new JMenuItem(removeEdgeRecursiveText);
+        removeEdgeItemRecursive.setActionCommand(COMMAN_REMOVE_EDGE_RECURSIVE);
+        removeEdgeItemRecursive.addActionListener(this);
+
         this.menu.add(removeEdgeItem);
+        this.menu.add(removeEdgeItemRecursive);
     }
 
     @Override
@@ -51,6 +61,12 @@ public class EdgeMenu implements PopupMenuProvider, ActionListener {
         if(e.getActionCommand().equals(COMMAND_REMOVE_EDGE)) {
             System.out.println("Calling event handler");
             actionHandler.onDeleteEdge((ConnectionWidget) this.widget);
+            return;
+        }
+
+        if(e.getActionCommand().equals(COMMAN_REMOVE_EDGE_RECURSIVE)) {
+            System.out.println("Calling event handler");
+            actionHandler.onDeleteEdgeRecursive((ConnectionWidget) this.widget);
             return;
         }
     }

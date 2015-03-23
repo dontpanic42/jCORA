@@ -184,12 +184,52 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
     }
 
     public void removeObjectProperty(CoraObjectPropertyModel property, CoraInstanceModel object) {
+        //getBaseObject().removeProperty(property.getBaseObject(), object.getBaseObject());
+
         Model m = getModel();
         List<Statement> statements = m.listStatements(getBaseObject(), property.getBaseObject(), object.getBaseObject()).toList();
         for(Statement s : statements) {
             ObjectPropertyAssertion assertion = getFactory().wrapObjectPropertyStatement(s);
+            System.out.println("Found assertion: " + s);
             this.removePropertyAssertion(assertion);
         }
+    }
+
+    /**
+     * Entfernt das Property auf dieser Instanz. Zusätzlich wird das Objekt und alle nachfolgenden
+     * Instanzen und Relationen rekursiv gelöscht (!)
+     *
+     * ACHTUNG: Das "removeRelation"-Event wird _nur_ für das originäre Property aufgerufen!
+     *
+     * @param property
+     * @param object
+     */
+    public void removeObjectPropertiesRecursive(CoraObjectPropertyModel property, CoraInstanceModel object) {
+        removeObjectProperty(property, object);
+        removeInstancesRecursive(object);
+    }
+
+    /**
+     * Löscht eine Instanz <code>instance</code> und all ihre Properties rekursiv.
+     * @param instance
+     */
+    private void removeInstancesRecursive(CoraInstanceModel instance) {
+        // Liste alle ObjectProperties
+        Map<CoraObjectPropertyModel, Set<CoraInstanceModel>> props = instance.getObjectProperties();
+
+        // Entferne alle ObjectProperties dieser Instanz
+        instance.getBaseObject().removeProperties();
+
+        // Entferne alle dieser Instanz nachgelagerten instanzen
+        for(Map.Entry<CoraObjectPropertyModel, Set<CoraInstanceModel>> me : props.entrySet()) {
+            for(CoraInstanceModel other : me.getValue()) {
+                System.out.println("Lösche Property: " + instance + " " + me.getKey() + " " + other);
+                removeInstancesRecursive(other);
+            }
+        }
+
+        // Lösche diese Instanz
+        instance.getBaseObject().remove();
     }
 
     /**
