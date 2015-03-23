@@ -122,10 +122,10 @@ public class PartialCaseCopier {
     /**
      * Kopiert alle DataProperties einer Instanz.
      * Annhame: Alle DataProperties sind in der Domain-Ontologie definiert, müssen also nicht kopiert werden
-     * @param newCase
-     * @param oldCase
-     * @param instanceToCopy
-     * @param copiedInstance
+     * @param newCase der neue Fall, in den Kopiert werden soll
+     * @param oldCase der alte Fall, aus dem Kopiert werden soll
+     * @param instanceToCopy Die Instanz, deren Properties kopiert werden sollen
+     * @param copiedInstance Die Instanz, der die Properties hinzugefügt werden sollen
      */
     private static void copyDataProperties(CoraCaseModel newCase,
                                            CoraCaseModel oldCase,
@@ -159,11 +159,11 @@ public class PartialCaseCopier {
      * Kopiert die ObjectProperties einer Instanz rekursiv, d.h. die Zielinstanzen (Objekte) werden ebenfalls
      * kopiert.
      * Annhame: Alle ObjectProperties sind in der Domain-Ontologie definiert, müssen also nicht kopiert werden
-     * @param newCase
-     * @param oldCase
-     * @param instanceToCopy
-     * @param copiedInstance
-     * @param visited
+     * @param newCase Neuer Fall, dem die ObjectProperties hinzugefügt werden sollen
+     * @param oldCase Alter Fall, aus dem die ObjectProperties kopiert werden sollen
+     * @param instanceToCopy Die Instanz, deren Properties kopiert werden sollen
+     * @param copiedInstance Die Instanz, der die Properties hinzugefügt werden sollen
+     * @param visited Liste, die bereits kopierte Properties enthält (gegen Endlosschleifen)
      */
     private static void copyObjectProperties(CoraCaseModel newCase,
                                              CoraCaseModel oldCase,

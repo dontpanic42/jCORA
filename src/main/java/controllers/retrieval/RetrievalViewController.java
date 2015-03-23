@@ -4,7 +4,6 @@ import com.sun.glass.ui.Application;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -12,8 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseModel;
@@ -24,7 +21,6 @@ import services.retrieval.RetrievalProgressHandler;
 import view.Commons;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -56,7 +52,7 @@ public class RetrievalViewController implements RetrievalProgressHandler {
     private NumberAxis yAxis;
     private NumberAxis xAxis;
     private XYChart.Series series = new XYChart.Series<Number, Number>();
-    private ConcurrentLinkedQueue<Number> dataQueue = new ConcurrentLinkedQueue<Number>();
+    private ConcurrentLinkedQueue<Number> dataQueue = new ConcurrentLinkedQueue<>();
     private int xSeriesCounter = 0;
 
     @FXML

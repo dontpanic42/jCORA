@@ -1,7 +1,6 @@
 package services.rules.jenarules.builtins.util;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import mainapp.MainApplication;
@@ -31,7 +30,6 @@ public class CaseBaseUtils {
         d.begin(ReadWrite.READ);
         QueryExecution qe = QueryExecutionFactory.create(query, d);
 
-        int result = 0;
         ResultSet resultSet = qe.execSelect();
         while(resultSet.hasNext()) {
             RDFNode solution = resultSet.next().get("no");

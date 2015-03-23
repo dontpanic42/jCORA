@@ -1,12 +1,13 @@
 package controllers.dataproperty.impl;
 
 import controllers.dataproperty.DataPropertyEditor;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import models.datatypes.TypedValue;
@@ -37,22 +38,17 @@ public class GenericDataPropertyEditor implements DataPropertyEditor {
 
     private Stage stage;
     private CoraInstanceModel instance;
-    private CoraDataPropertyModel property;
-    private TypedValue<?> typedValue;
     private Class<? extends TypedValue> dataType;
 
+    @SuppressWarnings("unused")
     @FXML
     private void initialize() {
-        comboProperty.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<CoraDataPropertyModel>() {
-            @Override
-            public void changed(ObservableValue<? extends CoraDataPropertyModel> observableValue,
-                                CoraDataPropertyModel oldValue,
-                                CoraDataPropertyModel newValue) {
-                onChangePropertySelection(oldValue, newValue);
-            }
+        comboProperty.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            onChangePropertySelection(oldValue, newValue);
         });
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onSave() {
         String strValue = txtValue.getText();
@@ -64,10 +60,7 @@ public class GenericDataPropertyEditor implements DataPropertyEditor {
         TypedValue typedValue;
         try {
             typedValue = dataType.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            return;
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             return;
         }
@@ -106,8 +99,6 @@ public class GenericDataPropertyEditor implements DataPropertyEditor {
         lblInstanceName.setText(instance.toString());
 
         if(property != null) {
-            this.property = property;
-
             lblDatatypeName.setText(dataType.getSimpleName());
 
             ObservableList<CoraDataPropertyModel> dataProperties = FXCollections.observableArrayList();
@@ -124,7 +115,6 @@ public class GenericDataPropertyEditor implements DataPropertyEditor {
 
     @Override
     public void setValue(TypedValue value) {
-        typedValue = value;
         txtValue.setText(value.getAsString());
     }
 

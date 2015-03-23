@@ -80,14 +80,14 @@ public interface CoraCaseModel {
 
     /**
      * Gibt die Instanz zurück, die die Wurzel der Bewertung dieses Falles bildet.
-     * @return
+     * @return Instanz, die die Fallbewertung repräsentiert
      */
     public CoraInstanceModel getCaseJustification();
 
     /**
      * Gibt eine Liste mit allen, im Fall (und der Domain-Ontologie) vorhandenen
      * Object- und DataProperties zurück.
-     * @return
+     * @return Liste mit allen Object- und Dataproperties
      */
     public List<CoraPropertyModel> listAllProperties();
 

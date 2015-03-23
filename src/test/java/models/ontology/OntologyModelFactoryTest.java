@@ -47,7 +47,7 @@ public class OntologyModelFactoryTest {
         assertTrue(cm1.equals(cm2));
         assertTrue(cm1.hashCode() == cm2.hashCode());
 
-        Set<CoraClassModel> set = new HashSet<CoraClassModel>();
+        Set<CoraClassModel> set = new HashSet<>();
         set.add(cm1);
         set.add(cm2);
         assertTrue(set.size() == 1);

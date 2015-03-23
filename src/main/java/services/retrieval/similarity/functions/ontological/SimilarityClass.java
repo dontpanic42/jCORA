@@ -89,10 +89,10 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
 
     /**
      * Gibt ein Set mit den Properties zurück, die sowohl im <code>setA</code> als auch im
-     * <code>setB</code> vorkommen.
-     * @param setA
-     * @param setB
-     * @return
+     * <code>setB</code> vorkommen. (Schnittmenge)
+     * @param setA Das erste Set
+     * @param setB Das zweite Set
+     * @return Set, das alle Properties enthält, die sowhol im ersten _und_ zweiten Set vorhanden sind
      */
     private Set<CoraPropertyModel<?>> getCommonProperties(Set<CoraPropertyModel<?>> setA,
                                                           Set<CoraPropertyModel<?>> setB) {
@@ -102,11 +102,11 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
     }
 
     /**
-     * Gibt ein Set mit allen in <code>setA</code> und <code>setB</code> vorkommenden Properties
-     * zurück, ohne doppelungen.
-     * @param setA
-     * @param setB
-     * @return
+     * Gibt ein Set mit allen in <code>setA</code> oder <code>setB</code> vorkommenden Properties
+     * zurück, ohne doppelungen. (Vereinigungsmenge)
+     * @param setA Das erste Set
+     * @param setB Das zweite Set
+     * @return Set, das alle Properties enthält, die sowhol im ersten _oder_ zweiten Set vorhanden sind
      */
     private Set<CoraPropertyModel<?>> getUniqueProperties(Set<CoraPropertyModel<?>> setA,
                                                           Set<CoraPropertyModel<?>> setB) {
@@ -139,9 +139,9 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
      * <code>max(prof(pfadA, lcs), prof(pfadB, lcs))</code>
      * minimal wird.
      * TODO: Eventuell parameterisieren, so das die minimale/maximale/durchschnittliche Kombination gefunden wird?
-     * @param a
-     * @param b
-     * @return
+     * @param a Die Eine Klasse
+     * @param b Die Andere Klasse
+     * @return minimale Tiefe des LCS
      */
     public int getLCSDepth(CoraClassModel a, CoraClassModel b) {
         //Wenn a und b die gleiche Klasse sind, gib 1 zurück.
@@ -191,7 +191,6 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
      * @param list Liste aller Pfade zu OWL:Thing
      * @param currentPath der aktuell verfolgte Pfad
      * @param currentClass die Klasse, deren Eltern bestimmt werden sollen
-     * @return
      */
     private void getPathsToRootRec(List<Path> list, Path currentPath, CoraClassModel currentClass) {
         //Die aktuelle Klasse hat "Thing" als Elternklasse: Breche ab. (Thing ist als letztes Element
@@ -276,8 +275,8 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
          * Findet den LCS zweier Pfade und gibt die maximale Distanz zum LCS zurück.
          * Die maximale Distanz ist gleich
          * <code>dist = max(prof(lcs, a), prof(lcs, b))</code>
-         * @param other
-         * @return
+         * @param other der andere Pfad
+         * @return Maximale tiefe des LCS
          */
         public int getMaxLCSDepth(Path other) {
             Path bigger, smaller;
@@ -302,7 +301,7 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
 
         /**
          * Erzeuge einen Pfad von einer Liste
-         * @param list
+         * @param list Eine Liste, die alle Klassen Klassen enthält
          */
         public Path(ArrayList<CoraClassModel> list) {
             this.list = list;
@@ -318,7 +317,7 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
 
         /**
          * Fügt diesem Pfad ein Element hinzu
-         * @param classModel
+         * @param classModel Die Klasse, die diesem Pfad hinzugefügt werden soll
          */
         public void add(CoraClassModel classModel) {
             list.add(classModel);
@@ -327,7 +326,7 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
         /**
          * Gibt die Pfadlänge zurück. OWL:Thing wird als implizit vorhandenes Element
          * angenommen, daher ergibt sich die Pfadlänge als (Anzahl der Elemente + 1)
-         * @return
+         * @return Gibt die Länge dieses Pfades (= Anzahl der enthaltenen Klasse) zurück
          */
         public int getPathLength() {
             return list.size() + 1;
@@ -335,7 +334,7 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
 
         /**
          * Gibt den Pfad als Liste zurück (ohne OWL:Thing)
-         * @return
+         * @return Eine Liste, die alle Klassen dieses Pfades enthält
          */
         public List<CoraClassModel> asList() {
             return list;
@@ -343,7 +342,7 @@ public class SimilarityClass extends SimilarityFunction<CoraClassModel> {
 
         /**
          * Gibt den Pfad als String zurück - zum Debuggen.
-         * @return
+         * @return Stringrepräsentation dieses Pfades
          */
         @Override
         public String toString() {

@@ -16,7 +16,7 @@ public abstract class Assertion<T, K, V> {
 
     /**
      * Konstruktor: Erzeugt eine neue <code>Assertion</code> von einem Jena-Objekt
-     * @param statement
+     * @param statement Das Jena-Statement
      */
     public Assertion(Statement statement) {
         this.statement = statement;
@@ -71,9 +71,8 @@ public abstract class Assertion<T, K, V> {
 
         Assertion that = (Assertion) o;
 
-        if (statement != null ? !statement.equals(that.statement) : that.statement != null) return false;
+        return !(statement != null ? !statement.equals(that.statement) : that.statement != null);
 
-        return true;
     }
 
     @Override

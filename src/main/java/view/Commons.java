@@ -23,7 +23,9 @@ public class Commons {
         return createWaitScreen(parent, null);
     }
 
-    public static WaitViewController createWaitScreen(Stage parent, String text) throws IOException {
+    public static WaitViewController createWaitScreen(Stage parent,
+                                                      @SuppressWarnings("SameParameterValue") String text)
+            throws IOException {
         FXMLLoader loader = ViewBuilder.getInstance().createLoader(WAIT_VIEW_FILE);
         AnchorPane pane = loader.load();
 

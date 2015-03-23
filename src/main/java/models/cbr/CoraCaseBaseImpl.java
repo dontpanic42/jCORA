@@ -2,25 +2,21 @@ package models.cbr;
 
 import com.hp.hpl.jena.ontology.OntDocumentManager;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.Reasoner;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.util.FileManager;
-import controllers.commons.ThrowableErrorViewController;
 import mainapp.MainApplication;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.mindswap.pellet.jena.PelletReasonerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.naming.ConfigurationException;
 import java.io.*;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 import java.util.prefs.Preferences;
 
 /**
@@ -44,7 +40,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
     //private Properties caseBaseProperties;
 
-    private List<CaseBaseChangeHandler> caseBaseChangeHandlers = new ArrayList<CaseBaseChangeHandler>();
+    private List<CaseBaseChangeHandler> caseBaseChangeHandlers = new ArrayList<>();
 
     /**
      * Erzeugt ein neues <code>CoraCaseBaseImpl</code>-Objekt mit der Standard-Konfiguration
@@ -71,17 +67,17 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         setupCaseBase();
     }
 
-    /**
-     * Erzeugt ein neues <code>CoraCaseBaseImpl</code>-Objekt
-     * @param properties Die Case-Base Konfiguration
-     * @throws ConfigurationException Wenn die Konfiguration fehlerhaft ist
-     * @throws FileNotFoundException Wenn die Domain-Ontologie nicht gefunden wird
-     * @deprecated
-     */
-    public CoraCaseBaseImpl(Properties properties) throws ConfigurationException, FileNotFoundException {
-        //setupCaseBase(properties);
-        setupCaseBase();
-    }
+//    /**
+//     * Erzeugt ein neues <code>CoraCaseBaseImpl</code>-Objekt
+//     * @param properties Die Case-Base Konfiguration
+//     * @throws ConfigurationException Wenn die Konfiguration fehlerhaft ist
+//     * @throws FileNotFoundException Wenn die Domain-Ontologie nicht gefunden wird
+//     * @deprecated
+//     */
+//    public CoraCaseBaseImpl(Properties properties) throws ConfigurationException, FileNotFoundException {
+//        //setupCaseBase(properties);
+//        setupCaseBase();
+//    }
 
     /**
      * Initialisiert die Case-Base
@@ -106,7 +102,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      * Fall mit diesem Namen erzeugt.
      * @param name Der Name (id) der Ontologie
      * @return Die Ontologie als Cbr-Fall
-     * @throws Throwable
+     * @throws Throwable Exceptions, die beim Laden des Falls auftreten
      */
     @Override
     public CoraCaseModel loadCase(String name) throws Exception {
@@ -128,8 +124,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         OntModel model = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, m);
         model.addSubModel(domainModel);
 
-        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(name, model, this);
-        return caseModel;
+        return new CoraCaseModelImpl(name, model, this);
     }
 
     @Override
@@ -203,7 +198,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
      * alle eigenschaften eines normalen Falls aufweist. Soll zur erstellung der
      * Falleingabe dienen. Ein so erzeugte Fall ist nicht in der Fallbasis vorhanden.
      * @return Ein nicht in der Datenbank gesicherten Fall
-     * @throws Throwable
+     * @throws Throwable Exceptions, die beim Erstellen des Falls auftreten
      */
     @Override
     public CoraCaseModel createTemporaryCase() throws Exception {
@@ -218,14 +213,13 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         model.setNsPrefix("", CASE_NS);
         model.addSubModel(domainModel);
 
-        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(null, model, this);
-        return caseModel;
+        return new CoraCaseModelImpl(null, model, this);
     }
 
     /**
      * Erzeugt einen Fall auf Grundlage eines Modells, der nicht in der Datenbank gesichert ist.
      * @return Ein nicht in der Datenbank gesicherten Fall
-     * @throws Throwable
+     * @throws Throwable Exceptions, die beim Erstellen des Falls auftreten
      */
     public CoraCaseModel createTemporaryCase(Model m) throws Exception {
         m.setNsPrefix("", CASE_NS);
@@ -238,8 +232,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         model.setNsPrefix("", CASE_NS);
         model.addSubModel(domainModel);
 
-        CoraCaseModelImpl caseModel = new CoraCaseModelImpl(null, model, this);
-        return caseModel;
+        return new CoraCaseModelImpl(null, model, this);
     }
 
     /**
@@ -307,7 +300,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
     /**
      * Läd die in der Konfiguration (<code>casBaseProperties</code>) hinterlegte Domain-Ontologie
-     * @return
+     * @return Die Domänenontologie als Jena-Model
      * @throws ConfigurationException
      * @throws FileNotFoundException
      */
@@ -345,7 +338,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 //        if(caseBaseProperties.getProperty("domainNsOverride", null) != null) {
 //            m.setNsPrefix("", caseBaseProperties.getProperty("domainNsOverride"));
 //        }
-        if(prefs.get("domainNsOverride", "") != "") {
+        if(!prefs.get("domainNsOverride", "").equals("")) {
             m.setNsPrefix("", prefs.get("domainNsOverride", ""));
         }
 
@@ -359,12 +352,10 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
     /**
      * (Für Tests: Gibt die Domain-Ontologie zurück.)
-     * @return
+     * @return Die Domänenontologie als Jena OntModel
      */
     public OntModel getDomainModel() {
-
-        OntModel m = ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, domainModel);
-        return m;
+        return ModelFactory.createOntologyModel(PelletReasonerFactory.THE_SPEC, domainModel);
     }
 
     /**
@@ -408,8 +399,6 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
             CoraCaseModelImpl cimp = (CoraCaseModelImpl) caseModel;
             cimp.getModel().write(os, "RDF/XML-ABBREV", CASE_NS);
             os.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -417,8 +406,6 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
     @Override
     public void saveAsNewCase(CoraCaseModel caseModel, String name) {
-        String id = name;
-
         if(!(caseModel instanceof CoraCaseModelImpl)) {
             System.err.println("Nicht instanceof CoraCaseModeImpl");
             return;
@@ -430,13 +417,13 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         dataset.begin(ReadWrite.WRITE);
 
         //dataset.replaceNamedModel(id, toSave);
-        dataset.addNamedModel(id, toSave);
+        dataset.addNamedModel(name, toSave);
 
         dataset.commit();
         dataset.end();
 
         for(CaseBaseChangeHandler h : caseBaseChangeHandlers) {
-            h.onAddCase(id);
+            h.onAddCase(name);
         }
     }
 
@@ -491,8 +478,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
         new File(tdbPath).mkdirs();
 
-        Dataset dataset = TDBFactory.createDataset(tdbPath);
-        return dataset;
+        return TDBFactory.createDataset(tdbPath);
     }
 
     @Override
@@ -549,7 +535,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
 
         /**
          * Gibt zurück, ob ein weiterer Fall vorhanden ist
-         * @return
+         * @return <code>true</code>, wenn ein weiterer Fall vorhanden ist
          */
         @Override
         public boolean hasNext() {
@@ -559,7 +545,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
         /**
          * Gibt den nächsten Fall zurück, oder <code>null</code> wenn kein weiterer
          * Fall gefunden wird (oder ein Fehler aufgetreten ist).
-         * @return
+         * @return Der nächste gefundene Fall
          */
         @Override
         public CoraCaseModel next() {

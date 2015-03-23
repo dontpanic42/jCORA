@@ -50,10 +50,6 @@ public class SimilarityInteger extends NumericSimilarityFunction<IntegerValue> {
         final BigDecimal aVal = BigDecimal.valueOf(a.getValue());
         final BigDecimal bVal = BigDecimal.valueOf(b.getValue());
 
-        float sim = getMetricSimilarity(aVal, bVal, maxVal, minVal);
-
-//        System.out.println("Sim " + property + " (" + aVal + ", " + bVal + "): " + sim);
-
-        return sim;
+        return getMetricSimilarity(aVal, bVal, maxVal, minVal);
     }
 }

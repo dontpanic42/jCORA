@@ -2,8 +2,6 @@ package controllers;
 
 import controllers.commons.TranslateStringViewController;
 import exceptions.ResourceAlreadyExistsException;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,7 +18,6 @@ import javafx.util.Callback;
 import mainapp.MainApplication;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
-import view.viewbuilder.StageInject;
 import view.viewbuilder.ViewBuilder;
 
 import java.io.IOException;
@@ -97,18 +94,13 @@ public class AddInstanceViewController {
     @FXML
     public void initialize() {
         classTree.setShowRoot(false);
-        classTree.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<CoraClassModel>>() {
-            @Override
-            public void changed(ObservableValue<? extends TreeItem<CoraClassModel>> observableValue,
-                                TreeItem<CoraClassModel> oldValue,
-                                TreeItem<CoraClassModel> newValue) {
-                CoraClassModel mOld = (oldValue != null)?
-                        newValue.valueProperty().get() : null;
-                CoraClassModel mNew = (newValue != null)?
-                        newValue.valueProperty().get() : null;
+        classTree.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            CoraClassModel mOld = (oldValue != null)?
+                    newValue.valueProperty().get() : null;
+            CoraClassModel mNew = (newValue != null)?
+                    newValue.valueProperty().get() : null;
 
-                onTreeSelectionChange(mOld, mNew);
-            }
+            onTreeSelectionChange(mNew);
         });
         classTree.setCellFactory(new Callback<TreeView<CoraClassModel>, TreeCell<CoraClassModel>>() {
             @Override
@@ -131,7 +123,7 @@ public class AddInstanceViewController {
 
     }
 
-    private void onTreeSelectionChange(CoraClassModel oldValue, CoraClassModel newValue) {
+    private void onTreeSelectionChange(CoraClassModel newValue) {
         if(newValue != null) {
             txtClassName.setText(newValue.toString());
         } else {
@@ -181,7 +173,6 @@ public class AddInstanceViewController {
             stage.close();
         } catch (ResourceAlreadyExistsException e) {
             System.err.println("Instanz existiert bereits");
-            return;
         }
 
 

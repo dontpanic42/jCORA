@@ -1,15 +1,11 @@
 package mainapp;
 
 import controllers.MainAppViewController;
-import controllers.commons.ThrowableErrorViewController;
 import controllers.settings.SettingsViewController;
 import javafx.application.Application;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.Language;
 import models.cbr.CoraCaseBase;
@@ -160,7 +156,7 @@ public class MainApplication extends Application {
      * @return Pfad als String MIT folgendem "/"
      */
     public static String getApplicationPath() {
-        String basePath = "";
+        String basePath;
         try {
             String path = MainApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath();
             basePath = URLDecoder.decode(path, "UTF-8");

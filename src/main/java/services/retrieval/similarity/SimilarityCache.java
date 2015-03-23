@@ -2,8 +2,8 @@ package services.retrieval.similarity;
 
 import models.util.Pair;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by daniel on 31.08.14.

@@ -35,7 +35,7 @@ public class LongValue extends TypedValue<Long> {
         try {
             setValue(Long.parseLong(val));
         } catch (NumberFormatException e) {
-
+            e.printStackTrace();
         }
     }
 

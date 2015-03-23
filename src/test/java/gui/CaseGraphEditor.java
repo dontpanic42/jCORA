@@ -45,7 +45,7 @@ public class CaseGraphEditor {
 
     public void testGraphEditor() {
         JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         GraphViewComponent igc = new GraphViewComponent();
         frame.getContentPane().add(igc);

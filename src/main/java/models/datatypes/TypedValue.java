@@ -40,7 +40,6 @@ public abstract class TypedValue<T extends Comparable> implements Comparable {
         if(o instanceof BaseDatatype.TypedValue) {
             BaseDatatype.TypedValue jenaTV = (BaseDatatype.TypedValue) o;
             setFromString(jenaTV.lexicalValue);
-            return;
         } else if(isValidString(literal.getLexicalForm())) {
             setFromString(literal.getLexicalForm());
         } else {
@@ -74,8 +73,8 @@ public abstract class TypedValue<T extends Comparable> implements Comparable {
 
     /**
      * Gibt den Wert als Literal zurück
-     * @param model Der Wert als Literal
-     * @return
+     * @param model Das Modell
+     * @return Dieser Wert als Literal des Modells <code>model</code>
      */
     public abstract Literal getLiteral(OntModel model);
 

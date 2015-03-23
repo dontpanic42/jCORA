@@ -2,21 +2,14 @@ package controllers.retrieval;
 
 import controllers.adaption.AdaptionStackController;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ProgressBarTableCell;
-import javafx.stage.Stage;
-import javafx.util.Callback;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseModel;
 import models.cbr.CoraQueryModel;
@@ -26,10 +19,7 @@ import services.adaption.rules.AdaptionRule;
 import view.Commons;
 import view.viewbuilder.ViewBuilder;
 
-import javax.swing.plaf.nimbus.State;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -80,57 +70,40 @@ public class RetrievalResultsViewController {
 
         resultsItems = FXCollections.observableArrayList();
 
-        columnCaseId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CoraRetrievalResult, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<CoraRetrievalResult, String> c) {
-                return new ReadOnlyObjectWrapper<>(c.getValue().getCaseId());
-            }
+        columnCaseId.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getCaseId()));
+
+        columnSimilarity.setCellValueFactory(c -> {
+            float val = c.getValue().getSimilarity() * 100;
+            Integer intVal = (int) val;
+            return new ReadOnlyObjectWrapper<>(intVal.toString() + "%");
         });
 
-        columnSimilarity.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CoraRetrievalResult, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<CoraRetrievalResult, String> c) {
-                float val = c.getValue().getSimilarity() * 100;
-                Integer intVal = (int) val;
-                return new ReadOnlyObjectWrapper<>(intVal.toString() + "%");
-            }
-        });
-
-        columnSimilarityBar.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CoraRetrievalResult, Double>, ObservableValue<Double>>() {
-            @Override
-            public ObservableValue<Double> call(TableColumn.CellDataFeatures<CoraRetrievalResult, Double> c) {
-                Double d = (double) c.getValue().getSimilarity();
-                return new ReadOnlyObjectWrapper<>(d);
-            }
+        columnSimilarityBar.setCellValueFactory(c -> {
+            Double d = (double) c.getValue().getSimilarity();
+            return new ReadOnlyObjectWrapper<>(d);
         });
 
         columnSimilarityBar.setCellFactory(ProgressBarTableCell.forTableColumn());
 
-        columnAdapt.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CoraRetrievalResult, Button>, ObservableValue<Button>>() {
-            @Override
-            public ObservableValue<Button> call(TableColumn.CellDataFeatures<CoraRetrievalResult, Button> cDataFeatures) {
-                Button b = new Button(txtAdapt);
+        columnAdapt.setCellValueFactory(cDataFeatures -> {
+            Button b = new Button(txtAdapt);
 
-                String selectedCaseId = cDataFeatures.getValue().getCaseId();
+            String selectedCaseId = cDataFeatures.getValue().getCaseId();
 
-                b.setOnAction( (ActionEvent e ) -> onAdapt(selectedCaseId));
-                return new ReadOnlyObjectWrapper<>(b);
-            }
+            b.setOnAction( (ActionEvent e ) -> onAdapt(selectedCaseId));
+            return new ReadOnlyObjectWrapper<>(b);
         });
 
-        columnView.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CoraRetrievalResult, Button>, ObservableValue<Button>>() {
-            @Override
-            public ObservableValue<Button> call(TableColumn.CellDataFeatures<CoraRetrievalResult, Button> c) {
-                Button b = new Button(txtShow);
-                b.setOnAction((ActionEvent e) -> {
-                    try {
-                        MainApplication.getInstance().getMainAppView().showCase(c.getValue().getCaseId());
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                });
-                return new ReadOnlyObjectWrapper<>(b);
-            }
+        columnView.setCellValueFactory(c -> {
+            Button b = new Button(txtShow);
+            b.setOnAction((ActionEvent e) -> {
+                try {
+                    MainApplication.getInstance().getMainAppView().showCase(c.getValue().getCaseId());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            });
+            return new ReadOnlyObjectWrapper<>(b);
         });
 
         tblResults.setPlaceholder(new Label(txtNoResults));

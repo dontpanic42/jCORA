@@ -2,27 +2,26 @@ package controllers.cbquery;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import controllers.commons.ThrowableErrorViewController;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.web.WebView;
-import javafx.util.Callback;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBaseImpl;
 import view.Commons;
 
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 
 /**
  * Created by daniel on 18.03.2015.
+ *
+ * Controller für den SPARQL-Editor.
+ *
+ * Zeigt einen SPARQL-Editor und die Ergebnisse einer SPARQL-Anfrage an. Der verwendete Editor
+ * ist der "Codemirror"-Editor, der in einer WebView angezeigt wird.
  */
 public class CbQueryEditorController {
 
@@ -38,20 +37,20 @@ public class CbQueryEditorController {
     @FXML
     private TableView<ArrayList<String>> resultsTable;
 
-    private static String readTextFile (InputStream is) {
-        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-    }
-
+    @SuppressWarnings("unused")
     @FXML
     private void initialize() {
         applyEditingTemplate();
     }
 
     private void applyEditingTemplate() {
-        editorWebView.getEngine().load(this.getClass().getClassLoader().getResource(EDITOR_TEMPLATE_FILE).toExternalForm());
+        String file = this.getClass().getClassLoader().getResource(EDITOR_TEMPLATE_FILE).toExternalForm();
+        if(file != null) {
+            editorWebView.getEngine().load(file);
+        }
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void onRunQuery() {
         String query = (String ) editorWebView.getEngine().executeScript("editor.getValue();");
@@ -64,7 +63,6 @@ public class CbQueryEditorController {
         try {
             QueryExecution qe = QueryExecutionFactory.create(query, d);
 
-            int result = 0;
             ResultSet resultSet = qe.execSelect();
 
             try {
@@ -124,13 +122,9 @@ public class CbQueryEditorController {
 
         for(int i = 0; i < cols.size(); i++) {
             final int colNumber = i;
+
             TableColumn<ArrayList<String>, String> tc = new TableColumn<>(cols.get(i));
-            tc.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ArrayList<String>, String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(TableColumn.CellDataFeatures<ArrayList<String>, String> param) {
-                    return new SimpleStringProperty((param.getValue().get(colNumber)));
-                }
-            });
+            tc.setCellValueFactory((param) -> new SimpleStringProperty((param.getValue().get(colNumber))));
 
             resultsTable.getColumns().add(tc);
         }

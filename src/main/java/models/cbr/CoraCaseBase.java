@@ -20,7 +20,7 @@ public interface CoraCaseBase {
 
     /**
      * Gibt den Namespace der Domain-Ontologie zurück.
-     * @return
+     * @return Namespace der Domain-Ontologie
      */
     public String getDomainNs();
 
@@ -29,7 +29,7 @@ public interface CoraCaseBase {
      * Fall mit diesem Namen erzeugt.
      * @param name Der Name (id) der Ontologie
      * @return Die Ontologie als Cbr-Fall
-     * @throws Throwable
+     * @throws Throwable Exceptions, die beim laden des Falls aufgetreten sind
      */
     public CoraCaseModel loadCase(String name) throws Exception;
 
@@ -58,15 +58,15 @@ public interface CoraCaseBase {
 
     /**
      * Speichert den Fall unter einem neuen Namen
-     * @param caseModel
-     * @param name
+     * @param caseModel Der zu speichernde Fall
+     * @param name Der Name (FallID), unter dem der Fall gespeichert wird
      */
     public void saveAsNewCase(CoraCaseModel caseModel, String name);
 
     /**
      * Speichert den Fall in einer RDF/XML-Datei
-     * @param caseModel
-     * @param file
+     * @param caseModel Der zu speichernde Fall
+     * @param file Speicherort der RDF/XML-Datei
      */
     public void saveAsFile(CoraCaseModel caseModel, File file);
 
@@ -94,14 +94,14 @@ public interface CoraCaseBase {
      * alle eigenschaften eines normalen Falls aufweist. Soll zur erstellung der
      * Falleingabe dienen. Ein so erzeugte Fall ist nicht in der Fallbasis vorhanden.
      * @return Ein nicht in der Datenbank gesicherten Fall
-     * @throws Throwable
+     * @throws Throwable Exceptions, die beim Erstellen des Falls auftreten
      */
     public CoraCaseModel createTemporaryCase() throws Exception;
 
     /**
      * Erzeugt einen Fall auf Grundlage eines Modells, der nicht in der Datenbank gesichert ist.
      * @return Ein nicht in der Datenbank gesicherten Fall
-     * @throws Throwable
+     * @throws Throwable Exceptions, die beim Erstellen des Falls auftreten
      */
     public CoraCaseModel createTemporaryCase(Model m) throws Exception;
 

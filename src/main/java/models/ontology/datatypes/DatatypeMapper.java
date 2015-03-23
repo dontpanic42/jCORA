@@ -27,7 +27,7 @@ public class DatatypeMapper {
     /**
      * Lädt die Datentyp-Mappings aus der <code>MAPPING_PROPERTIES_FILE</code>-Datei, falls dies
      * bisher noch nicht geschehen ist.
-     * @return
+     * @return <code>Properties</code>-Objekt, das die Mappings enthält
      */
     private static Properties getMappings() {
         if(mapping == null) {
@@ -60,8 +60,7 @@ public class DatatypeMapper {
             String className = (String) map.get(uri);
 
             try {
-                Class<?> clazz = DatatypeMapper.class.getClassLoader().loadClass(className);
-                return clazz;
+                return DatatypeMapper.class.getClassLoader().loadClass(className);
             } catch (ClassNotFoundException e) {
                 System.err.println("Unbekante Datentyp-Klasse: " + className);
                 return null;
@@ -84,16 +83,16 @@ public class DatatypeMapper {
     /**
      * Gibt den Wert eines Literals unter Berücksichtigung des vorgegebenen typs
      * aus der DataProperty-Range zurück
-     * @param property
-     * @param l
-     * @return
+     * @param property Attribut, das das Literal als Wert enthält
+     * @param l Der Wert als Literal
+     * @return Der Wert des Literals als <code>TypedValue</code>
      */
     public static TypedValue<?> getTypedValue(CoraDataPropertyModel property, Literal l) {
-        Class<TypedValue<?>> tv = null;
+        Class<TypedValue<?>> tv;
         try {
             tv = (Class<TypedValue<?>>) property.getRangeDataType();
         } catch (ClassCastException e) {
-            e.printStackTrace();;
+            e.printStackTrace();
             tv = null;
         }
 
@@ -107,9 +106,7 @@ public class DatatypeMapper {
             TypedValue<?> value = tv.newInstance();
             value.setFromLiteral(l);
             return value;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
 

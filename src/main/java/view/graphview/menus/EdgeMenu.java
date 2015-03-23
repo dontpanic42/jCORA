@@ -4,7 +4,6 @@ import org.netbeans.api.visual.action.PopupMenuProvider;
 import org.netbeans.api.visual.widget.ConnectionWidget;
 import org.netbeans.api.visual.widget.Widget;
 import view.graphview.InstanceGraph;
-import view.graphview.InstanceWidget;
 import view.viewbuilder.ViewBuilder;
 
 import javax.swing.*;

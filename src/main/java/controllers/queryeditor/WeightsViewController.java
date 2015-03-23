@@ -1,7 +1,6 @@
 package controllers.queryeditor;
 
 import javafx.beans.property.*;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -10,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
-import javafx.util.Callback;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseModel;
 import models.cbr.CoraWeightModel;
@@ -89,8 +87,6 @@ public class WeightsViewController {
         try {
             out = new FileOutputStream(file);
             p.store(out, "CORA Weight Profile. Do not edit manually.");
-        } catch (FileNotFoundException e) {
-            Commons.showException(e);
         } catch (IOException e) {
             Commons.showException(e);
         } finally {
@@ -139,8 +135,6 @@ public class WeightsViewController {
                     w.getSlider().setValue(val);
                 }
             }
-        } catch (FileNotFoundException e) {
-            Commons.showException(e);
         } catch (IOException e) {
             Commons.showException(e);
         } finally {

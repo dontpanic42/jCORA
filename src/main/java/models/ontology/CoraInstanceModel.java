@@ -24,7 +24,7 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
      * @return Liste der Oberklassen
      */
     public Set<CoraClassModel> getFlattenedTypes() {
-        Set<CoraClassModel> list = new HashSet<CoraClassModel>();
+        Set<CoraClassModel> list = new HashSet<>();
         ExtendedIterator<OntClass> iter = getBaseObject().listOntClasses(true);
         while(iter.hasNext()) {
             getFlattenedClassDescription(iter.next(), list);
@@ -118,9 +118,9 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
 
     /**
      * Erzeugt eine neue DataProperty-Assertion
-     * @param predicat
-     * @param object
-     * @return
+     * @param predicat Das DataProperty
+     * @param object Der Wert des DataProperties
+     * @return Das erstellte Tripel
      */
     public DataPropertyAssertion createDataPropertyAssertion(CoraDataPropertyModel predicat, TypedValue object) {
         Statement s = getModel().createStatement(this.getBaseObject(),
@@ -201,8 +201,8 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
      *
      * ACHTUNG: Das "removeRelation"-Event wird _nur_ für das originäre Property aufgerufen!
      *
-     * @param property
-     * @param object
+     * @param property Das ObjectProperty, das entfernt werden soll
+     * @param object Das Objekt, das mittels <code>property</code> mit dieser Instanz verbunden ist, und das entfernt werden soll
      */
     public void removeObjectPropertiesRecursive(CoraObjectPropertyModel property, CoraInstanceModel object) {
         removeObjectProperty(property, object);
@@ -211,7 +211,7 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
 
     /**
      * Löscht eine Instanz <code>instance</code> und all ihre Properties rekursiv.
-     * @param instance
+     * @param instance Die Instanz, die rekursiv gelöscht werden soll
      */
     private void removeInstancesRecursive(CoraInstanceModel instance) {
         // Liste alle ObjectProperties

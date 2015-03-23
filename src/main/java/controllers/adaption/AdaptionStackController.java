@@ -1,11 +1,8 @@
 package controllers.adaption;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -18,14 +15,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import services.adaption.rules.AdaptionRule;
-import services.adaption.rules.GlobalAdaptionRule;
-import services.adaption.rules.LocalAdaptionRule;
 import services.adaption.rules.impl.local.CopyRule;
 import view.viewbuilder.StageInject;
 import view.viewbuilder.ViewBuilder;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 

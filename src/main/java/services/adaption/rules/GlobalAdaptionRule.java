@@ -39,7 +39,6 @@ public abstract class GlobalAdaptionRule implements AdaptionRule {
      * @param selectedCase Der vom Nutzer ausgewählte Fall, an dem sich die Adaption orientiert
      * @param retrievalResultList Die Retrieval-Ergebnisse
      * @param caseBase Die Fallbasis
-     * @return Der bearbeitete Fall (<code>prev</code>)
      */
     public abstract void adapt(CoraCaseModel adaptedCase,
                                CoraQueryModel query,

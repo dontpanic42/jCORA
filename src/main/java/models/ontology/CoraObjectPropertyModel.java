@@ -40,7 +40,7 @@ public class CoraObjectPropertyModel extends CoraPropertyModel<ObjectProperty> {
     /**
      * Lists all classes, that are a "valid" range (in the sens of being
      * a subclass of the properties range)
-     * @return
+     * @return Liste mit Klassen
      */
     public Set<CoraClassModel> getRangeClasses() {
         Set<CoraClassModel> result = new HashSet<>();

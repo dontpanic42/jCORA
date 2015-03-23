@@ -2,8 +2,6 @@ package models.ontology;
 
 import com.hp.hpl.jena.ontology.OntProperty;
 
-import java.util.Set;
-
 /**
  * Die Klasse repräsentiert ein abstraktes Attribut aus der Ontologie. Dieses kann entweder ein Daten-Attribut
  * oder ein Slot sein.
@@ -11,25 +9,25 @@ import java.util.Set;
 public abstract class CoraPropertyModel<T extends OntProperty> extends CoraOntologyModel<T> {
     /**
      * Gibt <code>true</code> zurück, wenn dieses Attribut ein Slot ist.
-     * @return
+     * @return Gibt <code>true</code> zurück, wenn dieses Attribut ein Slot ist.
      */
     public abstract boolean isObjectProperty();
 
     /**
      * Gibt <code>true</code> zurück, wenn dieses Attribt ein Daten-Attribut ist.
-     * @return
+     * @return Gibt <code>true</code> zurück, wenn dieses Attribt ein Daten-Attribut ist.
      */
     public abstract boolean isDataProperty();
 
     /**
-     * Gibt dieses Attribut als Slot zurück.
-     * @return
+     * Gibt dieses Attribut als ObjectProperty zurück.
+     * @return Gibt dieses Attribut als ObjectProperty zurück.
      */
     public abstract CoraObjectPropertyModel asObjectProperty();
 
     /**
-     * Gibt dieses Attribut als Daten-Attribut zurück.
-     * @return
+     * Gibt dieses Attribut als DataProperty zurück.
+     * @return Dieses Attribut als DataProperty
      */
     public abstract CoraDataPropertyModel asDataProperty();
 

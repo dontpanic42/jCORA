@@ -1,14 +1,14 @@
 package services.retrieval;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import models.cbr.CoraCaseModel;
 import models.cbr.CoraRetrievalResult;
 import models.ontology.CoraInstanceModel;
 import services.retrieval.similarity.SimilarityFactory;
 import services.retrieval.similarity.SimilarityFactoryImpl;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by daniel on 31.08.14.

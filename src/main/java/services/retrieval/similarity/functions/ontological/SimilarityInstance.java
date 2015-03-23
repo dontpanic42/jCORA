@@ -134,10 +134,10 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
 
     /**
      * Berechnet die Ähnlichkeit für ein ObjectProperty
-     * @param prop
-     * @param va
-     * @param vb
-     * @return
+     * @param prop Das ObjectProperty, für das die Ähnlichkeit berechnet werden soll
+     * @param va Das eine Set mit Werten für das ObjectProperty
+     * @param vb Das andere Set mit Werten für das ObjectProperty
+     * @return Ein Tupel (Ähnlichkeit, Gewicht)
      */
     private Pair<Float, Float> getObjectPropertySimilarity(CoraObjectPropertyModel prop,
                                                            Set<CoraInstanceModel> va,
@@ -241,7 +241,7 @@ public class SimilarityInstance extends SimilarityFunction<CoraInstanceModel> {
      * @param prop Das DataProperty
      * @param valuesA Die erste Wertemenge
      * @param valuesB Die zweite Wertemenge
-     * @return
+     * @return Ein Tupel (Ähnlichkeit, Gewicht)
      */
     private Pair<Float, Float> getDataPropertySimilarity(CoraDataPropertyModel prop,
                                                          List<TypedValue> valuesA,

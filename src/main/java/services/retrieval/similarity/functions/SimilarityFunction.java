@@ -4,7 +4,6 @@ import models.cbr.CoraQueryModel;
 import models.ontology.CoraPropertyModel;
 import services.retrieval.similarity.SimilarityCache;
 import services.retrieval.similarity.SimilarityFactory;
-import services.retrieval.similarity.SimilarityFactoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public abstract class SimilarityFunction<T> {
     /**
      * Gibt zurück, ob die Einzelwerte der Berechnungen von <code>calculateItemSim</code> gecached
      * werden dürfen (<code>true</code>) oder nicht (<code>false</code>).
-     * @return
+     * @return <code>true</code>, wenn die Ergebnisse gecached werden dürfen
      */
     protected boolean isCacheable() {
         return true;
@@ -147,7 +146,7 @@ public abstract class SimilarityFunction<T> {
 
     /**
      * (Nur intern verwendet). Setzt die Query.
-     * @param query
+     * @param query CBR-Anfrage
      */
     public void setQuery(CoraQueryModel query) {
         this.query = query;

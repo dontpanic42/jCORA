@@ -2,14 +2,12 @@ package view.graphview;
 
 
 //import com.sun.javafx.accessible.providers.SelectionProvider;
+
 import javafx.beans.property.SimpleObjectProperty;
 import org.netbeans.api.visual.action.ActionFactory;
-import org.netbeans.api.visual.action.SelectProvider;
 import org.netbeans.api.visual.anchor.AnchorFactory;
 import org.netbeans.api.visual.anchor.AnchorShape;
-import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.graph.GraphScene;
-import org.netbeans.api.visual.graph.layout.GridGraphLayout;
 import org.netbeans.api.visual.graph.layout.TreeGraphLayout;
 import org.netbeans.api.visual.layout.LayoutFactory;
 import org.netbeans.api.visual.layout.SceneLayout;
@@ -17,14 +15,12 @@ import org.netbeans.api.visual.widget.ConnectionWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Widget;
-import org.netbeans.modules.visual.action.SelectAction;
 import view.graphview.menus.EdgeMenu;
 import view.graphview.menus.NodeMenu;
 import view.graphview.models.EdgeModel;
 import view.graphview.models.EdgeWidget;
 import view.graphview.models.NodeModel;
 
-import java.awt.*;
 import java.util.Collection;
 
 /**
@@ -98,13 +94,6 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
         setEdgeTarget(edge, edge.getTarget());
     }
 
-    public void removeConnection(EdgeModel model) {
-        Collection<EdgeModel> edges = getEdges();
-        for(EdgeModel edge : edges) {
-
-        }
-    }
-
     /**
      * Gibt das Popupmenü zurück, das angezeigt wird, wenn der Nutzer mit der rechten Maustaste auf eine
      * Instanz klickt.
@@ -169,7 +158,7 @@ public class InstanceGraph extends GraphScene<NodeModel, EdgeModel> {
     @Override
     protected void attachEdgeSourceAnchor(EdgeModel s, NodeModel oldSourceNode, NodeModel sourceNode) {
         ConnectionWidget c = (ConnectionWidget) findWidget(s);
-        Widget source = (Widget) findWidget(sourceNode);
+        Widget source = findWidget(sourceNode);
         c.setSourceAnchor(AnchorFactory.createRectangularAnchor(source));
     }
 

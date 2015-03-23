@@ -1,23 +1,18 @@
 package controllers;
 
 //import apple.laf.JRSUIUtils;
-import controllers.commons.ThrowableErrorViewController;
-import controllers.commons.WaitViewController;
+
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseModel;
@@ -25,9 +20,7 @@ import view.Commons;
 import view.viewbuilder.ViewBuilder;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Observable;
 import java.util.ResourceBundle;
 
 
@@ -257,9 +250,8 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
 
             TableModel that = (TableModel) o;
 
-            if (!caseId.getValue().equals(that.caseId.getValue())) return false;
+            return caseId.getValue().equals(that.caseId.getValue());
 
-            return true;
         }
     }
 }

@@ -1,9 +1,6 @@
 package view.graphview;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import mainapp.MainApplication;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
@@ -16,13 +13,11 @@ import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
-import org.netbeans.modules.visual.action.SelectAction;
 import org.openide.util.Utilities;
 import view.graphview.models.NodeModel;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.Set;
 
 /**

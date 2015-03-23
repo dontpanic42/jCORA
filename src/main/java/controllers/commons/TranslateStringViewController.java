@@ -1,11 +1,8 @@
 package controllers.commons;
 
 import javafx.beans.property.*;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,12 +16,11 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import mainapp.MainApplication;
 import models.Language;
-import models.util.Pair;
 import view.viewbuilder.ViewBuilder;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by daniel on 25.10.14.
@@ -61,7 +57,7 @@ public class TranslateStringViewController {
     /**
      * Zeigt den Übersetzungsdialog an. Die zurückgegebene Map hat die Form (LanguageTag, ÜbersetzterString).
      * Die Map hat nur ein garantiertes Feld, die Primäre Sprache.
-     * @return
+     * @return Eine Map mit Übersetzungen
      * @throws IOException
      */
     public static Map<String, String> getStringTranslation(StringProperty primaryString, Map<String, String> presets) throws IOException {
@@ -134,12 +130,8 @@ public class TranslateStringViewController {
     }
 
     private void setupTable() {
-        columnLangIcon.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Translation, Image>, ObservableValue<Image>>() {
-            @Override
-            public ObservableValue<Image> call(TableColumn.CellDataFeatures<Translation, Image> translationImageCellDataFeatures) {
-                return new ReadOnlyObjectWrapper<>(translationImageCellDataFeatures.getValue().getLanguage().getIcon());
-            }
-        });
+        columnLangIcon.setCellValueFactory(translationImageCellDataFeatures ->
+                new ReadOnlyObjectWrapper<>(translationImageCellDataFeatures.getValue().getLanguage().getIcon()));
 
         columnLangIcon.setCellFactory(new Callback<TableColumn<Translation, Image>, TableCell<Translation, Image>>() {
             @Override
@@ -159,15 +151,12 @@ public class TranslateStringViewController {
             }
         });
 
-        columnLanguage.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Translation, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Translation, String> translationLanguageCellDataFeatures) {
-                final String langName = translationLanguageCellDataFeatures.getValue().languageProperty().getValue().getName();
-                return new ReadOnlyObjectWrapper<>(langName);
-            }
+        columnLanguage.setCellValueFactory(translationLanguageCellDataFeatures -> {
+            final String langName = translationLanguageCellDataFeatures.getValue().languageProperty().getValue().getName();
+            return new ReadOnlyObjectWrapper<>(langName);
         });
 
-        columnString.setCellValueFactory(new PropertyValueFactory<Translation, String>("string"));
+        columnString.setCellValueFactory(new PropertyValueFactory<>("string"));
         columnString.setCellFactory(TextFieldTableCell.forTableColumn());
 
         ObservableList<Translation> translations = FXCollections.observableArrayList();

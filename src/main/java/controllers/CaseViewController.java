@@ -1,32 +1,25 @@
 package controllers;
 
 import com.sun.glass.ui.Application;
-import controllers.commons.ThrowableErrorViewController;
 import controllers.commons.WaitViewController;
 import controllers.dataproperty.DataPropertyEditorFactory;
 import controllers.queryeditor.QueryViewController;
-import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.embed.swing.SwingNode;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import mainapp.MainApplication;
-import models.Language;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseModel;
 import models.datatypes.TypedValue;
@@ -35,19 +28,16 @@ import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
 import models.ontology.assertions.DataPropertyAssertion;
 import models.ontology.assertions.ObjectPropertyAssertion;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
-import org.controlsfx.control.textfield.TextFields;
 import services.adaption.utility.PartialCaseCopier;
 import services.rules.jenarules.JenaRulesEngine;
 import view.Commons;
-import view.viewbuilder.ViewBuilder;
 import view.graphview.GraphViewComponent;
+import view.viewbuilder.ViewBuilder;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by daniel on 24.08.14.
@@ -97,33 +87,21 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
 
         //Setup Evenent-Handlers
         graph.selectionProperty().addListener((ov, oldSelection, newSelection) ->
-                onChangeSelection(oldSelection, newSelection));
+                onChangeSelection(newSelection));
         graph.setOnCreateRelation((ev) -> AddObjectPropertyViewController.showAddRelation(stage, ev.getParentInstance()));
 
-        graph.setOnDeleteRelation((GraphViewComponent.DeleteRelationEvent ev) -> {
-            // Das Event wird im Swing-Thread ausgelöst...
-            Application.invokeLater(() -> {
-                removeObjectRelation(ev.getSubject(), ev.getPredicat(), ev.getObject());
-            });
-        });
+        graph.setOnDeleteRelation((GraphViewComponent.DeleteRelationEvent ev) -> Application.invokeLater(() -> {
+            removeObjectRelation(ev.getSubject(), ev.getPredicat(), ev.getObject());
+        }));
 
-        graph.setOnDeleteRelationRecursive((GraphViewComponent.DeleteRelationRecursiveEvent ev) -> {
-            // Das Event wird im Swing-Thread ausgelöst...
-            Application.invokeLater(() -> {
-                removeObjectRelationRecursive(ev.getSubject(), ev.getPredicat(), ev.getObject());
-            });
-        });
+        graph.setOnDeleteRelationRecursive((GraphViewComponent.DeleteRelationRecursiveEvent ev) -> Application.invokeLater(() -> {
+            removeObjectRelationRecursive(ev.getSubject(), ev.getPredicat(), ev.getObject());
+        }));
 
         tblDataProperties.setPlaceholder(new Label(ViewBuilder.getInstance().getText("ui.case_view.label_no_data_properties")));
 
         columnPropertyName.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<DataPropertyAssertion, CoraDataPropertyModel>,
-                        ObservableValue<CoraDataPropertyModel>>() {
-                    @Override
-                    public ObservableValue<CoraDataPropertyModel> call(TableColumn.CellDataFeatures<DataPropertyAssertion, CoraDataPropertyModel> p) {
-                        return new ReadOnlyObjectWrapper<>(p.getValue().getPredicat());
-                    }
-                });
+                p1 -> new ReadOnlyObjectWrapper<>(p1.getValue().getPredicat()));
 
         columnPropertyName.setCellFactory(new Callback<TableColumn<DataPropertyAssertion, CoraDataPropertyModel>, TableCell<DataPropertyAssertion, CoraDataPropertyModel>>() {
             @Override
@@ -145,18 +123,14 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         });
 
         columnPropertyValue.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<DataPropertyAssertion,
-                        String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<DataPropertyAssertion, String> p) {
-                TypedValue object = p.getValue().getObject();
-                if(object == null) {
-                    return new ReadOnlyObjectWrapper<>("[null]");
-                } else {
-                    return new ReadOnlyObjectWrapper<>(object.getAsString());
-                }
-            }
-        });
+                p1 -> {
+                    TypedValue object = p1.getValue().getObject();
+                    if(object == null) {
+                        return new ReadOnlyObjectWrapper<>("[null]");
+                    } else {
+                        return new ReadOnlyObjectWrapper<>(object.getAsString());
+                    }
+                });
 
         columnPropertyUnit.setCellValueFactory( (p) -> {
             TypedValue object = p.getValue().getObject();
@@ -190,15 +164,13 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         /*
          * Wenn im Textfeld Enter gedrückt wird, zeige die erste passende Instanz
          */
-        searchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            public void handle(KeyEvent ke) {
+        searchTextField.setOnKeyPressed(ke -> {
 
-                if (ke.getCode() == KeyCode.ENTER) {
-                    onSearchInput();
+            if (ke.getCode() == KeyCode.ENTER) {
+                onSearchInput();
 
-                    if (searchListView.getItems().size() > 0) {
-                        searchListView.getSelectionModel().selectFirst();
-                    }
+                if (searchListView.getItems().size() > 0) {
+                    searchListView.getSelectionModel().selectFirst();
                 }
             }
         });
@@ -213,7 +185,7 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
 
     @FXML
     private void onSearchInput() {
-        ArrayList<CoraInstanceModel> searchResults = graph.findDisplayedInstances(searchTextField.getText());
+        List<CoraInstanceModel> searchResults = graph.findDisplayedInstances(searchTextField.getText());
         searchListView.getItems().setAll(searchResults);
     }
 
@@ -294,16 +266,12 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
     private void createAndSetSwingContent(final SwingNode swingNode, final SwingNode navNode) {
 
         //navNode.resize(400, 400);
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                //Workaround für den getClipBounds() bug!
-                swingNode.resize(800, 600);
-                swingNode.setContent(graph);
+        SwingUtilities.invokeLater(() -> {
+            //Workaround für den getClipBounds() bug!
+            swingNode.resize(800, 600);
+            swingNode.setContent(graph);
 
-
-                navNode.setContent(graph.createNavigationView());
-            }
+            navNode.setContent(graph.createNavigationView());
         });
 
 
@@ -363,10 +331,9 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
 
     /**
      * Wenn eine Instanz ausgewählt wird, zeige deren Daten-Properties in der Tabelle an.
-     * @param oldSelection
-     * @param newSelection
+     * @param newSelection Die ausgewählte Instanz
      */
-    private void onChangeSelection(CoraInstanceModel oldSelection, CoraInstanceModel newSelection) {
+    private void onChangeSelection(CoraInstanceModel newSelection) {
         if(showDataPropertiesTask != null) {
             showDataPropertiesTask.cancel();
             showDataPropertiesTask = null;

@@ -18,7 +18,7 @@ public class CoraClassModel extends CoraOntologyModel<OntClass> {
      * @return Liste der Oberklassen
      */
     public Set<CoraClassModel> getFlattenedParents() {
-        Set<CoraClassModel> list = new HashSet<CoraClassModel>();
+        Set<CoraClassModel> list = new HashSet<>();
 
         ExtendedIterator<OntClass> iter = getBaseObject().listSuperClasses(true);
         while(iter.hasNext()) {
@@ -39,7 +39,7 @@ public class CoraClassModel extends CoraOntologyModel<OntClass> {
      * @return Liste der abgeleiteten Klassen
      */
     public Set<CoraClassModel> getFlattenedChildren() {
-        Set<CoraClassModel> list = new HashSet<CoraClassModel>();
+        Set<CoraClassModel> list = new HashSet<>();
 
         ExtendedIterator<OntClass> iter = getBaseObject().listSubClasses(true);
         while(iter.hasNext()) {
@@ -60,7 +60,7 @@ public class CoraClassModel extends CoraOntologyModel<OntClass> {
      * @return Liste der Instanzen
      */
     public Set<CoraInstanceModel> getInstances() {
-        Set<CoraInstanceModel> individuals = new HashSet<CoraInstanceModel>();
+        Set<CoraInstanceModel> individuals = new HashSet<>();
 
         ExtendedIterator<Individual> iter = getModel().listIndividuals(getBaseObject());
         while(iter.hasNext()) {
@@ -76,7 +76,7 @@ public class CoraClassModel extends CoraOntologyModel<OntClass> {
      * @return Liste der "erlaubten" Attribute
      */
     public Set<CoraPropertyModel<?>> getProperties() {
-        Set<CoraPropertyModel<?>> list = new HashSet<CoraPropertyModel<?>>();
+        Set<CoraPropertyModel<?>> list = new HashSet<>();
 
         ExtendedIterator<OntProperty> iter = getBaseObject().listDeclaredProperties(false);
         while(iter.hasNext()) {

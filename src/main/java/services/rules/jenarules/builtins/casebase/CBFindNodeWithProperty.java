@@ -1,19 +1,23 @@
 package services.rules.jenarules.builtins.casebase;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.ontology.Individual;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.reasoner.rulesys.BuiltinException;
 import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
-import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
-import com.hp.hpl.jena.reasoner.rulesys.impl.BBRuleContext;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
 import services.rules.jenarules.builtins.util.CaseBaseUtils;
 
 /**
  * Created by daniel on 13.03.2015.
+ *
+ * Builtin, das einen Knoten (eine Instanz) findet, der eine bestimmte Eigenschaft besitzt.
+ *
+ * Beispiel:
+ * <code>cbFindNodeWithProperty(ex:hatKompetenz ?u ?x)</code>
+ *
+ * Eingabeparameter:
+ * ex:hatKompetenz  die Eigenschaft, nach der gesucht wird
+ * ?u               die gesuchte Ausprägung der Eigenschaft (wert)
+ * Ausgabeparameter:
+ * ?x               die Variable, an die das Ergebnis (der Knoten) gebunden wird
  */
 public class CBFindNodeWithProperty extends BaseBuiltin {
     @Override

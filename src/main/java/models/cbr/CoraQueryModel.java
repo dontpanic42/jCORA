@@ -38,8 +38,8 @@ public class CoraQueryModel {
     }
 
     /**
-     * Gibt die maximale Anzahl gefundener Fälle zurück
-     * @return
+     * Gibt die maximale Anzahl zu findender Fälle zurück
+     * @return Maximale Anzahl zu findender Fälle
      */
     public int getMaxCases() {
         return maxCases;

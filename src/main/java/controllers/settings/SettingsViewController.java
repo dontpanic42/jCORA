@@ -1,6 +1,5 @@
 package controllers.settings;
 
-import controllers.commons.ThrowableErrorViewController;
 import controllers.settings.panes.CaseBaseSettingsViewController;
 import controllers.settings.panes.CaseStructureViewController;
 import controllers.settings.panes.LanguageSettingsController;

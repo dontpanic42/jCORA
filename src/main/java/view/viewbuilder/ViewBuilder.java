@@ -22,7 +22,7 @@ public class ViewBuilder {
 
     /**
      * Singleton
-     * @return
+     * @return Instanz der Klasse <code>ViewBuilder</code>
      */
     public static ViewBuilder getInstance() {
         return (instance == null)? (instance = new ViewBuilder()) : instance;
@@ -37,8 +37,7 @@ public class ViewBuilder {
     public FXMLLoader createLoader(String fxmlFile) {
         URL fxmlFileLocation = this.getClass().getClassLoader().getResource(fxmlFile);
         ResourceBundle texts = MainApplication.getInstance().getTexts();
-        FXMLLoader loader = new FXMLLoader(fxmlFileLocation, texts);
-        return loader;
+        return new FXMLLoader(fxmlFileLocation, texts);
     }
 
     /**
@@ -128,9 +127,9 @@ public class ViewBuilder {
     /**
      * Sucht im Object <code>object</code> nach einer Annotation <code>StageInject</code> und versucht die über
      * gebene Stage zu injezieren
-     * @param stage
-     * @param object
-     * @param <T>
+     * @param stage Die Stage, die injeziert werden soll
+     * @param object Das Objekt, in das die Stage injeziert werden soll (Üblicherweise ein FXML-Controller)
+     * @param <T> Typ des Objekts (Üblicherweise ein FXML-Controller)
      */
     private <T> void tryInjectStage(Stage stage, T object) {
         Class c = object.getClass();
@@ -141,9 +140,7 @@ public class ViewBuilder {
                     System.out.println("Injectable: " + m.getName());
                     try {
                         m.invoke(object, stage);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
+                    } catch (IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
                     }
 

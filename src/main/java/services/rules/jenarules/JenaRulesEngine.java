@@ -2,12 +2,9 @@ package services.rules.jenarules;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.StmtIteratorImpl;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.rulesys.BuiltinRegistry;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasonerFactory;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Filter;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseModel;
@@ -16,12 +13,10 @@ import services.rules.RulesEngine;
 import services.rules.jenarules.builtins.casebase.CBFindNodeWithProperty;
 import services.rules.jenarules.builtins.casebase.math.CBAverageInteger;
 
-import java.io.PrintStream;
-import java.util.List;
-
 /**
  * Created by daniel on 11.03.2015.
  */
+@SuppressWarnings("ConstantConditions")
 public class JenaRulesEngine extends RulesEngine {
     /**
      * Ist <code>onInfModel</code> gleich <code>true</code> werden die Regeln auf das Inferenzmodell
@@ -66,7 +61,7 @@ public class JenaRulesEngine extends RulesEngine {
         /* Rule Reasoner ende */
         System.out.println("Finished rule reasoning...");
 
-        Model outModel = (Model) m;
+        Model outModel = m;
         if(outModel.getNsPrefixURI("") == null) {
             outModel.setNsPrefix("", "http://example.com/case#");
             System.out.println("Prefix ist null");
@@ -97,9 +92,9 @@ public class JenaRulesEngine extends RulesEngine {
 
     /**
      * Kopiert <code>baseModel</code> und <code>derivation</code> in das Model <code>caseModel</code>.
-     * @param caseModel
-     * @param baseModel
-     * @param derivation
+     * @param caseModel Das Model, in das die anderen Modelle kopiert werden
+     * @param baseModel Das erste zu kopierende Model
+     * @param derivation Das zweite zu kopierende Model
      */
     private void addToTemporary(Model caseModel, Model baseModel, Model derivation) {
 
@@ -108,38 +103,31 @@ public class JenaRulesEngine extends RulesEngine {
         caseModel.add(derivation.listStatements());
     }
 
-    private void printModel(PrintStream ostream, Model model) {
-        List<Statement> deri = model.listStatements().toList();
-        for(Statement s : deri) {
-            ostream.println(s.getSubject().toString() + " " + s.getPredicate().toString() + " " + s.getObject().toString());
-        }
-    }
-
-    /**
-     * @deprecated Benutze InfModel#difference()
-     * @TODO: Finde heraus, was #difference() macht, wenn das regel-builtin remove() aufgerufen wird...
-     * Gibt ein Model zurück, das alle Statements enthält, die in <code>newModel</code> aber nicht
-     * in <code>oldModel</code> enthalten sind. (Neue Statements)
-     * @param oldModel
-     * @param newModel
-     * @return
-     */
-    private Model getDerivationModel(Model oldModel, Model newModel) {
-        // An iterator over the statements of pModel that *aren't* in the base model.
-        ExtendedIterator<Statement> stmts = newModel.listStatements().filterDrop( new Filter<Statement>() {
-            @Override
-            public boolean accept(Statement o) {
-                return oldModel.contains( o );
-            }
-        });
-
-        // For convenient printing, we create a model for the deductions.
-        // (If stmts were a StmtIterator, we could add it directly.  It's not,
-        // so we end up creating a new StmtIteratorImpl, which is kludgey, but
-        // it's more efficient than converting the thing to a list.)
-        Model deductions = ModelFactory.createDefaultModel().add( new StmtIteratorImpl( stmts ));
-
-
-        return deductions;
-    }
+//    /**
+//     * @deprecated Benutze InfModel#difference()
+//     * TODO: Finde heraus, was #difference() macht, wenn das regel-builtin remove() aufgerufen wird...
+//     * Gibt ein Model zurück, das alle Statements enthält, die in <code>newModel</code> aber nicht
+//     * in <code>oldModel</code> enthalten sind. (Neue Statements)
+//     * @param oldModel
+//     * @param newModel
+//     * @return
+//     */
+//    private Model getDerivationModel(Model oldModel, Model newModel) {
+//        // An iterator over the statements of pModel that *aren't* in the base model.
+//        ExtendedIterator<Statement> stmts = newModel.listStatements().filterDrop( new Filter<Statement>() {
+//            @Override
+//            public boolean accept(Statement o) {
+//                return oldModel.contains( o );
+//            }
+//        });
+//
+//        // For convenient printing, we create a model for the deductions.
+//        // (If stmts were a StmtIterator, we could add it directly.  It's not,
+//        // so we end up creating a new StmtIteratorImpl, which is kludgey, but
+//        // it's more efficient than converting the thing to a list.)
+//        Model deductions = ModelFactory.createDefaultModel().add( new StmtIteratorImpl( stmts ));
+//
+//
+//        return deductions;
+//    }
 }

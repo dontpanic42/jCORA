@@ -1,6 +1,5 @@
 package controllers.settings.panes;
 
-import controllers.commons.ThrowableErrorViewController;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import models.cbr.CoraCaseModel;

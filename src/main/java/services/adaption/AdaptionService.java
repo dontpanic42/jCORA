@@ -1,22 +1,17 @@
 package services.adaption;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.concurrent.Task;
 import mainapp.MainApplication;
 import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseModel;
 import models.cbr.CoraQueryModel;
 import models.cbr.CoraRetrievalResult;
-import riotcmd.trig;
 import services.adaption.rules.AdaptionRule;
 import services.adaption.rules.GlobalAdaptionRule;
 import services.adaption.rules.LocalAdaptionRule;
 import services.adaption.utility.PartialCaseCopier;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by daniel on 03.09.14.
@@ -28,10 +23,10 @@ public class AdaptionService {
     /**
      * Erzeugt einen Task, der die Anpassung durchführt.
      *
-     * @param ruleStack
-     * @param query
-     * @param selectedCase
-     * @param retrievalResults
+     * @param ruleStack (Sortierte) Liste, die die Adaptionsregeln enthält
+     * @param query Die eingegebene Fallbeschreibung und die Gewichte
+     * @param selectedCase Der vom Nutzer ausgewählte Altfall
+     * @param retrievalResults Liste mit allen ähnlichen Altfällen
      */
     public AdaptionTask createAdaptionTask(List<AdaptionRule> ruleStack,
                               CoraQueryModel query,
@@ -58,7 +53,7 @@ public class AdaptionService {
 
         /**
          * Gibt die Regelmenge zurück
-         * @return
+         * @return (Sortierte) Liste mit Adaptionsregeln
          */
         public List<AdaptionRule> getRuleStack() {
             return ruleStack;
@@ -66,7 +61,7 @@ public class AdaptionService {
 
         /**
          * Setzt die Regelmenge
-         * @param ruleStack
+         * @param ruleStack (Sortierte) Liste mit Adaptionsregeln
          */
         public void setRuleStack(List<AdaptionRule> ruleStack) {
             this.ruleStack = ruleStack;
@@ -74,7 +69,7 @@ public class AdaptionService {
 
         /**
          * Gibt die Nutzeranfrage ("neuer Fall") zurück
-         * @return
+         * @return Die Nutzeranfrage
          */
         public CoraQueryModel getQuery() {
             return query;
@@ -82,7 +77,7 @@ public class AdaptionService {
 
         /**
          * Setzt die Nutzeranfrage ("neuer Fall")
-         * @param query
+         * @param query Die Nutzeranfrage
          */
         public void setQuery(CoraQueryModel query) {
             this.query = query;

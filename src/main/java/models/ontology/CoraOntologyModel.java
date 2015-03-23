@@ -90,9 +90,8 @@ public class CoraOntologyModel<T extends OntResource> {
 
         CoraOntologyModel that = (CoraOntologyModel) o;
 
-        if (!baseObject.equals(that.baseObject)) return false;
+        return baseObject.equals(that.baseObject);
 
-        return true;
     }
 
     @Override
@@ -141,7 +140,7 @@ public class CoraOntologyModel<T extends OntResource> {
     public String getDisplayName(String lang) {
         ExtendedIterator<RDFNode> labels = getBaseObject().listLabels(lang);
 
-        while(labels.hasNext()) {
+        if(labels.hasNext()) {
             final RDFNode node = labels.next();
             final Literal literal = node.asLiteral();
             return literal.getString();

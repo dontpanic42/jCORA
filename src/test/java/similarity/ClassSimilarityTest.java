@@ -35,9 +35,7 @@ public class ClassSimilarityTest {
         try {
             caseBase = new CoraCaseBaseImpl();
             this.caseBase = caseBase;
-        } catch (ConfigurationException e) {
-            fail(e.getMessage());
-        } catch (FileNotFoundException e) {
+        } catch (ConfigurationException | FileNotFoundException e) {
             fail(e.getMessage());
         }
 

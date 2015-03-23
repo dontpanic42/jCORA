@@ -1,6 +1,5 @@
 package models.ontology.assertions;
 
-import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -20,7 +19,6 @@ public class ObjectPropertyAssertion extends Assertion<CoraInstanceModel, CoraOb
     @Override
     public CoraInstanceModel getSubject() {
         Statement s = getBaseObject();
-        Resource r = s.getSubject();
         if(s.getSubject().canAs(Individual.class)) {
             return getFactory().wrapInstance(s.getSubject().as(Individual.class));
         }

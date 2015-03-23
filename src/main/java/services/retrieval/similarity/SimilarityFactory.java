@@ -1,7 +1,6 @@
 package services.retrieval.similarity;
 
 import models.cbr.CoraCaseBase;
-import services.retrieval.similarity.SimilarityCache;
 import services.retrieval.similarity.functions.SimilarityFunction;
 
 /**

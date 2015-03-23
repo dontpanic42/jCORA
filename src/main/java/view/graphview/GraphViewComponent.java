@@ -4,17 +4,11 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventTarget;
-import javafx.scene.layout.Border;
 import mainapp.MainApplication;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
-import org.netbeans.api.visual.action.SelectProvider;
-import org.netbeans.api.visual.border.*;
-import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.export.SceneExporter;
 import org.netbeans.api.visual.widget.ConnectionWidget;
-import org.netbeans.api.visual.widget.Widget;
 import view.graphview.menus.EdgeMenu;
 import view.graphview.menus.NodeMenu;
 import view.graphview.models.EdgeModel;
@@ -42,7 +36,7 @@ public class GraphViewComponent extends JPanel {
     private SimpleObjectProperty<EventHandler<DeleteRelationRecursiveEvent>> onDeleteRelationRecursive = new SimpleObjectProperty<>();
 
     private InstanceGraph scene;
-    private Map<CoraInstanceModel, NodeModel> nodes = new HashMap<CoraInstanceModel, NodeModel>();
+    private Map<CoraInstanceModel, NodeModel> nodes = new HashMap<>();
 
     public GraphViewComponent() {
         scene = new InstanceGraph();
@@ -120,10 +114,10 @@ public class GraphViewComponent extends JPanel {
      * Sucht nach aktuell angezeigten Instanzen deren Name zumindest
      * teilweise mit <code>partialInstanceName</code> übereinstimmt und gibt diese als <code>ArrayList</code>
      * zurück. Gibt eine leere ArrayList zurück, wenn keine Instanz mit dem Namen gefunden wurde.
-     * @param partialInstanceName
-     * @return
+     * @param partialInstanceName Der (teilweise) Name, nach dem Gesucht wird
+     * @return Eine Liste von Instanzen, deren Name mit dem gesuchten übereinstimmt
      */
-    public ArrayList<CoraInstanceModel> findDisplayedInstances(String partialInstanceName) {
+    public List<CoraInstanceModel> findDisplayedInstances(String partialInstanceName) {
         partialInstanceName = partialInstanceName.toLowerCase();
         String tmpName;
         String lang = MainApplication.getInstance().getLanguage();
@@ -140,8 +134,9 @@ public class GraphViewComponent extends JPanel {
     }
 
     /**
-     * Zentriert die Ansicht des Fallgraphens auf die übergebene Instanz
-     * @param instance
+     * Verschiebt den angezeigten Ausschnitt des Fallgraphen derart, das die Instanz <code>instance</code>
+     * im Fallgraphen sichtbar ist.
+     * @param instance Die Instanz, die angzeigt werden soll
      */
     public void showInstanceInView(CoraInstanceModel instance) {
         if(!nodes.containsKey(instance)) {
@@ -173,7 +168,7 @@ public class GraphViewComponent extends JPanel {
 
     /**
      * Erzeugt die Minimap des Fallgraphen
-     * @return
+     * @return ein <code>JPanel</code>, die die Minimap enthält
      */
     public JPanel createNavigationView() {
         JPanel panel = new JPanel();
@@ -237,7 +232,6 @@ public class GraphViewComponent extends JPanel {
                 NodeModel source = instanceModel;
                 NodeModel target = addInstanceRec(i, visited);
 
-//                EdgeModel edge = new EdgeModel(e.getKey().toString());
                 EdgeModel edge = new EdgeModel(e.getKey(), e.getKey().getDisplayName(lang));
                 edge.setSource(source);
                 edge.setTarget(target);
@@ -323,9 +317,9 @@ public class GraphViewComponent extends JPanel {
     }
 
     /**
-     * Gibt alle Kanten zurück, die von node ausgehen.
-     * @param node
-     * @return
+     * Gibt alle Kanten zurück, die von <code>node</code> ausgehen.
+     * @param node Der Knoten, dessen Kanten gesucht werden
+     * @return eine Liste von Kanten, die den Knoten <code>node</code> als Subjekt besitzen
      */
     private List<EdgeModel> listNodeConnections(NodeModel node) {
         ArrayList<EdgeModel> edges = new ArrayList<>();
@@ -339,10 +333,10 @@ public class GraphViewComponent extends JPanel {
     }
 
     /**
-     * Gibt die Anzahl der Kanten zurück, die diesen Knoten als Ziel
+     * Gibt die Anzahl der Kanten zurück, die den Knoten <code>node</code> als Ziel
      * haben.
-     * @param node
-     * @return
+     * @param node Der Knoten, dessen Kanten gezählt werden sollen
+     * @return Anzahl der Kanten, deren Subjekt der Knoten <code>node</code> ist
      */
     private int countIncommingConnections(NodeModel node) {
         int counter = 0;

@@ -1,19 +1,22 @@
 package models.cbr;
 
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelChangedListener;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import exceptions.MalformedOntologyException;
-import models.ontology.CoraOntologyModelFactory;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
+import models.ontology.CoraOntologyModelFactory;
 import models.ontology.CoraPropertyModel;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.prefs.Preferences;
 
 /**
@@ -176,9 +179,9 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
     /**
      * Überprüft, ob <code>subject</code> ein Object-Property <code>fullPropertyName</code> hat, das <code>object</code>
      * als wert hat. Falls dies nicht der Fall ist, wird ein solches Property angelegt.
-     * @param subject
-     * @param object
-     * @param fullPropertyName
+     * @param subject Das Subjekt der Relation
+     * @param object Das Objekt der Relation
+     * @param fullPropertyName Der eindeutige Name der Relation
      */
     private void checkOrCreateProperty(CoraOntologyModelFactory factory, CoraInstanceModel subject, CoraInstanceModel object, String fullPropertyName)
             throws MalformedOntologyException {
@@ -225,7 +228,7 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
 
     /**
      * Gibt die Instanz zurück, die die Wurzel der Bewertung dieses Falles bildet.
-     * @return
+     * @return Die Wurzel der Fallbewertung
      */
     @Override
     public CoraInstanceModel getCaseJustification() {
@@ -243,7 +246,7 @@ public class CoraCaseModelImpl implements CoraCaseModel, ModelChangedListener {
     /**
      * Gibt eine Liste mit allen, im Fall (und der Domain-Ontologie) vorhandenen
      * Object- und DataProperties zurück.
-     * @return
+     * @return Eine Liste mit allen Object- und DataProperties
      */
     public List<CoraPropertyModel> listAllProperties() {
         List<CoraPropertyModel> results = new ArrayList<>();

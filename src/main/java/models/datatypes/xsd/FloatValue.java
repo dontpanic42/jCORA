@@ -35,7 +35,7 @@ public class FloatValue extends TypedValue<Float> {
         try {
             setValue(Float.parseFloat(val));
         } catch (NumberFormatException e) {
-
+            e.printStackTrace();
         }
     }
 

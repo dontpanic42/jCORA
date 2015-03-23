@@ -1,6 +1,5 @@
 package controllers;
 
-import controllers.commons.ThrowableErrorViewController;
 import controllers.commons.WaitViewController;
 import controllers.queryeditor.QueryViewController;
 import controllers.retrieval.RetrievalResultsViewController;
@@ -20,7 +19,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import mainapp.MainApplication;
-import models.cbr.*;
+import models.cbr.CoraCaseBase;
+import models.cbr.CoraCaseModel;
+import models.cbr.CoraQueryModel;
+import models.cbr.CoraRetrievalResult;
 import view.Commons;
 import view.viewbuilder.ViewBuilder;
 
@@ -51,7 +53,7 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
     private CaseBaseViewController caseBaseViewController;
     private SimpleObjectProperty<CoraCaseBase> caseBase = new SimpleObjectProperty<>();
 
-    private HashMap<String, Tab> openCases = new HashMap<String, Tab>();
+    private HashMap<String, Tab> openCases = new HashMap<>();
 
     @FXML
     public void initialize() throws IOException {

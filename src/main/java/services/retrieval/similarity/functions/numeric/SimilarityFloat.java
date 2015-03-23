@@ -4,8 +4,8 @@ import models.datatypes.xsd.FloatValue;
 import models.ontology.CoraPropertyModel;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by daniel on 31.08.14.
@@ -50,10 +50,6 @@ public class SimilarityFloat extends NumericSimilarityFunction<FloatValue> {
         final BigDecimal aVal = BigDecimal.valueOf(a.getValue());
         final BigDecimal bVal = BigDecimal.valueOf(b.getValue());
 
-        float sim = getMetricSimilarity(aVal, bVal, maxVal, minVal);
-
-//        System.out.println("Sim " + property + " (" + aVal + ", " + bVal + "): " + sim);
-
-        return sim;
+        return getMetricSimilarity(aVal, bVal, maxVal, minVal);
     }
 }

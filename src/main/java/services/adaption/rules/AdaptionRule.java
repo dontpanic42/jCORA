@@ -8,14 +8,14 @@ public interface AdaptionRule {
     /**
      * Gibt zurück, ob diese Regel eine lokale Adaptionsregel (<code>true</code>) oder eine
      * globale Adaptionsregel (<code>false</code>) ist.
-     * @return
+     * @return <code>true</code>, wenn es sich um eine lokale Adaptionsregel handelt
      */
     public boolean isLocalAdaptionRule();
 
     /**
      * Gibt zurück, ob diese Regel eine lokale Adaptionsregel (<code>false</code>) oder eine
      * globale Adaptionsregel (<code>true</code>) ist.
-     * @return
+     * @return <code>true</code>, wenn es sich um eine globale Adaptionsregel handelt
      */
     public boolean isGlobalAdaptionRule();
 
@@ -41,7 +41,7 @@ public interface AdaptionRule {
 
     /**
      * Gibt einen kurze Beschreibung dieser Regel zurück
-     * @return
+     * @return Ein String, der eine kurze Beschreibung der Regel zurückgibt
      */
     public String getRuleDescription();
 }

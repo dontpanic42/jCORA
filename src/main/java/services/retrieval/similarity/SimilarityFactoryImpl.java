@@ -9,15 +9,15 @@ import models.datatypes.xsd.IntegerValue;
 import models.datatypes.xsd.LongValue;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
-import services.retrieval.similarity.functions.nonnumeric.SimilarityBool;
 import services.retrieval.similarity.functions.SimilarityFunction;
+import services.retrieval.similarity.functions.nonnumeric.SimilarityBool;
 import services.retrieval.similarity.functions.nonnumeric.SimilarityTaric;
 import services.retrieval.similarity.functions.numeric.*;
 import services.retrieval.similarity.functions.ontological.SimilarityClass;
 import services.retrieval.similarity.functions.ontological.SimilarityInstance;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by daniel on 31.08.14.

@@ -1,6 +1,5 @@
 package services.retrieval.similarity.functions.numeric;
 
-import models.datatypes.custom.MeterValue;
 import models.datatypes.custom.StueckValue;
 import models.ontology.CoraPropertyModel;
 
@@ -51,10 +50,6 @@ public class SimilarityStueck extends NumericSimilarityFunction<StueckValue> {
         final BigDecimal aVal = BigDecimal.valueOf(a.getValue());
         final BigDecimal bVal = BigDecimal.valueOf(b.getValue());
 
-        float sim = getMetricSimilarity(aVal, bVal, maxVal, minVal);
-
-        //System.out.println("Sim " + property + " (" + aVal + ", " + bVal + "): " + sim);
-
-        return sim;
+        return getMetricSimilarity(aVal, bVal, maxVal, minVal);
     }
 }

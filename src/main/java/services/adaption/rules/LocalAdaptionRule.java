@@ -7,6 +7,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 /**
  * Created by daniel on 03.09.14.
  */
+@SuppressWarnings("UnusedParameters")
 public abstract class LocalAdaptionRule implements AdaptionRule {
     @Override
     public boolean isLocalAdaptionRule() {

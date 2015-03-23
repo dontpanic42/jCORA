@@ -82,10 +82,7 @@ public abstract class NumericSimilarityFunction<T extends TypedValue> extends Si
             try {
                 return (T) ((goal == Extrema.MIN)?  valueType.newInstance().getMaxValue():
                         valueType.newInstance().getMinValue());
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
@@ -132,10 +129,7 @@ public abstract class NumericSimilarityFunction<T extends TypedValue> extends Si
             }
 
             return (T) result;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -177,9 +171,7 @@ public abstract class NumericSimilarityFunction<T extends TypedValue> extends Si
                     T typedValue = valueType.newInstance();
                     typedValue.setFromLiteral(soln.asLiteral());
                     literals.add(typedValue);
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
+                } catch (InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
@@ -206,8 +198,6 @@ public abstract class NumericSimilarityFunction<T extends TypedValue> extends Si
                 "SELECT DISTINCT ?value\n" +
                 "WHERE { ?y <" + propName + "> ?value }";
 
-        Query jquery = QueryFactory.create(query);
-
         QueryExecution qe = QueryExecutionFactory.create(query, prop.getModel());
 
         ResultSet resultSet = qe.execSelect();
@@ -222,9 +212,7 @@ public abstract class NumericSimilarityFunction<T extends TypedValue> extends Si
                     T typedValue = valueType.newInstance();
                     typedValue.setFromLiteral(soln.asLiteral());
                     literals.add(typedValue);
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
+                } catch (InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }

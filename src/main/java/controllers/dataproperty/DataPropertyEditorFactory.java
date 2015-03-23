@@ -1,6 +1,5 @@
 package controllers.dataproperty;
 
-import controllers.commons.ThrowableErrorViewController;
 import controllers.dataproperty.impl.GenericDataPropertyEditor;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

@@ -13,7 +13,6 @@ import javax.naming.ConfigurationException;
 import java.io.FileNotFoundException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -32,9 +31,7 @@ public class InstanceSimilarityTest {
         try {
             caseBase = new CoraCaseBaseImpl();
             this.caseBase = caseBase;
-        } catch (ConfigurationException e) {
-            fail(e.getMessage());
-        } catch (FileNotFoundException e) {
+        } catch (ConfigurationException | FileNotFoundException e) {
             fail(e.getMessage());
         }
 

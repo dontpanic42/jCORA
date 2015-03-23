@@ -7,11 +7,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
 import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
 import mainapp.MainApplication;
-import models.cbr.CoraCaseBase;
 import models.cbr.CoraCaseBaseImpl;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by daniel on 13.03.2015.
