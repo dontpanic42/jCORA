@@ -214,6 +214,11 @@ public class CoraInstanceModel extends CoraOntologyModel<Individual> {
      * @param instance Die Instanz, die rekursiv gelöscht werden soll
      */
     private void removeInstancesRecursive(CoraInstanceModel instance) {
+        // Lösche keine Instanzen, die zur Domänenontologie gehören
+        if(instance.isPartOfDomainOntology()) {
+            return;
+        }
+
         // Liste alle ObjectProperties
         Map<CoraObjectPropertyModel, Set<CoraInstanceModel>> props = instance.getObjectProperties();
 

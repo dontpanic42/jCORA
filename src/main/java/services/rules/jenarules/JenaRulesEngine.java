@@ -14,6 +14,8 @@ import services.rules.jenarules.builtins.casebase.CBFindNodeWithProperty;
 import services.rules.jenarules.builtins.casebase.math.CBAverageInteger;
 
 /**
+ * Eine RulesEngine, die Jena Rules nutzt.
+ *
  * Created by daniel on 11.03.2015.
  */
 @SuppressWarnings("ConstantConditions")

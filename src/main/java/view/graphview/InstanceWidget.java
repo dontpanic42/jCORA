@@ -96,16 +96,11 @@ public class InstanceWidget extends Widget {
 
         model.addListener( (ov, oldModel, newModel ) -> {
             if(newModel != null) {
-//                instanceName.setLabel(newModel.getModel().toString());
                 final String lang = MainApplication.getInstance().getLanguage();
                 instanceName.setLabel(newModel.getModel().getDisplayName(lang));
                 setTypeList(newModel.getModel());
 
-                String instanceNs = newModel.getModel().getNs();
-                String domainNs = MainApplication.getInstance().getCaseBase().getDomainNs();
-
-                /* instanceNs kann null werden, wenn die instanz anonym ist... */
-                if(instanceNs != null && instanceNs.equals(domainNs)) {
+                if(newModel.getModel().isPartOfDomainOntology()) {
                     setIsPartOfDomainOntology();
                 } else {
                     setIsPartOfTaskOntology();

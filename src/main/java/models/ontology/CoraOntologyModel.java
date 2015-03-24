@@ -4,6 +4,7 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import mainapp.MainApplication;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Set;
@@ -152,5 +153,19 @@ public class CoraOntologyModel<T extends OntResource> {
         }
 
         return getBaseObject().getLocalName();
+    }
+
+    /**
+     * Gibt zurück, ob dieses Objekt ein Teil der Domänenontologie ist. Wenn dieses Objekt keinen
+     * Namensraum besitzt (also z.B. ein BNode ist), wird davon ausgegangen, das dieser zur Fallontologie
+     * gehört.
+     * @return <code>true</code>, wenn das Objekt zur Domänenontologie gehört
+     */
+    public boolean isPartOfDomainOntology() {
+        String instanceNs = getNs();
+        String domainNs = MainApplication.getInstance().getCaseBase().getDomainNs();
+
+        /* instanceNs kann null werden, wenn die instanz anonym ist... */
+        return (instanceNs != null && instanceNs.equals(domainNs));
     }
 }

@@ -16,12 +16,12 @@ import view.Commons;
 import java.util.ArrayList;
 
 /**
- * Created by daniel on 18.03.2015.
- *
  * Controller für den SPARQL-Editor.
  *
  * Zeigt einen SPARQL-Editor und die Ergebnisse einer SPARQL-Anfrage an. Der verwendete Editor
  * ist der "Codemirror"-Editor, der in einer WebView angezeigt wird.
+ *
+ * Created by daniel on 18.03.2015.
  */
 public class CbQueryEditorController {
 
