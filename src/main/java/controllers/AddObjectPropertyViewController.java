@@ -13,10 +13,12 @@ import mainapp.MainApplication;
 import models.ontology.CoraClassModel;
 import models.ontology.CoraInstanceModel;
 import models.ontology.CoraObjectPropertyModel;
+import models.ontology.CoraOntologyModel;
 import view.viewbuilder.StageInject;
 import view.viewbuilder.ViewBuilder;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -87,7 +89,7 @@ public class AddObjectPropertyViewController {
                     protected void updateItem(CoraInstanceModel coraInstanceModel, boolean empty) {
                         super.updateItem(coraInstanceModel, empty);
 
-                        if(empty) {
+                        if (empty) {
                             setText("");
                         } else {
                             final String lang = MainApplication.getInstance().getLanguage();
@@ -133,6 +135,10 @@ public class AddObjectPropertyViewController {
         stage.close();
     }
 
+    /**
+     * Wird aufgerufen, wenn der "Instanz hinzufügen" Button gedrückt wird.
+     * @throws IOException Wenn die Instanz-Erzeugen-Dialog FXML Datei nicht gefunden wurde
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onCreateInstance() throws IOException {
@@ -142,11 +148,12 @@ public class AddObjectPropertyViewController {
 
         CoraInstanceModel instance =
                 AddInstanceViewController.showCreateInstance(
-                stage,
-                currentClasses);
+                        stage,
+                        currentClasses);
 
         if(instance != null) {
             itemsInstances.add(instance);
+            sortListView(listInstances);
             listInstances.getSelectionModel().select(instance);
         }
     }
@@ -160,7 +167,6 @@ public class AddObjectPropertyViewController {
             final String lang = MainApplication.getInstance().getLanguage();
             String toSearch = txtSearchInstance.getText().toLowerCase();
             FilteredList<CoraInstanceModel> filteredList;
-            //filteredList = itemsInstances.filtered( instance -> instance.toString().toLowerCase().contains(toSearch));
             filteredList = itemsInstances.filtered( instance -> instance.getDisplayName(lang).toLowerCase().contains(toSearch));
             listInstances.setItems(filteredList);
 
@@ -185,9 +191,16 @@ public class AddObjectPropertyViewController {
         }
     }
 
+    /**
+     * Wird aufgerufen, wenn der Nutzer ein ObjectProperty aus der Liste der ObjectProperties auswählt.
+     * Passt die Liste der angezeigten Instanzen an.
+     * @param oldProperty das vorher ausgewählte ObjectProperty
+     * @param newProperty das jetzt ausgewählte ObjectProperty
+     */
     private void onSelectProperty(CoraObjectPropertyModel oldProperty,
                                   CoraObjectPropertyModel newProperty) {
 
+        final String lang = MainApplication.getInstance().getLanguage();
         if(newProperty == null || oldProperty == newProperty) {
             return;
         }
@@ -217,7 +230,14 @@ public class AddObjectPropertyViewController {
                     instances.addAll(clazz.getInstances());
                 }
 
-                localItemsInstances.addAll(instances);
+                // Filtere alle Instanzer heraus, die keinen Namen besitzen (BNodes)
+                for(CoraInstanceModel instance : instances) {
+                    if( instance.getDisplayName(lang) != null &&
+                       !instance.getDisplayName(lang).trim().equals("")) {
+                        localItemsInstances.add(instance);
+                    }
+                }
+
                 return localItemsInstances;
             }
         };
@@ -226,14 +246,22 @@ public class AddObjectPropertyViewController {
             if(newState == Worker.State.SUCCEEDED) {
                 itemsInstances = listInstancesTask.getValue();
                 listInstances.setItems(itemsInstances);
+                sortListView(listInstances);
                 String txtNoInstances = ViewBuilder.getInstance().getText("ui.add_object_property.label_no_instances");
                 listInstances.setPlaceholder(new Label(txtNoInstances));
+            } else if(newState == Worker.State.FAILED) {
+                listInstancesTask.getException().printStackTrace();
             }
         });
 
         new Thread(listInstancesTask).start();
     }
 
+    /**
+     * Setzt die Instanz, für die ein ObjectProperty hinzugefügt werden soll. Es werden
+     * nur diejenigen ObjectProperties angzeigt, welche als Vorbereich die Instanz besitzten (Domain).
+     * @param model Die Instanz, der ein ObjectProperty hinzugefügt werden soll
+     */
     public void setModel(CoraInstanceModel model) {
         this.model = model;
 
@@ -261,6 +289,7 @@ public class AddObjectPropertyViewController {
                 itemsProperties = listPropertiesTask.getValue();
                 listProperties.setItems(itemsProperties);
                 if(itemsProperties.size() > 0) {
+                    sortListView(listProperties);
                     listProperties.getSelectionModel().selectFirst();
                 }
 
@@ -270,5 +299,15 @@ public class AddObjectPropertyViewController {
         });
 
         new Thread(listPropertiesTask).start();
+    }
+
+    /**
+     * Sortiert eine ListView alphabetisch, ohne Berücksichtigung von Groß- und Kleinschreibung
+     */
+    private void sortListView(ListView listView) {
+        final String lang = MainApplication.getInstance().getLanguage();
+        Collections.sort(listView.getItems(), (CoraOntologyModel o1, CoraOntologyModel o2)
+                -> o1.getDisplayName(lang).compareToIgnoreCase(o2.getDisplayName(lang))
+        );
     }
 }
