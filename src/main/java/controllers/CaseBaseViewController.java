@@ -1,7 +1,5 @@
 package controllers;
 
-//import apple.laf.JRSUIUtils;
-
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -25,22 +23,31 @@ import java.util.ResourceBundle;
 
 
 /**
+ * Fallbasis-Ansicht. Zeigt die Fallbasis in einer Tabelle an.
+ *
  * Created by daniel on 24.08.14.
  */
 public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandler {
-
+    /**
+     * Tabellenspalte, die die FallIDs enthält
+     */
     @FXML
     private TableColumn<TableModel, String> tcCaseId;
-
+    /**
+     * Tabellenspalte, die die "Anzeigen"-Buttons enthält
+     */
     @FXML
     private TableColumn<TableModel, Button> tcViewCase;
-
+    /**
+     * Tabellenspalte, die die "Löschen"-Buttons enthält
+     */
     @FXML
     private TableColumn<TableModel, Button> tcDeleteCase;
-
+    /**
+     * Tabelle, die die Fälle enthält
+     */
     @FXML
     private TableView<TableModel> tblCaseBase;
-
     /**
      * Textfeld für die Suche nach Fall-IDs
      */
@@ -63,6 +70,9 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
      */
     private SimpleObjectProperty<CoraCaseBase> caseBase = new SimpleObjectProperty<>();
 
+    /**
+     * Initialisiert die Fallbasis-Ansicht
+     */
     @FXML
     public void initialize() {
 
@@ -154,8 +164,7 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
     }
 
     /**
-     * Wird aufgerufen, wenn ein neuer Fall erstellt wird (durch Speichern eines Falls mit einer neuen ID).
-     * Fügt den neu erstellten Fall in der Liste der Fälle an
+     * Öffnet einen Falleditor um einen neuen Fall direkt in die Fallbasis einzufügen
      * @throws Exception
      */
     @SuppressWarnings("unused")
@@ -167,6 +176,10 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
                 .getMainStage(), caseModel);
     }
 
+    /**
+     * Wird aufgerufen, wenn ein neuer Fall erstellt wird (durch Speichern eines Falls mit einer neuen ID).
+     * Fügt den neu erstellten Fall in der Liste der Fälle an
+     */
     @Override
     public void onAddCase(String caseId) {
         TableModel t = new TableModel(caseId);
@@ -221,10 +234,23 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
      * Datenmodell für die Fall-Liste.
      */
     public class TableModel {
+        /**
+         * FallId des Falls
+         */
         SimpleStringProperty caseId;
+        /**
+         * "Anzeigen"-Button
+         */
         SimpleObjectProperty<Button> btnView;
+        /**
+         * "Löschen"-Button
+         */
         SimpleObjectProperty<Button> btnDelete;
 
+        /**
+         * Konstruktor
+         * @param caseId FallID des Falls, den dieses Modell repräsentiert
+         */
         public TableModel(final String caseId) {
             this.caseId = new SimpleStringProperty();
             this.caseId.set(caseId);
@@ -250,47 +276,101 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
             });
         }
 
+        /**
+         * Getter für die FallID
+         * @return Die FallID
+         */
+        @SuppressWarnings("unused")
         public String getCaseId() {
             return caseId.get();
         }
 
+        /**
+         * FallID-Property
+         * @return FallID-Property
+         */
+        @SuppressWarnings("unused")
         public SimpleStringProperty caseIdProperty() {
             return caseId;
         }
 
+        /**
+         * Setter für die FallID
+         * @param caseId die FallID
+         */
+        @SuppressWarnings("unused")
         public void setCaseId(String caseId) {
             this.caseId.set(caseId);
         }
 
+        /**
+         * Getter für den "Fall Anzeigen"-Button
+         * @return Der "Fall Anzeigen"-Button
+         */
+        @SuppressWarnings("unused")
         public Button getBtnView() {
             return btnView.get();
         }
 
+        /**
+         * "Fall Anzeigen"-Button Property
+         * @return "Fall Anzeigen"-Button Property
+         */
+        @SuppressWarnings("unused")
         public SimpleObjectProperty<Button> btnViewProperty() {
             return btnView;
         }
 
+        /**
+         * Setter für den "Fall Anzeigen"-Button
+         * @param btnView der "Fall Anzeigen"-Button
+         */
+        @SuppressWarnings("unused")
         public void setBtnView(Button btnView) {
             this.btnView.set(btnView);
         }
 
+        /**
+         * Getter für den "Fall Löschen"-Button
+         * @return Der "Fall Löschen"-Button
+         */
+        @SuppressWarnings("unused")
         public Button getBtnDelete() {
             return btnDelete.get();
         }
 
+        /**
+         * "Fall Löschen"-Button Property
+         * @return "Fall Löschen"-Button Property
+         */
+        @SuppressWarnings("unused")
         public SimpleObjectProperty<Button> btnDeleteProperty() {
             return btnDelete;
         }
 
+        /**
+         * Setter für den "Fall Löschen"-Button
+         * @param btnDelete der "Fall Löschen"-Button
+         */
+        @SuppressWarnings("unused")
         public void setBtnDelete(Button btnDelete) {
             this.btnDelete.set(btnDelete);
         }
 
+        /**
+         * Der Hash dieses Objekts entspricht dem Hash der FallID.
+         * @return
+         */
         @Override
         public int hashCode() {
             return caseId.getValue().hashCode();
         }
 
+        /**
+         * Zwei Zeilen-Modelle sind gleich, wenn sie Fälle mit der selben FallID repräsentieren
+         * @param o Das Objekt, mit dem dieses Objekt verglichen werden soll
+         * @return <code>true</code>, wenn die FallIDs der beiden Objekte gleich sind
+         */
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;

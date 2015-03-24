@@ -46,93 +46,91 @@ import java.util.List;
  * Created by daniel on 24.08.14.
  */
 public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
-
+    /**
+     * FXML-Datei für den CBR-Anfrage-Dialog
+     */
     private static final String QUERY_VIEW_VIEW_FILE = "views/queryeditor/queryView.fxml";
-
+    /**
+     * SwingNode, der den Fallgraphen enthält
+     */
+    @SuppressWarnings("unused")
     @FXML
     private SwingNode swingNode;
-
+    /**
+     * SwingNode, der die Minimap enthält
+     */
     @FXML
     private SwingNode navNode;
-
     /**
      * Spalte für Attributsnamen
      */
     @FXML
     private TableColumn<DataPropertyAssertion, CoraDataPropertyModel> columnPropertyName;
-
     /**
      * Spalte für Attributswerte
      */
     @FXML
     private TableColumn<DataPropertyAssertion, String>  columnPropertyValue;
-
     /**
      * Spalte für Datentyp/Einheit des Werts
      */
     @FXML
     private TableColumn<DataPropertyAssertion, String> columnPropertyUnit;
-
     /**
      * Attributstabelle
      */
     @FXML
     private TableView<DataPropertyAssertion> tblDataProperties;
-
     /**
      * "Speichern"-Button. Ist nur aktiviert, wenn der Fall bereits eine FallID besitzt,
      * ähnlich der Unterscheidung "Speichern" und "Speichern unter"
      */
+    @SuppressWarnings("unused")
     @FXML
     private Button btnSave;
-
     /**
      * Textfeld für die Suche nach Instanzen im Fallgraphen
      */
     @FXML
     private TextField searchTextField;
-
     /**
      * Ergebnisse der Suche nach Instanzen im Fallgraphen
      */
     @FXML
     private ListView<CoraInstanceModel> searchListView;
-
     /**
      * Label, das die derzeit ausgewählte Instanz anzeigt, über der Attributstabelle.
      * Inhalt: "Attribut: [Instanzname]"
      */
     @FXML
     private Label lblSelectionName;
-
     /**
      * Der Fallgraph
      */
     private final GraphViewComponent graph = new GraphViewComponent();
-
     /**
      * Die Instanz, die den Ausgangspunkt für den angezeigten Fall darstellt.
      * Wird ein vollständiger Fall angezeigt eine Instanz von "Fall",
      * wird ein CBR-Request angzeieigt eine Instanz von "Fallbeschreibung".
      */
     private CoraInstanceModel model;
-
     /**
      * Die aktuell ausgewählte Instanz, oder <code>null</code>, wenn keine Instanz
      * ausgewählt ist.
      */
     private SimpleObjectProperty<CoraInstanceModel> currentSelection = new SimpleObjectProperty<>();
-
     /**
      * Asynchroner <code>Task</code>, der die Attribute (DataProperties) der ausgewählten Instanz anzeigt
      */
     private Task<ObservableList<DataPropertyAssertion>> showDataPropertiesTask;
-
     /**
      * Die Stage, in der der Fall angzeigt wird (für Modals)
      */
     private Stage stage;
 
+    /**
+     * Initialisiert den Falleditor
+     */
     @FXML
     public void initialize() {
         createAndSetSwingContent(swingNode, navNode);

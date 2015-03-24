@@ -45,13 +45,11 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
 
     @FXML
     private AnchorPane caseBaseTabPane;
-
     /**
      * Das Anwendungs-Hauptmenü
      */
     @FXML
     private MenuBar menuBar;
-
     /**
      * Die Fallbasis-Ansicht
      */

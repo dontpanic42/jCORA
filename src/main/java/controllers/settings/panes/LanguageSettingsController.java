@@ -13,15 +13,25 @@ import java.util.Locale;
 import java.util.prefs.Preferences;
 
 /**
+ * "Einstellungen"-Panel für Spracheinstellungen
+ *
  * Created by daniel on 22.03.15.
  */
 public class LanguageSettingsController {
-
+    /**
+     * Nutzer-Einstellungen
+     */
     private Preferences prefs = Preferences.userNodeForPackage(MainApplication.class);
-
+    /**
+     * Liste, die die verfügbaren Sprachen enthält
+     */
     @FXML
     private ListView<Language> languageList;
 
+    /**
+     * Initialisiert das Panel
+     */
+    @SuppressWarnings("unused")
     @FXML
     private void initialize() {
         languageList.setCellFactory(new Callback<ListView<Language>, ListCell<Language>>() {
@@ -47,18 +57,29 @@ public class LanguageSettingsController {
         selectCurrentLanguage();
     }
 
+    /**
+     * Zeigt alle verfügbaren Sprachen in der <code>languageList</code>
+     * ListView an.
+     */
     private void listLanguages() {
         for(Language l : Language.values()) {
             languageList.getItems().add(l);
         }
     }
 
+    /**
+     * Wählt die aktuelle Sprache in der <code>languageList</code> aus.
+     */
     private void selectCurrentLanguage() {
         String tag = MainApplication.getInstance().getLanguage();
         Language lang = Language.getLanguageByTag(tag);
         languageList.getSelectionModel().select(lang);
     }
 
+    /**
+     * Speichert die Einstellungen.
+     * @see controllers.settings.SettingsViewController#onSave()
+     */
     public void save() {
         Language selected = languageList.getSelectionModel().getSelectedItem();
         if(selected == null) {
@@ -69,6 +90,12 @@ public class LanguageSettingsController {
         prefs.put("language", selected.getTag());
     }
 
+    /**
+     * Setzt alle Einstellungen auf Standardwerte zurück. D.h. es wird die Systemsprache
+     * verwendet (falls verfügbar) oder die <code>DEFAULT_LANGUAGE</code> der Anwendung.
+     * @see java.util.Locale#getDefault()
+     * @see mainapp.MainApplication#DEFAULT_LANGUAGE
+     */
     public void reset() {
         String def = Locale.getDefault().getLanguage();
         Language lang = Language.getLanguageByTag(def);

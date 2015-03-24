@@ -12,15 +12,29 @@ import view.viewbuilder.ViewBuilder;
 import java.io.IOException;
 
 /**
+ * Speichert den aktuell Angezeigten Fall mit einer neuen FallID. Damit wird
+ * der aktuelle Fall effektiv dupliziert. Der neu angelegte, duplizierte
+ * Fall wird in einem neuen Tab im Hauptfenster geöffnet.
+ *
  * Created by daniel on 31.08.14.
  */
 public class SaveAsNewViewController {
-
+    /**
+     * FXML-Datei dieses Dialogs
+     */
     private static final String SAVE_AS_NEW_VIEW_FILE = "views/saveAsNewView.fxml";
-
+    /**
+     * Der Fall, der gespeichert werden soll
+     */
     private CoraCaseModel caseModel;
+    /**
+     * Die Stage, auf der dieser Dialog angezeigt wird
+     */
     private Stage stage;
-
+    /**
+     * Textfeld, in das die neue Fall-ID eingegeben werden muss
+     */
+    @SuppressWarnings("unused")
     @FXML
     private TextField txtCaseID;
 
@@ -41,14 +55,29 @@ public class SaveAsNewViewController {
         this.stage = stage;
     }
 
+    /**
+     * Setzt den Fall, der gespeichert werden soll
+     * @param caseModel Der Fall, der gespeichert werden soll
+     */
     public void setModel(CoraCaseModel caseModel) {
         this.caseModel = caseModel;
     }
 
+    /**
+     * Filtert die eingebene Fall-ID und ersetzt Sonderzeichen under unterstiche.
+     * @see controllers.AddInstanceViewController#escapeInstanceName(String)
+     * @param name Die eingegebene Fall-ID
+     * @return Die Fall-ID ohne Sonderzeichen
+     */
     private String escapeInstanceName(String name) {
         return name.replaceAll("[^a-zA-Z0-9]", "_");
     }
 
+    /**
+     * Speichert den Fall unter dem eingebenen Namen
+     * @throws IOException
+     */
+    @SuppressWarnings("unused")
     @FXML
     private void onSave() throws IOException {
         String caseId = escapeInstanceName(txtCaseID.getText());
@@ -69,6 +98,10 @@ public class SaveAsNewViewController {
         MainApplication.getInstance().getMainAppView().showCase(caseId);
     }
 
+    /**
+     * Schließt den Dialog ohne zu speichern
+     */
+    @SuppressWarnings("unused")
     @FXML
     private void onCancel() {
         stage.close();
