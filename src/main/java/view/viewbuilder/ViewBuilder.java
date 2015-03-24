@@ -50,7 +50,7 @@ public class ViewBuilder {
      * @param <T> Typ des Controllers
      * @return Der neu erzeugte Controller
      */
-    public <T> T createModal(String fxmlFile, Stage parentStage) {
+    public <T> T createModal(String fxmlFile, Stage parentStage, String modalTitle) {
         FXMLLoader loader = createLoader(fxmlFile);
         Parent pane;
 
@@ -63,6 +63,7 @@ public class ViewBuilder {
         Stage stage = new Stage();
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(parentStage);
+        stage.setTitle(modalTitle);
 
         Scene scene = new Scene(pane);
         stage.setScene(scene);

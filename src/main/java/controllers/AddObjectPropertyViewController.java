@@ -101,8 +101,15 @@ public class AddObjectPropertyViewController {
         });
     }
 
+    /**
+     * Zeigt den "AddObjectProperty"-Dialog an
+     * @param parent Die Stage, zu dem der Dialog modal sein soll
+     * @param model Die Instanz, der ein ObjectProperty hinzugefügt werden soll
+     */
     public static void showAddRelation(Stage parent, CoraInstanceModel model) {
-        AddObjectPropertyViewController c = ViewBuilder.getInstance().createModal(ADD_OBJECT_PROPERTY_VIEW_FILE, parent);
+        final String dialogTitle = ViewBuilder.getInstance().getText("ui.add_object_property.title");
+        AddObjectPropertyViewController c = ViewBuilder.getInstance().createModal(ADD_OBJECT_PROPERTY_VIEW_FILE,
+                parent, dialogTitle);
         c.setModel(model);
     }
 

@@ -24,8 +24,15 @@ public class SaveAsNewViewController {
     @FXML
     private TextField txtCaseID;
 
+    /**
+     * Zeigt den Save-As-New Dialog an
+     * @param parent Die Stage, zu der dieser Dialog modal sein soll
+     * @param model Das Fallmodell, das gespeichert werden soll
+     */
     public static void showSaveAsNew(Stage parent, CoraCaseModel model) {
-        SaveAsNewViewController c = ViewBuilder.getInstance().createModal(SAVE_AS_NEW_VIEW_FILE, parent);
+        ViewBuilder viewBuilder = ViewBuilder.getInstance();
+        final String title = viewBuilder.getText("ui.save_as_new.title");
+        SaveAsNewViewController c = viewBuilder.createModal(SAVE_AS_NEW_VIEW_FILE, parent, title);
         c.setModel(model);
     }
 

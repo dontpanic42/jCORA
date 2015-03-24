@@ -56,9 +56,14 @@ public class CaseImportViewController {
         btnSelectFile.setOnAction( (ActionEvent e) -> onSelectFile() );
     }
 
+    /**
+     * Zeigt den "Fall importieren"-Dialog an
+     * @param parent Die Stage, zu der der Dialog modal sein soll
+     */
     public static void showCaseImport(Stage parent) {
-       ViewBuilder.getInstance().createModal(CASE_IMPORT_VIEW_FILE, parent);
-
+        ViewBuilder viewBuilder = ViewBuilder.getInstance();
+        final String title = viewBuilder.getText("ui.case_import.title");
+        viewBuilder.createModal(CASE_IMPORT_VIEW_FILE, parent, title);
     }
 
     @StageInject

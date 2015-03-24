@@ -5,6 +5,7 @@ import controllers.commons.WaitViewController;
 import controllers.dataproperty.DataPropertyEditorFactory;
 import controllers.queryeditor.QueryViewController;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -73,10 +74,14 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
     @FXML
     private ListView<CoraInstanceModel> searchListView;
 
+    @FXML
+    private Label lblSelectionName;
+
     private final GraphViewComponent graph = new GraphViewComponent();
 
     private CoraInstanceModel model;
-    private CoraInstanceModel currentSelection;
+    //private CoraInstanceModel currentSelection;
+    private SimpleObjectProperty<CoraInstanceModel> currentSelection = new SimpleObjectProperty<>();
     private Task<ObservableList<DataPropertyAssertion>> showDataPropertiesTask;
 
     private Stage stage;
@@ -85,27 +90,28 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
     public void initialize() {
         createAndSetSwingContent(swingNode, navNode);
 
-        //Setup Evenent-Handlers
-        graph.selectionProperty().addListener((ov, oldSelection, newSelection) ->
-                onChangeSelection(newSelection));
-        graph.setOnCreateRelation((ev) -> AddObjectPropertyViewController.showAddRelation(stage, ev.getParentInstance()));
+        setupShowSelection();
 
-        graph.setOnDeleteRelation((GraphViewComponent.DeleteRelationEvent ev) -> Application.invokeLater(() -> {
-            removeObjectRelation(ev.getSubject(), ev.getPredicat(), ev.getObject());
-        }));
+        setupEventHandlers();
 
-        graph.setOnDeleteRelationRecursive((GraphViewComponent.DeleteRelationRecursiveEvent ev) -> Application.invokeLater(() -> {
-            removeObjectRelationRecursive(ev.getSubject(), ev.getPredicat(), ev.getObject());
-        }));
+        setupDataPropertyView();
 
+        setupSearch();
+
+        btnSave.setDisable(true);
+    }
+
+    private void setupDataPropertyView() {
         tblDataProperties.setPlaceholder(new Label(ViewBuilder.getInstance().getText("ui.case_view.label_no_data_properties")));
 
         columnPropertyName.setCellValueFactory(
                 p1 -> new ReadOnlyObjectWrapper<>(p1.getValue().getPredicat()));
 
-        columnPropertyName.setCellFactory(new Callback<TableColumn<DataPropertyAssertion, CoraDataPropertyModel>, TableCell<DataPropertyAssertion, CoraDataPropertyModel>>() {
+        columnPropertyName.setCellFactory(new Callback<TableColumn<DataPropertyAssertion, CoraDataPropertyModel>,
+                TableCell<DataPropertyAssertion, CoraDataPropertyModel>>() {
             @Override
-            public TableCell<DataPropertyAssertion, CoraDataPropertyModel> call(TableColumn<DataPropertyAssertion, CoraDataPropertyModel> dataPropertyAssertionCoraDataPropertyModelTableColumn) {
+            public TableCell<DataPropertyAssertion, CoraDataPropertyModel> call(TableColumn<DataPropertyAssertion,
+                    CoraDataPropertyModel> dataPropertyAssertionCoraDataPropertyModelTableColumn) {
                 return new TableCell<DataPropertyAssertion, CoraDataPropertyModel>() {
                     @Override
                     protected void updateItem(CoraDataPropertyModel coraDataPropertyModel, boolean empty) {
@@ -140,10 +146,39 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
                 return new ReadOnlyObjectWrapper<>(object.getUnitName());
             }
         });
+    }
 
-        btnSave.setDisable(true);
+    private void setupEventHandlers() {
+        //Setup Evenent-Handlers
+        graph.selectionProperty().addListener((ov, oldSelection, newSelection) ->
+                onChangeSelection(newSelection));
+        graph.setOnCreateRelation((ev) -> AddObjectPropertyViewController.showAddRelation(stage, ev.getParentInstance()));
 
-        setupSearch();
+        graph.setOnDeleteRelation((GraphViewComponent.DeleteRelationEvent ev) -> Application.invokeLater(() -> {
+            removeObjectRelation(ev.getSubject(), ev.getPredicat(), ev.getObject());
+        }));
+
+        graph.setOnDeleteRelationRecursive((GraphViewComponent.DeleteRelationRecursiveEvent ev) -> Application.invokeLater(() -> {
+            removeObjectRelationRecursive(ev.getSubject(), ev.getPredicat(), ev.getObject());
+        }));
+    }
+
+    private void setupShowSelection() {
+        //Zeige die aktuelle Auswahl in einem Label an
+        currentSelection.addListener((ov, oldValue, newValue) -> {
+            Application.invokeLater(() -> {
+                final ViewBuilder vb = ViewBuilder.getInstance();
+                final String dataText = vb.getText("ui.case_view.label_datatype_property");
+                if(newValue == null) {
+                    final String noSelection = vb.getText("ui.case_view.label_datatype_property_no_selection");
+                    lblSelectionName.setText(dataText + " " + noSelection);
+                } else {
+                    final String lang = MainApplication.getInstance().getLanguage();
+                    final String name = newValue.getDisplayName(lang);
+                    lblSelectionName.setText(dataText + ": " + name);
+                }
+            });
+        });
     }
 
     /**
@@ -237,18 +272,35 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         this.stage = stage;
     }
 
+    /**
+     * Entfernt ein ObjectProperty und versteckt die darauf folgenden Instanzen und ObjectProperties
+     * @param subject Das Subjekt des zu löschenden Properties
+     * @param predicat Das zu löschende ObjectProperty
+     * @param object Das Objekt des zu löschenden ObjectProperties
+     */
     public void removeObjectRelation(CoraInstanceModel subject,
                                      CoraObjectPropertyModel predicat,
                                      CoraInstanceModel object) {
         subject.removeObjectProperty(predicat, object);
     }
 
+    /**
+     * Entfernt ein ObjectProperty und löscht alle darauf folgenden Instanzen und ObjectProperties,
+     * sofern diese Teil der Anwendungsontologie sind.
+     * @param subject Das Subjekt des zu löschenden Properties
+     * @param predicat Das zu löschende ObjectProperty
+     * @param object Das Objekt des zu löschenden ObjectProperties
+     */
     public void removeObjectRelationRecursive(CoraInstanceModel subject,
                                               CoraObjectPropertyModel predicat,
                                               CoraInstanceModel object) {
         subject.removeObjectPropertiesRecursive(predicat, object);
     }
 
+    /**
+     * Setzt die (Fall/Fallbeschreibung-) Instanz, die von diesem CaseViewer angezeigt wird (Ausgangspunkt)
+     * @param model Ausgangspunkt für die Ansicht des Fallgraphen
+     */
     public void showInstance(CoraInstanceModel model) {
         SwingUtilities.invokeLater(() -> graph.createGraphFromInstance(model));
         if(model.getFactory().getCase() != null) {
@@ -273,8 +325,6 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
 
             navNode.setContent(graph.createNavigationView());
         });
-
-
     }
 
     @SuppressWarnings("unused")
@@ -340,11 +390,11 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         }
 
         if(newSelection == null) {
-            currentSelection = null;
+            currentSelection.setValue(null);
             return;
         }
 
-        currentSelection = newSelection;
+        currentSelection.setValue(newSelection);
 
         showDataPropertiesTask = new Task<ObservableList<DataPropertyAssertion>>() {
             @Override
@@ -381,7 +431,7 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
     @Override
     public void onCreateDataRelation(DataPropertyAssertion assertion) {
         CoraInstanceModel instanceModel = assertion.getSubject();
-        if(instanceModel.equals(currentSelection)) {
+        if(instanceModel.equals(currentSelection.getValue())) {
             tblDataProperties.getItems().add(assertion);
         }
     }
@@ -405,21 +455,21 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
     @SuppressWarnings("unused")
     @FXML
     private void onAddDataProperty() {
-        if(currentSelection != null) {
-            DataPropertyEditorFactory.showEditor(currentSelection , null, null, stage);
+        if(currentSelection.getValue() != null) {
+            DataPropertyEditorFactory.showEditor(currentSelection.getValue(), null, null, stage);
         }
     }
 
     @SuppressWarnings("unused")
     @FXML
     private void onRemoveDataProperty() {
-        if(currentSelection != null) {
+        if(currentSelection.getValue() != null) {
             DataPropertyAssertion assertion = tblDataProperties.getSelectionModel().getSelectedItem();
             if(assertion == null) {
                 return;
             }
 
-            currentSelection.removePropertyAssertion(assertion);
+            currentSelection.getValue().removePropertyAssertion(assertion);
         }
     }
 
