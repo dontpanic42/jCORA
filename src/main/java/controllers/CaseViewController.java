@@ -224,14 +224,13 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         currentSelection.addListener((ov, oldValue, newValue) -> {
             Application.invokeLater(() -> {
                 final ViewBuilder vb = ViewBuilder.getInstance();
-                final String dataText = vb.getText("ui.case_view.label_datatype_property");
                 if(newValue == null) {
                     final String noSelection = vb.getText("ui.case_view.label_datatype_property_no_selection");
-                    lblSelectionName.setText(dataText + " " + noSelection);
+                    lblSelectionName.setText(noSelection);
                 } else {
                     final String lang = MainApplication.getInstance().getLanguage();
                     final String name = newValue.getDisplayName(lang);
-                    lblSelectionName.setText(dataText + ": " + name);
+                    lblSelectionName.setText(name);
                 }
             });
         });

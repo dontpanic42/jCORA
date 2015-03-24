@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.embed.swing.*?>
 <?import javafx.embed.swing.SwingNode?>
@@ -152,9 +153,14 @@
                      <children>
                         <VBox layoutX="47.0" layoutY="38.0" prefHeight="398.0" prefWidth="227.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="5.0">
-                                 <children>
-                                    <Label fx:id="lblSelectionName" maxWidth="1000.0" prefWidth="1000.0" text="%ui.case_view.label_datatype_property" />
+                              <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                 <items>
+                                    <Label text="%ui.case_view.label_datatype_property">
+                                       <font>
+                                          <Font name="System Bold" size="13.0" />
+                                       </font></Label>
+                                    <Label fx:id="lblSelectionName" />
+                                    <HBox HBox.hgrow="ALWAYS" />
                                     <Button mnemonicParsing="false" onAction="#onAddDataProperty">
                                        <graphic>
                                           <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
@@ -185,11 +191,8 @@
                                           <Tooltip text="%ui.case_view.tooltip_delete_datatype_property" />
                                        </tooltip>
                                     </Button>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </padding>
-                              </HBox>
+                                 </items>
+                              </ToolBar>
                               <TableView fx:id="tblDataProperties" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                 <columns>
                                   <TableColumn fx:id="columnPropertyName" prefWidth="115.0" text="%ui.case_view.column_data_property_name" />
