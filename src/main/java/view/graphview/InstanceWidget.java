@@ -13,7 +13,7 @@ import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import view.graphview.models.NodeModel;
 
 import java.awt.*;
@@ -21,13 +21,14 @@ import java.awt.geom.Point2D;
 import java.util.Set;
 
 /**
+ * Ein Netbeans Visual Library Widget, das eine Instanz repräsentiert
+ *
  * Created by daniel on 23.08.14.
  */
 public class InstanceWidget extends Widget {
 
     private LabelWidget instanceName;
 
-    private Widget instanceTypeWidget;
     private Scene scene;
 
     private SimpleObjectProperty<NodeModel> model = new SimpleObjectProperty<>();
@@ -53,8 +54,8 @@ public class InstanceWidget extends Widget {
     private final static Color BORDER_COLOR = new Color(188, 207, 238);
     private final static Color BORDER_COLOR_SELECTED = new Color(255, 143, 13);
 
-    private final static Image IMAGE_INSTANCE = Utilities.loadImage("icons/instance-light-16.png");
-    private final static Image IMAGE_TYPE = Utilities.loadImage("icons/instance-type-light-16.png");
+    private final static Image IMAGE_INSTANCE = ImageUtilities.loadImage("icons/instance-light-16.png");
+    private final static Image IMAGE_TYPE = ImageUtilities.loadImage("icons/instance-type-light-16.png");
 
     private static final Border BORDER_4 = BorderFactory.createEmptyBorder(4);
 
@@ -84,12 +85,6 @@ public class InstanceWidget extends Widget {
 
         instanceNameWidget.addChild(instanceName);
         addChild(instanceNameWidget);
-
-        instanceTypeWidget = new Widget(scene);
-        instanceTypeWidget.setLayout(LayoutFactory.createHorizontalFlowLayout());
-        instanceTypeWidget.setBorder(BORDER_4);
-
-        addChild(instanceTypeWidget);
 
         setOpaque(true);
 
@@ -132,34 +127,44 @@ public class InstanceWidget extends Widget {
         graph.currentSelectionProperty().addListener((ov, oldSelection, newSelection) -> setSelected(self == newSelection));
     }
 
+    /**
+     * Zeigt die Liste der Klassen an, von denen die Instanz instanziiert wurde.
+     * @param instance Die Instanz, deren Klassen angezeigt werden sollen
+     */
     private void setTypeList(CoraInstanceModel instance) {
-        instanceTypeWidget.removeChildren();
         if(instance == null) {
             return;
         }
 
         Set<CoraClassModel> s = instance.getFlattenedTypes();
+        final String lang = MainApplication.getInstance().getLanguage();
         for(CoraClassModel c : s) {
-            final String lang = MainApplication.getInstance().getLanguage();
             addType(c.getDisplayName(lang));
-//            addType(c.toString());
-            //TODO: Das Widget kann derzeit nur _einen_ typ anzeigen (layout).
-            //Use-Case für mehrere Klassen?
-            return;
         }
     }
 
+    /**
+     * Zeigt die Klasse mit dem Namen <code>type</code> in der Liste der Klassen an,
+     * von denen die Instanz instanziiert wurde.
+     * @param type Name der Klasse
+     */
     private void addType(String type) {
+        Widget typeWidget = new Widget(scene);
+        typeWidget.setLayout(LayoutFactory.createHorizontalFlowLayout());
+        typeWidget.setBorder(BORDER_4);
+
+
         ImageWidget typeImage = new ImageWidget(scene);
         typeImage.setImage(IMAGE_TYPE);
-        instanceTypeWidget.addChild(typeImage);
+        typeWidget.addChild(typeImage);
 
         LabelWidget instanceType = new LabelWidget(scene);
         instanceType.setFont(scene.getDefaultFont());
         instanceType.setForeground(FOREGROUND_COLOR);
         instanceType.setLabel(type);
 
-        instanceTypeWidget.addChild(instanceType);
+        typeWidget.addChild(instanceType);
+        addChild(typeWidget);
     }
 
     /**
@@ -177,7 +182,7 @@ public class InstanceWidget extends Widget {
 
     /**
      * Gibt das zugrundeliegende NodeModel zurück
-     * @return das NodeModel
+     * @return das <code>NodeModel</code>
      */
     public NodeModel getModel() {
         return model.get();
@@ -187,10 +192,17 @@ public class InstanceWidget extends Widget {
         return model;
     }
 
+    /**
+     * Setzt das zugrundeliegende <code>NodeModel</code>
+     * @param model das <code>NodeModel</code>
+     */
     public void setModel(NodeModel model) {
         this.model.set(model);
     }
 
+    /**
+     * Setzt das Aussehen des Knotens, wenn die Instanz ein Teil der Domänenontologie ist
+     */
     private void setIsPartOfDomainOntology() {
         final float[] gradientFractions = {0.0f, 1.0f};
 
@@ -204,6 +216,9 @@ public class InstanceWidget extends Widget {
         setBackground(lgp);
     }
 
+    /**
+     * Setzt das Aussehen des Knotens, wenn die Instanz ein Teil der Anwendungsontologie ist
+     */
     private void setIsPartOfTaskOntology() {
         final float[] gradientFractions = {0.0f, 1.0f};
 
