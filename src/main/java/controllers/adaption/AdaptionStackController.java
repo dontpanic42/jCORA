@@ -24,20 +24,36 @@ import java.util.List;
 
 
 /**
+ * Dialog, mittels dessen die Adaption der Lösung an die Fallbeschreibung konfiguriert werden kann.
+ *
+ * @see controllers.adaption.AdaptionStackController.StartAdaptionEvent
+ * @see services.adaption.AdaptionService
+ * @see services.adaption.AdaptionRuleFactory
  * Created by daniel on 09.10.14.
  */
 public class AdaptionStackController {
-
+    /**
+     * Liste der Verfügbaren Adaptionsregeln
+     */
     @FXML
     private ListView<AdaptionRule> listAvailable;
-
+    /**
+     * Liste der ausgewählten Adaptionsregeln
+     */
     @FXML
     private ListView<AdaptionRule> listSelected;
-
+    /**
+     * Stage, auf der dieser Dialog angezeigt wird
+     */
     private Stage stage;
-
+    /**
+     * Property, das Eventhandler für das <code>StartAdaptionEvent</code> enthält.
+     */
     private SimpleObjectProperty<EventHandler<StartAdaptionEvent>> onStartAdaption = new SimpleObjectProperty<>();
 
+    /**
+     * Initialisiert den Dialog
+     */
     @SuppressWarnings("unused")
     @FXML
     private void initialize() {

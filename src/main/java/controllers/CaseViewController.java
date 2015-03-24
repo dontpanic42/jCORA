@@ -224,7 +224,7 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         currentSelection.addListener((ov, oldValue, newValue) -> {
             Application.invokeLater(() -> {
                 final ViewBuilder vb = ViewBuilder.getInstance();
-                if(newValue == null) {
+                if (newValue == null) {
                     final String noSelection = vb.getText("ui.case_view.label_datatype_property_no_selection");
                     lblSelectionName.setText(noSelection);
                 } else {
@@ -373,9 +373,19 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         }
     }
 
+    /**
+     * Initialisiere die Swing-Componente. Die NetBeans Visual Library ist leider Swing-basiert.
+     * Das <code>swingNode#resize</code>-Konstrukt hat keine Auswirkungen auf die Größe de 
+     * inhalts, 800x600 sind wilkürliche Werte. Das Resizing scheint einen Bug zu beheben, bei
+     * dem der Inhalt falsch angezeigt wird ("getClipBounds()").
+     *
+     * ACHTUNG: Alle (schreibenden) Interaktionen mit dem Fallgraphen müssen jeweils im
+     * Swing-Thread ausgeführt werden. D.h. alle Eventhandler werden ebenfalls im Swing-Thread
+     * aufgerufen und müssen ggf. manuell im JavaFX-Thread weitergeführt werden...
+     * @param swingNode der <code>SwingNode</code> für den Fallgraph
+     * @param navNode der <code>SwingNode</code> für die Minimap
+     */
     private void createAndSetSwingContent(final SwingNode swingNode, final SwingNode navNode) {
-
-        //navNode.resize(400, 400);
         SwingUtilities.invokeLater(() -> {
             //Workaround für den getClipBounds() bug!
             swingNode.resize(800, 600);
@@ -385,6 +395,9 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         });
     }
 
+    /**
+     * Speichert den aktuell angezeigten Fall
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onSaveCase() {

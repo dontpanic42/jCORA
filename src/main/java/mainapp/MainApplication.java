@@ -21,32 +21,82 @@ import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 /**
+ * Hauptklasse der Anwendung.
+ *
+ * Zeigt beim ersten Start oder bei einem Update den "Einstellungen"-Dialog an.
+ * Daraufhin wird die Fallbasis geladen und das Hauptfenster wird angezeigt.
+ * Diese Klasse enthält zudem einige anwendungsweit benötigte Referenzen wie die Sprache,
+ * die Fallbasis und das Hauptfenster.
+ *
  * Created by daniel on 24.08.14.
  */
 public class MainApplication extends Application {
-
+    /**
+     * Name der Anwendung als String
+     */
     public static final String APPLICATION_NAME = "jCora";
+    /**
+     * Version der Anwendung als String. Wird die Version geändert, wird der Nutzer vor
+     * Anwendungsstart aufgefordert, die Einstellungen zu überprüfen
+     */
     public static final String VERSION_STRING = "v1.0";
-
-    private Language currentLanguage = Language.GERMAN;
+    /**
+     * Standardsprache, falls keine kompatible Sprach ermittelt werden konnte oder die
+     * Sprache (noch) nicht konfiguriert ist.
+     */
     public static final Language DEFAULT_LANGUAGE = Language.ENGLISH;
-
+    /**
+     * Die aktuelle Sprache der Anwendung
+     */
+    private Language currentLanguage = DEFAULT_LANGUAGE;
+    /**
+     * FXML-Datei für das Hauptfenster
+     */
     private static final String MAINAPP_VIEW_FILE = "views/mainAppView.fxml";
+    /**
+     * Einstellungen dieser Klasse. Ist die Einstellung "AppIsConfigured"+VERSION_STRING nicht vorhanden,
+     * wird vor dem Anwendungsstart (d.h. vor dem Laden der Fallbasis etc.) der Einstellungen
+     * Dialog angzeigt.
+     */
     private final Preferences prefs = Preferences.userNodeForPackage(MainApplication.class);
-
+    /**
+     * Singleton-Instanz dieser Klasse
+     */
     private static MainApplication instance;
+    /**
+     * Singleton-Konstruktor. Gibt eine Instanz dieser Klasse zurück.
+     * @return Singleton-Instanz
+     */
     public static MainApplication getInstance() {
         return instance;
     }
-
+    /**
+     * Controller des Hauptfensters
+     */
     private MainAppViewController mainAppViewController;
-
+    /**
+     * Die Stage, die das Hauptfenster der Anwendung repräsentiert
+     */
     private Stage mainStage;
-
+    /**
+     * Property, das die Fallbasis enthält
+     */
     private SimpleObjectProperty<CoraCaseBase> caseBase = new SimpleObjectProperty<>();
+    /**
+     * Asynchroner <code>Task</code> für das Laden der Fallbasis
+     */
     private Task<CoraCaseBase> initCaseBaseTask;
+    /**
+     * Das <code>ResourceBundle</code>, das die Übersetzungen für die Anwendungsoberflächen enthält
+     */
     private ResourceBundle texts;
 
+    /**
+     * Gibt das Resource-Bundle zurück, in dem die Übersetzungen als *.properties Datei(en)
+     * vorhanden sind. Die Properties-Dateien sind im <code>Languages</code>-enum definiert.
+     * @see models.Language
+     * @return Das <code>ResourceBundle</code>, das die Übersetzungen für die Anwendungsoberflächen enthält
+     */
     public ResourceBundle getTexts() {
         if(texts == null) {
             try {
@@ -64,10 +114,20 @@ public class MainApplication extends Application {
         return texts;
     }
 
+    /**
+     * Gibt die aktuelle Sprache der Anwendung zurück. Die Sprache wird jeweils als ISO-Tag
+     * ("de", "en" etc.) zurückgegeben.
+     * @return Die aktuelle Sprache der Anwendung als ISO-Tag
+     */
     public String getLanguage() {
         return currentLanguage.getTag();
     }
 
+    /**
+     * Main-Methode der Anwendung. Wird von JavaFX aufgerufen.
+     * @param stage Die initiale Stage
+     * @throws Exception Exceptions, die beim initialisieren der Anwendung auftreten
+     */
     @Override
     public void start(Stage stage) throws Exception {
         System.out.println("Java version: " + System.getProperty("java.version"));
@@ -141,9 +201,12 @@ public class MainApplication extends Application {
         });
     }
 
-
     /**
-     * Beendet die Anwendung.
+     * Beendet die Anwendung. Führt den ShutdownHook Thread aus.
+     * Sollte aufgerufen werden um die Anwendung zu beenden, da bei einem
+     * direkten Aufruf von System.exit ggf. die Fallbasis nicht geschlossen
+     * wird und es zu Datenverlust oder Korruption der Fallbasis kommen kann.
+     * @see MainApplication#installShutdownHooks()
      */
     public void exitApp() {
         System.out.println("Bye.");
@@ -204,26 +267,60 @@ public class MainApplication extends Application {
         new Thread(initCaseBaseTask).start();
     }
 
+    /**
+     * Gibt die Stage zurück, die das Hauptfenster der Anwendung repräsentiert.
+     * Die Anwendung hat immer nur ein Hauptfenster (in dem u.a. die Fallbasis angezeigt
+     * wird). Wird das Hauptfenster geschlossen, wird die Anwendung beendet.
+     * @return Die Stage, die das Hauptfenster der Anwendung repräsentiert
+     */
     public Stage getMainStage() {
         return mainStage;
     }
 
+    /**
+     * Gibt die Fallbasis der Anwendung zurück. Die Anwendung hat jeweils nur eine Fallbasis. Soll
+     * die Fallbasis geändert werden, muss die Anwendung neu gestartet werden.
+     * @return
+     */
     public CoraCaseBase getCaseBase() {
         return caseBase.get();
     }
 
-    public SimpleObjectProperty<CoraCaseBase> caseBaseProperty() {
+    /**
+     * Case-base Property
+     * @see MainApplication#getCaseBase()
+     * @return
+     */
+    @SuppressWarnings("unused")
+    private SimpleObjectProperty<CoraCaseBase> caseBaseProperty() {
         return caseBase;
     }
 
-    public void setCaseBase(CoraCaseBase caseBase) {
+    /**
+     * Setter für die Case-base
+     * @see MainApplication#getCaseBase()
+     * @param caseBase Die Case-base für die Anwendung
+     */
+    @SuppressWarnings("unused")
+    private void setCaseBase(CoraCaseBase caseBase) {
         this.caseBase.set(caseBase);
     }
 
+    /**
+     * Gibt den Controller des Hauptfensters zurück. Es existiert immer nur ein Hauptfenster.
+     * Wird das Hauptfenster geschlossen, wird die Anwendung beendet.
+     * @see controllers.MainAppViewController
+     * @return Der Controller des Hauptfensters
+     */
     public MainAppViewController getMainAppView() {
         return mainAppViewController;
     }
 
+    /**
+     * Main methode. Startet die Anwendungs über die JavaFX <code>launch</code> methode.
+     * @see Application#launch(String...)
+     * @param args Kommandozeilenparameter als String-Array
+     */
     public static void main(String[] args) {
         launch(args);
     }

@@ -31,9 +31,17 @@ public class CbQueryEditorController {
      */
     private static String EDITOR_TEMPLATE_FILE = "views/cbquery/codemirror/editor.html";
 
+    /**
+     * WebView für die Anzeige des SPARQL-Editors. Derzeit scheint es keinen "guten" Code-
+     * Editor für JavaFX zugeben, der die SPARQL-Syntax unterstützt.
+     */
     @FXML
     private WebView editorWebView;
 
+    /**
+     * Tabelle, in der die Ergebnisse einer Anfrage dargestellt werden. Die Spalten
+     * der Tabelle werden dynamisch aus den Anfrage-Variablen erzeugt.
+     */
     @FXML
     private TableView<ArrayList<String>> resultsTable;
 
@@ -43,6 +51,13 @@ public class CbQueryEditorController {
         applyEditingTemplate();
     }
 
+    /**
+     * Lädt die durch das Feld <code>EDITOR_TEMPLATE_FILE</code> vorgegebene Template-Datei (üblicherweise
+     * im HTML-Format) und lädt diese in die WebView.
+     *
+     * Die WebView muss von einem <code>File</code> geladen werden - wird das Template als String geladen,
+     * können Pfade relativ zum Template (z.B. Styles/JavaScripts) nicht aufgelöst werden.
+     */
     private void applyEditingTemplate() {
         String file = this.getClass().getClassLoader().getResource(EDITOR_TEMPLATE_FILE).toExternalForm();
         if(file != null) {
@@ -50,6 +65,9 @@ public class CbQueryEditorController {
         }
     }
 
+    /**
+     * Startet die eingegebene Anfrage
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onRunQuery() {
@@ -77,10 +95,17 @@ public class CbQueryEditorController {
         }
     }
 
+    /**
+     * Entfernt alle Spalten (und implizit Daten) aus der Tabelle
+     */
     private void clearTable() {
         resultsTable.getColumns().clear();
     }
 
+    /**
+     * Zeigt das Ergebnis einer Anfrage in der Ergebnis-Tabelle an
+     * @param resultSet Das Ergebnis der SPARQL anfrage
+     */
     public void showResultSet(ResultSet resultSet) {
         clearTable();
 
@@ -100,6 +125,15 @@ public class CbQueryEditorController {
         buildTableColumns(results, cols);
     }
 
+    /**
+     * Gibt den Namen eines RDFNodes zurück.
+     * Falls der Node gleich <code>null</code> ist, wird ein Strich zurückgegeben ("-")
+     * Falls der Node keinen Namen besitzt, wird "BNode" zurückgegeben
+     * Falls der Node ein Literal ist, wird der Wert des Literals als String zurückgegeben
+     * Sonst wird der Vollständige Name des Nodes zurückgegeben (inkl. Namensraum)
+     * @param node Der Node, dessen Name ermittelt werden soll
+     * @return Der Name des Nodes
+     */
     private String RDFNodeToString(RDFNode node) {
         if(node == null) {
             return "-";
@@ -116,6 +150,12 @@ public class CbQueryEditorController {
         return node.toString();
     }
 
+    /**
+     * Zeigt die zweidimensionale Liste mit Ergebnissen (<code>results</code>) in einer Tablle an.
+     * Die Titelzeile wird durch die <code>cols</code>-Liste definiert.
+     * @param results Die Ergebnisse, die angezeigt werden sollen
+     * @param cols Die Überschriften für die Titelzeile
+     */
     private void buildTableColumns(ArrayList<ArrayList<String>> results, ArrayList<String> cols) {
         ObservableList<ArrayList<String>> data = FXCollections.observableArrayList();
         data.addAll(results);
