@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * Controller für die Fallansicht
+ *
  * Created by daniel on 24.08.14.
  */
 public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
@@ -53,37 +55,82 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
     @FXML
     private SwingNode navNode;
 
+    /**
+     * Spalte für Attributsnamen
+     */
     @FXML
     private TableColumn<DataPropertyAssertion, CoraDataPropertyModel> columnPropertyName;
 
+    /**
+     * Spalte für Attributswerte
+     */
     @FXML
     private TableColumn<DataPropertyAssertion, String>  columnPropertyValue;
 
+    /**
+     * Spalte für Datentyp/Einheit des Werts
+     */
     @FXML
     private TableColumn<DataPropertyAssertion, String> columnPropertyUnit;
 
+    /**
+     * Attributstabelle
+     */
     @FXML
     private TableView<DataPropertyAssertion> tblDataProperties;
 
+    /**
+     * "Speichern"-Button. Ist nur aktiviert, wenn der Fall bereits eine FallID besitzt,
+     * ähnlich der Unterscheidung "Speichern" und "Speichern unter"
+     */
     @FXML
     private Button btnSave;
 
+    /**
+     * Textfeld für die Suche nach Instanzen im Fallgraphen
+     */
     @FXML
     private TextField searchTextField;
 
+    /**
+     * Ergebnisse der Suche nach Instanzen im Fallgraphen
+     */
     @FXML
     private ListView<CoraInstanceModel> searchListView;
 
+    /**
+     * Label, das die derzeit ausgewählte Instanz anzeigt, über der Attributstabelle.
+     * Inhalt: "Attribut: [Instanzname]"
+     */
     @FXML
     private Label lblSelectionName;
 
+    /**
+     * Der Fallgraph
+     */
     private final GraphViewComponent graph = new GraphViewComponent();
 
+    /**
+     * Die Instanz, die den Ausgangspunkt für den angezeigten Fall darstellt.
+     * Wird ein vollständiger Fall angezeigt eine Instanz von "Fall",
+     * wird ein CBR-Request angzeieigt eine Instanz von "Fallbeschreibung".
+     */
     private CoraInstanceModel model;
-    //private CoraInstanceModel currentSelection;
+
+    /**
+     * Die aktuell ausgewählte Instanz, oder <code>null</code>, wenn keine Instanz
+     * ausgewählt ist.
+     */
     private SimpleObjectProperty<CoraInstanceModel> currentSelection = new SimpleObjectProperty<>();
+
+    /**
+     * Asynchroner <code>Task</code>, der die Attribute (DataProperties) der ausgewählten Instanz anzeigt
+     */
     private Task<ObservableList<DataPropertyAssertion>> showDataPropertiesTask;
 
+    /**
+     * Die Stage, in der der Fall angzeigt wird (für Modals)
+     */
     private Stage stage;
 
     @FXML
@@ -101,6 +148,9 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         btnSave.setDisable(true);
     }
 
+    /**
+     * Setup-Methode für die Attribute-Tabelle
+     */
     private void setupDataPropertyView() {
         tblDataProperties.setPlaceholder(new Label(ViewBuilder.getInstance().getText("ui.case_view.label_no_data_properties")));
 
@@ -148,6 +198,9 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         });
     }
 
+    /**
+     * Setup-Methode für Fallgraph-Eventhandler
+     */
     private void setupEventHandlers() {
         //Setup Evenent-Handlers
         graph.selectionProperty().addListener((ov, oldSelection, newSelection) ->
@@ -163,6 +216,9 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         }));
     }
 
+    /**
+     * Setup-Methode für die Anzeige der aktuell ausgewählten Instanz
+     */
     private void setupShowSelection() {
         //Zeige die aktuelle Auswahl in einem Label an
         currentSelection.addListener((ov, oldValue, newValue) -> {
@@ -218,6 +274,9 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
 
     }
 
+    /**
+     * Wird aufgerufen, wenn nach einer Instanz im Fallgraphen gesucht wird
+     */
     @FXML
     private void onSearchInput() {
         List<CoraInstanceModel> searchResults = graph.findDisplayedInstances(searchTextField.getText());
@@ -369,6 +428,10 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         controller.setCase(newcase);
     }
 
+    /**
+     * Wird aufgerufen, wenn der Fallgraph als Bild gespeichert werden soll
+     * @throws IOException Wenn der ausgewählte Speicher-Pfad ungültig ist
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onExportAsImage() throws IOException {
@@ -473,6 +536,10 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         }
     }
 
+    /**
+     * Wird aufgerufen, wenn der Fall unter einer neuen FallID gespeichert (dupliziert)
+     * werden soll
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onSaveAsNew() {
@@ -480,6 +547,9 @@ public class CaseViewController implements CoraCaseModel.CaseChangeHandler {
         SaveAsNewViewController.showSaveAsNew(stage, caseModel);
     }
 
+    /**
+     * Wird aufgerufen, wenn der Fall im XML-Format gespeichert werden soll.
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onSaveAsXML() {

@@ -27,28 +27,62 @@ import java.util.Set;
  */
 public class AddObjectPropertyViewController {
 
+    /**
+     * FXML-Datei für den Add-ObjectProperty-Dialog
+     */
     private static final String ADD_OBJECT_PROPERTY_VIEW_FILE = "views/addObjectPropertyView.fxml";
 
+    /**
+     * Liste der Relationen
+     */
     @FXML
     private ListView<CoraObjectPropertyModel> listProperties;
+    /**
+     * Items der Liste der Relationen
+     */
     private ObservableList<CoraObjectPropertyModel> itemsProperties;
+    /**
+     * Asynchroner Task für das Erstellen der Liste der Relationen
+     */
     private Task<ObservableList<CoraObjectPropertyModel>> listPropertiesTask;
 
+    /**
+     * Textfeld für die Instanz-Suche
+     */
     @FXML
     private TextField txtSearchRelation;
 
+    /**
+     * Liste der Instanzen
+     */
     @FXML
     private ListView<CoraInstanceModel> listInstances;
+    /**
+     * Items der Liste der Instanzen
+     */
     private ObservableList<CoraInstanceModel> itemsInstances;
+    /**
+     * Asynchroner Task für das Erstellen der Liste der Instanzen
+     */
     private Task<ObservableList<CoraInstanceModel>> listInstancesTask;
 
+    /**
+     * Textfeld für die Relations-Suche
+     */
     @FXML
     private TextField txtSearchInstance;
 
+    /**
+     * Die Instanz, der ein ObjectProperty hinzugefügt werden soll
+     */
     private CoraInstanceModel model;
-
+    /**
+     * Die Stage, zu der dieser Dialog modal ist.
+     */
     private Stage stage;
-
+    /**
+     * Klassen dieser Instanz
+     */
     private Set<CoraClassModel> currentClasses;
 
     @FXML
@@ -118,6 +152,10 @@ public class AddObjectPropertyViewController {
         this.stage = stage;
     }
 
+    /**
+     * Bricht das anlegen eines ObjectProperties ab und schließt den Dialog. Etwaige
+     * erstellte Instanzen bleiben bestehen.
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onCancel() {
@@ -126,6 +164,9 @@ public class AddObjectPropertyViewController {
         }
     }
 
+    /**
+     * Speichert das ausgewählte ObjectProperty
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onCreateProperty() {
@@ -143,7 +184,8 @@ public class AddObjectPropertyViewController {
     }
 
     /**
-     * Wird aufgerufen, wenn der "Instanz hinzufügen" Button gedrückt wird.
+     * Wird aufgerufen, wenn der "Instanz hinzufügen" Button gedrückt wird. Ruft den CreateInstance-
+     * Dialog auf und zeigt ggf. die neu erstellte Instanz an.
      * @throws IOException Wenn die Instanz-Erzeugen-Dialog FXML Datei nicht gefunden wurde
      */
     @SuppressWarnings("unused")
@@ -165,6 +207,10 @@ public class AddObjectPropertyViewController {
         }
     }
 
+    /**
+     * Sucht in der Liste der Instanzen nach einer Instanz, deren (teilweiser) Name
+     * durch das Textfeld <code>txtSearchInstance</code> vorgegeben wurde
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onSearchInstance() {
@@ -181,6 +227,10 @@ public class AddObjectPropertyViewController {
         }
     }
 
+    /**
+     * Sucht in der Liste der Relationen nach einer Relation, deren (teilweiser) Name
+     * durch das Textfeld <code>txtSearchRelation</code> vorgegeben wurde
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onSearchRelation() {
@@ -190,7 +240,6 @@ public class AddObjectPropertyViewController {
             final String lang = MainApplication.getInstance().getLanguage();
             String toSearch = txtSearchRelation.getText().toLowerCase();
             FilteredList<CoraObjectPropertyModel> filteredList;
-//            filteredList = itemsProperties.filtered( prop -> prop.toString().toLowerCase().contains(toSearch));
             filteredList = itemsProperties.filtered( prop -> prop.getDisplayName(lang).toLowerCase().contains(toSearch));
             listProperties.setItems(filteredList);
 

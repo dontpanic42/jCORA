@@ -46,13 +46,26 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
     @FXML
     private AnchorPane caseBaseTabPane;
 
+    /**
+     * Das Anwendungs-Hauptmenü
+     */
     @FXML
     private MenuBar menuBar;
 
+    /**
+     * Die Fallbasis-Ansicht
+     */
     @FXML
     private CaseBaseViewController caseBaseViewController;
+    /**
+     * Die Fallbasis, die in der Fallbasis-Ansicht angezeigt wird
+     */
     private SimpleObjectProperty<CoraCaseBase> caseBase = new SimpleObjectProperty<>();
 
+    /**
+     * Liste der derzeit geöffneten Fälle in der Form (FallID, Tab). Wird dazu genutzt
+     * sicherzustellen, das ein Fall jeweils nur in einem Tab geöffnet ist.
+     */
     private HashMap<String, Tab> openCases = new HashMap<>();
 
     @FXML
@@ -61,15 +74,26 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         initializeCaseBaseView();
     }
 
+    /**
+     * Initialisiert die Fallbasis-Ansicht
+     */
     private void initializeCaseBaseView() {
         caseBaseViewController.caseBaseProperty().bind(caseBaseProperty());
     }
 
+    /**
+     * Wird aufgerufen, wenn der "Settings"/"Einstellungen"-Menüpunkt angeclickt wird.
+     * Zeigt den "Settings"/"Einstellungen"-Dialog
+     */
     @FXML
     private void onShowSettings() {
         SettingsViewController.showSettings();
     }
 
+    /**
+     * Erzeugt eine neue CBR-Anfrage
+     * @throws Throwable Exceptions, die beim Erstellen der CBR-Anfrage aufgetreten sind
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onNewQuery() throws Throwable {
@@ -88,18 +112,33 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         controller.setCase(caseModel);
     }
 
+    /**
+     * Getter für die aktuelle Fallbasis
+     * @return Die Fallbasis
+     */
     public CoraCaseBase getCaseBase() {
         return caseBase.get();
     }
 
+    /**
+     * Getter für das Property, das die akutelle Fallbasis enthält.
+     * @return Property, das die akutelle Fallbasis enthält
+     */
     public SimpleObjectProperty<CoraCaseBase> caseBaseProperty() {
         return caseBase;
     }
 
+    /**
+     * Setter für die aktuelle Fallbasis
+     */
     public void setCaseBase(CoraCaseBase caseBase) {
         this.caseBase.set(caseBase);
     }
 
+    /**
+     * Zeigt den SPARQL-Query-Editor an. Wird über den Menüpunkt "SPARQL" angezeigt.
+     * @throws IOException Wenn die SPARQL-Editor FXML-Datei nicht gefunden wurde
+     */
     @FXML
     public void showSPARQLEditor() throws IOException {
         FXMLLoader loader = ViewBuilder.getInstance().createLoader(SPARQL_EDITOR_VIEW_FILE);
@@ -189,6 +228,12 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         }
     }
 
+    /**
+     * Lädt einen Fall mit der ID <code>caseID</code> aus der Fallbasis und zeigt diesen an.
+     * @param caseID Die ID des Falls, der geladen werden soll
+     * @return Controller der neuen Fallansicht
+     * @throws IOException Exception die geworfen wird, wenn die FXML-Datei des Falleditors nicht gefunden wurde
+     */
     private CaseViewController createCaseView(String caseID) throws IOException {
         Tab caseTab = new Tab();
         ImageView caseIcon = new ImageView(new Image(this.getClass().getClassLoader().getResourceAsStream("icons/case.png")));
@@ -213,6 +258,10 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         return loader.getController();
     }
 
+    /**
+     * Wird aufgerufen, wenn ein Falleditor-Tab geschlossen wird.
+     * @param caseId Die ID des Falls, der geschlossen wurde
+     */
     private void onCaseTabClose(String caseId) {
         if(openCases.containsKey(caseId)) {
             openCases.remove(caseId);
@@ -224,6 +273,11 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
 
     }
 
+    /**
+     * Wird aufgerufen, wenn ein Fall aus der Fallbasis gelöscht wurde. Schließt ggf. den Tab,
+     * in dem der Fall angezeigt wird.
+     * @param caseId
+     */
     @Override
     public void onRemoveCase(String caseId) {
         if(openCases.containsKey(caseId)) {
@@ -233,6 +287,12 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         }
     }
 
+    /**
+     * Zeigt die Ergebnisse des CBR-Retrievals in einem neuen Tab
+     * @param query Die CBR-Anfrage
+     * @param results Die Ergebnisse des CBR-Retrievals
+     * @throws IOException Wird geworfen, wenn die FXML-Datei der Ergebniss-Ansicht nicht gefunden wurde
+     */
     public void showRetrievalResults(CoraQueryModel query, List<CoraRetrievalResult> results) throws IOException {
         FXMLLoader loader = ViewBuilder.getInstance().createLoader(RETRIEVAL_RESULTS_VIEW_FILE);
         AnchorPane pane = loader.load();
@@ -257,6 +317,9 @@ public class MainAppViewController implements CoraCaseBase.CaseBaseChangeHandler
         controller.setQuery(query);
     }
 
+    /**
+     * Wird aufgerufen, wenn dieses Fenster geschlossen wird. Beendet jCORA.
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onExit() {

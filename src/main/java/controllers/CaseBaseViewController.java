@@ -41,14 +41,26 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
     @FXML
     private TableView<TableModel> tblCaseBase;
 
+    /**
+     * Textfeld für die Suche nach Fall-IDs
+     */
     @FXML
     private TextField txtSearchCaseID;
+    /**
+     * Items der Liste der Fälle
+     */
     private ObservableList<TableModel> itemsCases;
+    /**
+     * Asynchroner <code>Task</code> für das laden der Fallbasis
+     */
     private Task<ObservableList<TableModel>> loadCaseBaseTask;
 
     @FXML
     private Accordion accordionLeft;
 
+    /**
+     * Property, das die aktuell angzeigte Fallbasis (oder null, wenn noch keine Fallbasis geladen wurde) enthält.
+     */
     private SimpleObjectProperty<CoraCaseBase> caseBase = new SimpleObjectProperty<>();
 
     @FXML
@@ -74,12 +86,19 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
         });
     }
 
+    /**
+     * Zeigt den Case-Import Dialog an
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onCaseImport() {
         CaseImportViewController.showCaseImport(MainApplication.getInstance().getMainStage());
     }
 
+    /**
+     * Zeigt eine Fallbasis in dieser Ansicht an (asynchron)
+     * @param caseBase Die anzuzeigende Fallbasis
+     */
     private void showCaseBase(CoraCaseBase caseBase) {
         if(loadCaseBaseTask != null) {
             loadCaseBaseTask.cancel();
@@ -117,6 +136,10 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
         caseBase.addCaseBaseChangeHandler(this);
     }
 
+    /**
+     * Sucht nach einer Fall-ID, die (teilweise) durch das Textfeld
+     * <code>txtSearchCaseID</code> vorgegebn wird.
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onSearchCaseID() {
@@ -130,6 +153,11 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
         }
     }
 
+    /**
+     * Wird aufgerufen, wenn ein neuer Fall erstellt wird (durch Speichern eines Falls mit einer neuen ID).
+     * Fügt den neu erstellten Fall in der Liste der Fälle an
+     * @throws Exception
+     */
     @SuppressWarnings("unused")
     @FXML
     private void onCreateNewCase() throws Exception {
@@ -147,6 +175,11 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
         }
     }
 
+    /**
+     * Entfernt eine Fall mit der ID <code>caseId</code> aus der Liste
+     * der angezeigten Fälle
+     * @param caseId
+     */
     @Override
     public void onRemoveCase(String caseId) {
         System.out.println("On Case Remove..." + caseId);
@@ -160,18 +193,33 @@ public class CaseBaseViewController implements CoraCaseBase.CaseBaseChangeHandle
         }
     }
 
+    /**
+     * Gibt die derzeit angezeigte Fallbasis zurück.
+     * @return Die derzeit angezeigte Fallbasis
+     */
     public CoraCaseBase getCaseBase() {
         return caseBase.get();
     }
 
+    /**
+     * Property, das die derzeit angezeigte Fallbasis enthält.
+     * @return Property, das die derzeit angezeigte Fallbasis enthält.
+     */
     public SimpleObjectProperty<CoraCaseBase> caseBaseProperty() {
         return caseBase;
     }
 
+    /**
+     * Setzt die anzuzeigende Fallbasis
+     * @param caseBase
+     */
     public void setCaseBase(CoraCaseBase caseBase) {
         this.caseBase.set(caseBase);
     }
 
+    /**
+     * Datenmodell für die Fall-Liste.
+     */
     public class TableModel {
         SimpleStringProperty caseId;
         SimpleObjectProperty<Button> btnView;
