@@ -1,5 +1,8 @@
 package controllers;
 
+import com.hp.hpl.jena.ontology.OntClass;
+import com.hp.hpl.jena.ontology.OntModel;
+import controllers.commons.ThrowableErrorViewController;
 import controllers.commons.TranslateStringViewController;
 import exceptions.ResourceAlreadyExistsException;
 import javafx.collections.FXCollections;
@@ -7,10 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -68,6 +68,15 @@ public class AddInstanceViewController {
      */
     private Stage stage;
 
+    /* NEU */
+    private OntModel model;
+
+    @FXML
+    private CheckBox clsActive;
+
+    private Set<CoraClassModel> superClasses;
+    /* NEU ENDE */
+
     /**
      * Liste der Überseztungen des Anzeigenamen
      */
@@ -96,6 +105,14 @@ public class AddInstanceViewController {
         AddInstanceViewController c = loader.getController();
         c.setSuperClasses(superClasses);
         c.setStage(stage);
+
+        /* NEU
+        * TODO: Model direkt übergeben... */
+        for(CoraClassModel cls : superClasses) {
+            c.setModel(cls);
+            break;
+        }
+        /* NEU ENDE */
 
         stage.showAndWait();
 
@@ -133,6 +150,7 @@ public class AddInstanceViewController {
      * @param superClasses Set der Klassen, die als "Root" für den Klassenbaum dienen
      */
     public void setSuperClasses(Set<CoraClassModel> superClasses) {
+        this.superClasses = superClasses;
         TreeItem<CoraClassModel> dummyRoot = new TreeItem<>();
 
         for(CoraClassModel model : superClasses) {
@@ -142,6 +160,25 @@ public class AddInstanceViewController {
 
         classTree.setRoot(dummyRoot);
     }
+
+    /* Neu
+    * TODO: Ordnetlich machen!!*/
+    public void setModel(CoraClassModel superClass) {
+        this.model = superClass.getModel();
+    }
+
+    @FXML
+    private void onChangeClsActive() {
+        System.out.println("clsACTIVE: ");
+        if(clsActive.isSelected()) {
+            System.out.println("Ja.");
+            txtClassName.setEditable(true);
+        } else {
+            System.out.println("Nein.");
+            txtClassName.setEditable(false);
+        }
+    }
+    /* Neu ende */
 
     @FXML
     public void initialize() {
@@ -221,21 +258,41 @@ public class AddInstanceViewController {
     @SuppressWarnings("unused")
     @FXML
     private void onCreateInstance() {
-        CoraClassModel clazz = classTree.getSelectionModel()
-                .getSelectedItem().valueProperty().get();
-
-        if(clazz == null) {
-            System.err.println("Keine klasse ausgewählt.");
-            return;
-        }
-
+        /* Hole den Instanznamen */
         String instanceName = escapeInstanceName(txtInstanceName.getText());
 
+        /* Ist der Instanzname leer, breche ab */
         if(instanceName.equals("")) {
             System.err.println("Kein Instanzname angegeben");
             return;
         }
 
+        /* Bestimme die Elternklasse */
+        CoraClassModel clazz = null;
+        /* Ist Cora Logic Script (CLS) aktiviert, versuche den Klassennamen zu parsen */
+        if(clsActive.isSelected()) {
+            try {
+                OntClass oc = services.cls.ClassBuilder.createClassFromString(model, txtClassName.getText());
+                CoraClassModel ccm = superClasses.iterator().next();
+                clazz = ccm.getFactory().wrapClass(oc);
+
+            } catch(Exception e) {
+                ThrowableErrorViewController.showError(e, true);
+            }
+        /* Ist CLS nicht aktiv, verwende die im Baum ausgewählte Klasse. */
+        } else {
+            clazz = classTree.getSelectionModel()
+                    .getSelectedItem().valueProperty().get();
+        }
+
+        /* Ist die Klasse gleich null, d.h. es wurde keine Klasse im Baum ausgewählt oder der
+           der CLS-String ist fehlerhaft, breche ab. */
+        if(clazz == null) {
+            System.err.println("Keine klasse ausgewählt.");
+            return;
+        }
+
+        /* Erzeuge die Instanz */
         try {
             CoraInstanceModel instance;
 
@@ -249,10 +306,9 @@ public class AddInstanceViewController {
             setReturnValue(instance);
             stage.close();
         } catch (ResourceAlreadyExistsException e) {
+            //TODO: Wenn die Klasse mit CLS erzeugt wurde, lösche diese wieder!
             System.err.println("Instanz existiert bereits");
         }
-
-
     }
 
     /**

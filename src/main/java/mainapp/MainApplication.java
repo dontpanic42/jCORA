@@ -289,7 +289,7 @@ public class MainApplication extends Application {
     /**
      * Case-base Property
      * @see MainApplication#getCaseBase()
-     * @return
+     * @return Das Case-base Property
      */
     @SuppressWarnings("unused")
     private SimpleObjectProperty<CoraCaseBase> caseBaseProperty() {

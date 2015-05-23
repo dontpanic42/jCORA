@@ -16,7 +16,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.prefs.Preferences;
 
 /**
@@ -327,6 +326,7 @@ public class CoraCaseBaseImpl implements CoraCaseBase {
             InputStream is = new FileInputStream(domainModelFile);
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF8"));
 
+            //TODO: Checken, ob es nicht m.read(reader... heißen sollte (wenn es zu UTF8-Problemen kommen sollte)
             m.read(is, "RDF/XML-ABBREV", null);
 
             reader.close();
